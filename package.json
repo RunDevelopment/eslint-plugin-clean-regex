@@ -1,0 +1,30 @@
+{
+  "name": "eslint-plugin-clean-regex",
+  "version": "0.0.0",
+  "description": "An ESLint plugin for clean regexes",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin"
+  ],
+  "author": "Michael Schmidt",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha tests --recursive"
+  },
+  "dependencies": {
+    "regexpp": "^2.0.1",
+    "requireindex": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/eslint": "^4.16.6",
+    "@types/node": "^11.13.0",
+    "chai": "^4.2.0",
+    "eslint": "^3.9.1",
+    "mocha": "^6.0.1"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "license": "ISC"
+}
