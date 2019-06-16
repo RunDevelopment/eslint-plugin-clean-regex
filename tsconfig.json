@@ -1,15 +1,20 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "allowJs": true,
-        "noImplicitAny": true,
-        "strict": true
-    },
-    "include": [
-        "*.js"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+	"compilerOptions": {
+		"target": "ES5",
+		"lib": [
+			"es2015"
+		],
+		"module": "commonjs",
+
+		"noImplicitAny": false,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"strictBindCallApply": true,
+		"strictNullChecks": false,
+		"strictFunctionTypes": true,
+		"downlevelIteration": true,
+
+		"allowJs": true,
+		"checkJs": true
+	}
 }
