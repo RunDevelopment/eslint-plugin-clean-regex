@@ -16,5 +16,16 @@
 		"semi": ["error", "always"],
 		"quotes": ["error", "double"],
 		"no-empty-character-class": "off" // this rule has massive problems with the new s flag
-	}
+	},
+
+	"overrides": [
+		{
+			"files": [
+				"tests/**/*.js"
+			],
+			"env": {
+				"mocha": true
+			}
+		}
+	]
 }
