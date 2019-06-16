@@ -9,12 +9,12 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/sorted-flags");
+const rule = require("../../../lib/rules/sort-flags");
 const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-ruleTester.run("sorted-flags", rule, {
+ruleTester.run("sort-flags", rule, {
 	valid: [
 		String.raw`/\w/i`,
 		String.raw`/\w/im`,

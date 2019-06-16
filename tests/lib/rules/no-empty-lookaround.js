@@ -9,12 +9,12 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/empty-lookaround");
+const rule = require("../../../lib/rules/no-empty-lookaround");
 const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-ruleTester.run("empty-lookaround", rule, {
+ruleTester.run("no-empty-lookaround", rule, {
 	valid: [
 		String(/(?=foo)/),
 		String(/(?!foo)/),
@@ -22,6 +22,8 @@ ruleTester.run("empty-lookaround", rule, {
 		String(/(?<!foo)/),
 
 		String(/(?=(?=.).*)/),
+		String(/(?=$|a)/),
+		String(/(?=\ba*\b)/),
 	],
 	invalid: [
 		{ code: String(/(?=)/), errors: [{ message: /^Empty lookaround:/ }] },

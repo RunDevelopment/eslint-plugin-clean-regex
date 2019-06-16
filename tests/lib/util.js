@@ -5,10 +5,10 @@
 
 "use strict";
 
-const { assert } = require('chai');
-const { RegExpParser } = require('regexpp');
+const { assert } = require("chai");
+const { RegExpParser } = require("regexpp");
 
-const { isConstant } = require('../../lib/util');
+const { isConstant } = require("../../lib/util");
 
 
 const parser = new RegExpParser({ ecmaVersion: 2018 });
