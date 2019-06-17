@@ -37,21 +37,20 @@ ruleTester.run("no-useless-flags", rule, {
 	],
 	invalid: [
 		// i
-		{ code: String(/\w/i), errors: [{ message: /^Useless flag: i:/ }] },
+		{ code: String(/\w/i), output: String(/\w/), errors: [{ message: /^Useless flag: i:/ }] },
 
 		// m
-		{ code: String(/\w/m), errors: [{ message: /^Useless flag: m:/ }] },
+		{ code: String(/\w/m), output: String(/\w/), errors: [{ message: /^Useless flag: m:/ }] },
 
 		// s
-		{ code: String(/\w/s), errors: [{ message: /^Useless flag: s:/ }] },
+		{ code: String(/\w/s), output: String(/\w/), errors: [{ message: /^Useless flag: s:/ }] },
 
 		// all flags
 		{
 			code: String(/\w/ims),
+			output: String(/\w/),
 			errors: [
-				{ message: /^Useless flag: i:/ },
-				{ message: /^Useless flag: m:/ },
-				{ message: /^Useless flag: s:/ },
+				{ message: "Useless flags: ims: [i] The pattern does not contain case-variant characters. [m] The pattern does not contain start (^) or end ($) assertions. [s] The pattern does not contain dots (.)." },
 			]
 		},
 	]

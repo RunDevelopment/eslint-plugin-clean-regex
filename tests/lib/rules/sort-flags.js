@@ -25,10 +25,12 @@ ruleTester.run("sort-flags", rule, {
 	invalid: [
 		{
 			code: String.raw`/\w/yusimg`,
+			output: String.raw`/\w/gimsuy`,
 			errors: [{ message: "Unsorted flags: The flags should in the order gimsuy." }]
 		},
 		{
 			code: String.raw`/\w/gimsuy`,
+			output: String.raw`/\w/yusimg`,
 			options: [{ order: "yusimg" }],
 			errors: [{ message: "Unsorted flags: The flags should in the order yusimg." }]
 		},
