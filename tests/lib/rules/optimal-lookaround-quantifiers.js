@@ -14,7 +14,7 @@ const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-const errors = [{ message: /^Suboptimal lookaround:/ }];
+const errors = [{ message: /^The quantified expression [\s\S]+ at the end of the expression tree should only be matched a constant number of times. The expression can be [\s\S]+ without affecting the lookaround.$/ }];
 
 ruleTester.run("optimal-lookaround-quantifiers", rule, {
 	valid: [

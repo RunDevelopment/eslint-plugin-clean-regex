@@ -37,20 +37,20 @@ ruleTester.run("no-useless-flags", rule, {
 	],
 	invalid: [
 		// i
-		{ code: String(/\w/i), output: String(/\w/), errors: [{ message: /^Useless flag: i:/ }] },
+		{ code: String(/\w/i), output: String(/\w/), errors: [{ message: "The i flags is unnecessary because the pattern does not contain case-variant characters." }] },
 
 		// m
-		{ code: String(/\w/m), output: String(/\w/), errors: [{ message: /^Useless flag: m:/ }] },
+		{ code: String(/\w/m), output: String(/\w/), errors: [{ message: "The m flags is unnecessary because the pattern does not contain start (^) or end ($) assertions." }] },
 
 		// s
-		{ code: String(/\w/s), output: String(/\w/), errors: [{ message: /^Useless flag: s:/ }] },
+		{ code: String(/\w/s), output: String(/\w/), errors: [{ message: "The s flags is unnecessary because the pattern does not contain dots (.)." }] },
 
 		// all flags
 		{
 			code: String(/\w/ims),
 			output: String(/\w/),
 			errors: [
-				{ message: "Useless flags: ims: [i] The pattern does not contain case-variant characters. [m] The pattern does not contain start (^) or end ($) assertions. [s] The pattern does not contain dots (.)." },
+				{ message: "The flags ims are unnecessary because the pattern [i] does not contain case-variant characters, [m] does not contain start (^) or end ($) assertions, [s] does not contain dots (.)" },
 			]
 		},
 	]

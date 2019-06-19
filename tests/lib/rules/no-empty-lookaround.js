@@ -14,6 +14,8 @@ const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
+const errors = [{ message: /^The (?:lookahead|lookbehind) [\s\S]+ should not match the empty string as this will cause it to always match.$/ }];
+
 ruleTester.run("no-empty-lookaround", rule, {
 	valid: [
 		String(/(?=foo)/),
@@ -26,8 +28,8 @@ ruleTester.run("no-empty-lookaround", rule, {
 		String(/(?=\ba*\b)/),
 	],
 	invalid: [
-		{ code: String(/(?=)/), errors: [{ message: /^Empty lookaround:/ }] },
-		{ code: String(/(?=a*)/), errors: [{ message: /^Empty lookaround:/ }] },
-		{ code: String(/(?=a|b*)/), errors: [{ message: /^Empty lookaround:/ }] },
+		{ code: String(/(?=)/), errors },
+		{ code: String(/(?=a*)/), errors },
+		{ code: String(/(?=a|b*)/), errors },
 	]
 });

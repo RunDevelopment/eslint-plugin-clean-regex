@@ -14,7 +14,7 @@ const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-const errors = [{ message: /^Trivially nested lookaround:/ }];
+const errors = [{ message: /^The outer (?:lookahead|lookbehind) is unnecessary.$/ }];
 
 ruleTester.run("no-trivially-nested-lookaround", rule, {
 	valid: [
