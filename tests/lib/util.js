@@ -33,6 +33,12 @@ describe("isConstant", function () {
 		]
 	};
 
+	/**
+	 * Runs a new test for each of the given regexes with the given test function.
+	 * @param {string} name
+	 * @param {(elements: import("regexpp/ast").Element[]) => void} testFn
+	 * @param {readonly RegExp[]} patterns
+	 */
 	function testPatterns(name, testFn, patterns) {
 		describe(name, function () {
 			for (const regex of patterns) {
