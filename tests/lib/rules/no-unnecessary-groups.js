@@ -1,5 +1,5 @@
 /**
- * @fileoverview Disallow useless non-capturing groups
+ * @fileoverview Disallow unnecessary non-capturing groups
  * @author Michael Schmidt
  */
 
@@ -9,12 +9,12 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/no-useless-groups");
+const rule = require("../../../lib/rules/no-unnecessary-groups");
 const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-ruleTester.run("no-useless-groups", rule, {
+ruleTester.run("no-unnecessary-groups", rule, {
 	valid: [
 		String(/(?:a|b)/),
 		String(/(?:a{2})+/),

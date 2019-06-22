@@ -1,5 +1,5 @@
 /**
- * @fileoverview Disallow useless flags for regular expressions
+ * @fileoverview Disallow unnecessary flags for regular expressions
  * @author Michael Schmidt
  */
 
@@ -9,12 +9,12 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/no-useless-flags");
+const rule = require("../../../lib/rules/no-unnecessary-flags");
 const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-ruleTester.run("no-useless-flags", rule, {
+ruleTester.run("no-unnecessary-flags", rule, {
 	valid: [
 		// i
 		String(/foo/i),

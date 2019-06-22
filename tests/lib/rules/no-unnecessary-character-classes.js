@@ -1,5 +1,5 @@
 /**
- * @fileoverview Disallow useless character classes
+ * @fileoverview Disallow unnecessary character classes
  * @author Michael Schmidt
  */
 
@@ -9,12 +9,12 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const rule = require("../../../lib/rules/no-useless-character-classes");
+const rule = require("../../../lib/rules/no-unnecessary-character-classes");
 const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
-ruleTester.run("no-useless-character-classes", rule, {
+ruleTester.run("no-unnecessary-character-classes", rule, {
 	valid: [
 		String(/\c1/),
 		String(/[^]/),
