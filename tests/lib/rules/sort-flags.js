@@ -1,8 +1,3 @@
-/**
- * @fileoverview Sort the flags of regular expressions
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

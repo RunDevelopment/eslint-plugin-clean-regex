@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow trivially nested lookarounds
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

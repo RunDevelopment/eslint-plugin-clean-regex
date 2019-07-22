@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow unnecessary flags for regular expressions
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

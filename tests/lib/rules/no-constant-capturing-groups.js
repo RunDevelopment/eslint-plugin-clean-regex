@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow constant capturing groups for regular expressions
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

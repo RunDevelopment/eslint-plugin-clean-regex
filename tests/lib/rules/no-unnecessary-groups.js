@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow unnecessary non-capturing groups
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

@@ -1,8 +1,3 @@
-/**
- * @fileoverview Optimized character classes
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

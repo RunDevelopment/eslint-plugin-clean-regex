@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow suboptimal quantifiers inside lookarounds
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

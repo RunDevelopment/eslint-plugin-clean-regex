@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow lookarounds which match the empty word
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------

@@ -1,8 +1,3 @@
-/**
- * @fileoverview Disallow unnecessary character classes
- * @author Michael Schmidt
- */
-
 "use strict";
 
 //------------------------------------------------------------------------------
