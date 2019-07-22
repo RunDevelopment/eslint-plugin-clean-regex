@@ -9,6 +9,8 @@ const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
+const errors = [{ message: /[\s\S]*/ }];
+
 ruleTester.run("no-unnecessary-character-classes", rule, {
 	valid: [
 		String(/\c1/),
@@ -24,11 +26,11 @@ ruleTester.run("no-unnecessary-character-classes", rule, {
 	],
 	invalid: [
 		//{ code: String(/[a]/), errors: [{ message: "" }] },
-		{ code: String(/[\w]/), output: String(/\w/), errors: [{ message: "" }] },
-		{ code: String(/[\W]/), output: String(/\W/), errors: [{ message: "" }] },
-		{ code: String(/[\s]/), output: String(/\s/), errors: [{ message: "" }] },
-		{ code: String(/[\S]/), output: String(/\S/), errors: [{ message: "" }] },
-		{ code: String(/[^\s]/), output: String(/\S/), errors: [{ message: "" }] },
-		{ code: String(/[^\S]/), output: String(/\s/), errors: [{ message: "" }] },
+		{ code: String(/[\w]/), output: String(/\w/), errors },
+		{ code: String(/[\W]/), output: String(/\W/), errors },
+		{ code: String(/[\s]/), output: String(/\s/), errors },
+		{ code: String(/[\S]/), output: String(/\S/), errors },
+		{ code: String(/[^\s]/), output: String(/\S/), errors },
+		{ code: String(/[^\S]/), output: String(/\s/), errors },
 	]
 });
