@@ -9,6 +9,8 @@ const { RuleTester } = require("eslint");
 
 const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
 
+const errors = [{ message: "Unnecessary non-capturing group." }];
+
 ruleTester.run("no-unnecessary-groups", rule, {
 	valid: [
 		String(/(?:a|b)/),
@@ -17,10 +19,8 @@ ruleTester.run("no-unnecessary-groups", rule, {
 		String(/{(?:2,)}/),
 		String(/{(?:2,5)}/),
 		String(/{2,(?:5)}/),
-		String(/{(?:5})/),
+		String(/a{(?:5})/),
 		String(/\u{(?:41)}/),
-		String(/\u{4(?:1)}/),
-		String(/\u{F(?:F)}/),
 		String(/(.)\1(?:2\s)/),
 		String(/\0(?:2)/),
 		String(/\x4(?:1)*/),
@@ -32,14 +32,16 @@ ruleTester.run("no-unnecessary-groups", rule, {
 		String(/\u0(?:0)41/),
 		String(/\u(?:0)041/),
 		String(/\c(?:A)/),
+		String(/(?:)/)
 	],
 	invalid: [
-		{ code: String(/(?:)/), errors: [{ message: "Empty non-capturing group." }] },
-		{ code: String(/(?:a)/), errors: [{ message: "The non-capturing group around a is unnecessary." }] },
-		{ code: String(/(?:(?:a|b))/), errors: [{ message: "The non-capturing group around (?:a|b) is unnecessary." }] },
-		{ code: String(/(?:a)+/), errors: [{ message: "The non-capturing group around a is unnecessary." }] },
-		{ code: String(/(?:\w)/), errors: [{ message: "The non-capturing group around \\w is unnecessary." }] },
-		{ code: String(/(?:[abc])*/), errors: [{ message: "The non-capturing group around [abc] is unnecessary." }] },
-		{ code: String(/foo(?:[abc]*)bar/), errors: [{ message: "The non-capturing group (?:[abc]*) has neither quantifiers nor does it contain alternations and this therefore unnecessary." }] },
+		{ code: String(/(?:)a/), output: String(/a/), errors },
+		{ code: String(/(?:a)/), output: String(/a/), errors },
+		{ code: String(/(?:(?:a|b))/), output: String(/(?:a|b)/), errors },
+		{ code: String(/(?:a)+/), output: String(/a+/), errors },
+		{ code: String(/(?:\w)/), output: String(/\w/), errors },
+		{ code: String(/(?:[abc])*/), output: String(/[abc]*/), errors },
+		{ code: String(/foo(?:[abc]*)bar/), output: String(/foo[abc]*bar/), errors },
+		{ code: String(/foo(?:bar)/), output: String(/foobar/), errors },
 	]
 });
