@@ -1,19 +1,14 @@
-/**
- * @fileoverview Tests for utility functions.
- * @author Michael Schmidt
- */
-
 "use strict";
 
 const { assert } = require("chai");
 const { RegExpParser } = require("regexpp");
 
-const { isConstant } = require("../../lib/util");
+const { getConstant } = require("../../lib/util");
 
 
 const parser = new RegExpParser({ ecmaVersion: 2018 });
 
-describe("isConstant", function () {
+describe("getConstant", function () {
 	const tests = {
 		constant: [
 			/abc/,
@@ -23,34 +18,44 @@ describe("isConstant", function () {
 			/(?:ab){2}c{4}/,
 			/\babc$/,
 			/(?<=^|\W)abc(?=\n)/,
+			/b|b/,
+			/[a-a]/,
+			/[aaa]/,
+			/[a-aa-aaa]/,
 		],
 		notConstant: [
 			/a*/,
 			/b+/,
 			/b?/,
 			/b{1,2}/,
-			/b|b/,
+			/b|B/,
+			/a|b/,
+			/[ab]/,
+			/[\w]/,
+			/\s/,
+			/[^]/,
+			/[^\s\S]/,
+			/b/i,
 		]
 	};
 
 	/**
 	 * Runs a new test for each of the given regexes with the given test function.
 	 * @param {string} name
-	 * @param {(elements: import("regexpp/ast").Element[]) => void} testFn
+	 * @param {(node: import("regexpp/ast").Node, flags: import("regexpp/ast").Flags) => void} testFn
 	 * @param {readonly RegExp[]} patterns
 	 */
 	function testPatterns(name, testFn, patterns) {
 		describe(name, function () {
 			for (const regex of patterns) {
 				it(regex.source, function () {
-					const ast = parser.parsePattern(`(?:${regex.source})`);
-					testFn(ast.alternatives[0].elements);
+					testFn(parser.parsePattern(regex.source), parser.parseFlags(regex.flags));
 				});
 			}
 		});
 	}
 
-	testPatterns("constant", elements => assert.isTrue(isConstant(elements)), tests.constant);
-	testPatterns("not constant", elements => assert.isFalse(isConstant(elements)), tests.notConstant);
+	testPatterns("constant", (node, flags) => assert.isObject(getConstant(node, flags)), tests.constant);
+	testPatterns("not constant", (node, flags) => assert.isFalse(getConstant(node, flags)), tests.notConstant);
 
 });
