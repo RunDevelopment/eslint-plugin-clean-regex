@@ -28,5 +28,6 @@ ruleTester.run("no-unnecessary-quantifiers", rule, {
 		{ code: String(/a{0,0}/), output: String(/(?:)/), errors: [{ message: "The quantifier and the quantified element can be removed." }] },
 		{ code: String(/(a|b){0,0}/), output: String(/(?:)/), errors: [{ message: "The quantifier and the quantified element can be removed." }] },
 		{ code: String(/(?:a+){0}/), output: String(/(?:)/), errors: [{ message: "The quantifier and the quantified element can be removed." }] },
+		{ code: String(/(?:\b){0}/), output: String(/(?:)/), errors: [{ message: "The quantifier and the quantified element can be removed." }] },
 	]
 });
