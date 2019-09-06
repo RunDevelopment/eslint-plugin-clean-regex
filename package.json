@@ -17,7 +17,9 @@
     "requireindex": "^1.2.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.1",
     "@types/eslint": "^4.16.6",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^11.13.0",
     "chai": "^4.2.0",
     "eslint": "^6.1.0",
