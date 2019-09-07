@@ -1,6 +1,8 @@
 "use strict";
 
 const { RuleTester } = require("eslint");
+const { filenameToRule } = require("../lib/util");
+
 
 module.exports = {
 
@@ -14,13 +16,8 @@ module.exports = {
 	 * @typedef {import("eslint").RuleTester.InvalidTestCase} InvalidTestCase
 	 */
 	testRule(testFilename, config, tests) {
-		const ruleName = (/([-\w]+)\.js$/.exec(testFilename) || [undefined, undefined])[1];
-		if (!ruleName) {
-			throw new Error(`Invalid rule test filename: ${testFilename}`);
-		}
-
+		const ruleName = filenameToRule(testFilename);
 		const rule = require("../lib/rules/" + ruleName);
-
 		const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 }, ...(config || {}) });
 
 		ruleTester.run(ruleName, rule, tests);
