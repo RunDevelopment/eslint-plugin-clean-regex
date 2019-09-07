@@ -5,7 +5,7 @@ const { rules, configs } = require("./lib");
 async function doc() {
 	const ruleNames = Object.keys(rules).sort();
 
-	let mdTable = "| Rule | Fixable | Recommended | Description |\n" +
+	let mdTable = "| Rule | Fix | Rec | Description |\n" +
 		"| --- | --- | --- | --- |\n";
 	for (const rule of ruleNames) {
 		/*

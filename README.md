@@ -43,14 +43,14 @@ Then configure the rules you want to use under the rules section.
 
 ## Supported Rules
 
-| Rule | Fixable | Recommended | Description |
+| Rule | Fix | Rec | Description |
 | --- | --- | --- | --- |
 | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) |  | :warning: | Disallow capturing groups which can match one word. |
 | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) |  | :heavy_exclamation_mark: | Disallow lookarounds which can match the empty string. |
 | [no-trivially-nested-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-lookaround.md) | :wrench: | :heavy_exclamation_mark: | Disallow lookarounds which contain an assertion as their only element. |
 | [no-unnecessary-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-capturing-group.md) |  | :warning: | Disallow unnecessary capturing groups. |
 | [no-unnecessary-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-character-class.md) | :wrench: | :heavy_exclamation_mark: | Disallow unnecessary character classes. |
-| [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) | :wrench: | :heavy_exclamation_mark: | disallow unnecessary regex flags |
+| [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) | :wrench: | :heavy_exclamation_mark: | Disallow unnecessary regex flags. |
 | [no-unnecessary-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-group.md) | :wrench: | :heavy_exclamation_mark: | Disallow unnecessary non-capturing groups. |
 | [no-unnecessary-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-quantifier.md) | :wrench: | :heavy_exclamation_mark: | Disallow unnecessary quantifiers. |
 | [optimal-lookaround-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-lookaround-quantifier.md) |  | :heavy_exclamation_mark: | Disallows the alternates of lookarounds the end with a non-constant quantifier. |
