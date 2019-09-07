@@ -22,6 +22,7 @@ describe("getConstant", function () {
 			/[a-a]/,
 			/[aaa]/,
 			/[a-aa-aaa]/,
+			/(a\1)/, // can handle recursive back references
 		],
 		notConstant: [
 			/a*/,
@@ -33,9 +34,13 @@ describe("getConstant", function () {
 			/[ab]/,
 			/[\w]/,
 			/\s/,
+			/[a-b]/,
+			/[A-a]/i,
 			/[^]/,
+			/[\s\S]/,
 			/[^\s\S]/,
 			/b/i,
+			/[b]/i,
 		]
 	};
 
