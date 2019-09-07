@@ -8,6 +8,11 @@
     "eslint-plugin"
   ],
   "author": "Michael Schmidt",
+  "homepage": "https://github.com/RunDevelopment/eslint-plugin-clean-regex#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RunDevelopment/eslint-plugin-clean-regex.git"
+  },
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha tests --recursive"
