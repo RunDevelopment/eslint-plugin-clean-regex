@@ -23,7 +23,10 @@ testRule(__filename, undefined, {
 		{ code: String(/[\W]/), output: String(/\W/), errors },
 		{ code: String(/[\s]/), output: String(/\s/), errors },
 		{ code: String(/[\S]/), output: String(/\S/), errors },
+		{ code: String(/[\d]/), output: String(/\d/), errors },
+		{ code: String(/[\p{Script_Extensions=Greek}]/u), output: String(/\p{Script_Extensions=Greek}/u), errors },
 		{ code: String(/[^\s]/), output: String(/\S/), errors },
 		{ code: String(/[^\S]/), output: String(/\s/), errors },
+		{ code: String(/[^\p{Script_Extensions=Greek}]/u), output: String(/\P{Script_Extensions=Greek}/u), errors },
 	]
 });
