@@ -1,15 +1,8 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
+const { testRule } = require("../../test-util");
 
-const rule = require("../../../lib/rules/no-unnecessary-flags");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
-
-ruleTester.run("no-unnecessary-flags", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		// i
 		String(/foo/i),

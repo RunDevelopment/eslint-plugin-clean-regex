@@ -1,17 +1,10 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
-
-const rule = require("../../../lib/rules/no-unnecessary-groups");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
+const { testRule } = require("../../test-util");
 
 const errors = [{ message: "Unnecessary non-capturing group." }];
 
-ruleTester.run("no-unnecessary-groups", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String(/(?:a|b)/),
 		String(/(?:a{2})+/),

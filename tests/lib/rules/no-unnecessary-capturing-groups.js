@@ -1,20 +1,13 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
-
-const rule = require("../../../lib/rules/no-unnecessary-capturing-groups");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
+const { testRule } = require("../../test-util");
 
 const errors = [{
 	message: "This capturing is inside another capturing and has no references to it. " +
 		"Consider replacing it with a non-capturing group."
 }];
 
-ruleTester.run("no-unnecessary-capturing-groups", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String(/(foo)\s*(bar)/),
 		String(/(.(.).)\2./),

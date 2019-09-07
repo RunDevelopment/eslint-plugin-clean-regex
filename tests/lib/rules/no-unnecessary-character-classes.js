@@ -1,17 +1,10 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
-
-const rule = require("../../../lib/rules/no-unnecessary-character-classes");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
+const { testRule } = require("../../test-util");
 
 const errors = [{ message: /[\s\S]*/ }];
 
-ruleTester.run("no-unnecessary-character-classes", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String(/\c1/),
 		String(/[^]/),

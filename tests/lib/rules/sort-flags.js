@@ -1,15 +1,8 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
+const { testRule } = require("../../test-util");
 
-const rule = require("../../../lib/rules/sort-flags");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
-
-ruleTester.run("sort-flags", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String.raw`/\w/i`,
 		String.raw`/\w/im`,

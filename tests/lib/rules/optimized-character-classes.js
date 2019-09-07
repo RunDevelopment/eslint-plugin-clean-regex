@@ -1,15 +1,8 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
+const { testRule } = require("../../test-util");
 
-const rule = require("../../../lib/rules/optimized-character-classes");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
-
-ruleTester.run("optimized-character-classes", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String(/[a-fA-F]/),
 	],

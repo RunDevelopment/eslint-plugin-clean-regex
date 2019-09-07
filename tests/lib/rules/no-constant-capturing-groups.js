@@ -1,15 +1,8 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
+const { testRule } = require("../../test-util");
 
-const rule = require("../../../lib/rules/no-constant-capturing-groups");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
-
-ruleTester.run("no-constant-capturing-groups", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String(/(a*)/),
 		String(/(a{2,3})/),

@@ -1,17 +1,10 @@
 "use strict";
 
-//------------------------------------------------------------------------------
-// Requirements
-//------------------------------------------------------------------------------
-
-const rule = require("../../../lib/rules/optimal-lookaround-quantifiers");
-const { RuleTester } = require("eslint");
-
-const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 } });
+const { testRule } = require("../../test-util");
 
 const errors = [{ message: /^The quantified expression [\s\S]+ at the end of the expression tree should only be matched a constant number of times. The expression can be [\s\S]+ without affecting the lookaround.$/ }];
 
-ruleTester.run("optimal-lookaround-quantifiers", rule, {
+testRule(__filename, undefined, {
 	valid: [
 		String(/(?=(a*))\w+\1/),
 		String(/(?<=a{4})/)
