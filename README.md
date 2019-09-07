@@ -44,7 +44,7 @@ Then configure the rules you want to use under the rules section.
 ## Supported Rules
 
 | Rule | Fix | Rec | Description |
-| --- | --- | --- | --- |
+| :--- | :--: | :--: | :--- |
 | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) |  | :warning: | Disallow capturing groups which can match one word. |
 | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) |  | :heavy_exclamation_mark: | Disallow lookarounds which can match the empty string. |
 | [no-trivially-nested-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-lookaround.md) | :wrench: | :heavy_exclamation_mark: | Disallow lookarounds which contain an assertion as their only element. |

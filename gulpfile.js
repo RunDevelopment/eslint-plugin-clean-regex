@@ -6,7 +6,7 @@ async function doc() {
 	const ruleNames = Object.keys(rules).sort();
 
 	let mdTable = "| Rule | Fix | Rec | Description |\n" +
-		"| --- | --- | --- | --- |\n";
+		"| :--- | :--: | :--: | :--- |\n";
 	for (const rule of ruleNames) {
 		/*
 		 * Looks like this:
