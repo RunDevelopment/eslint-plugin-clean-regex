@@ -2,7 +2,7 @@
 
 const { testRule } = require("../../test-util");
 
-const errors = [{ message: /^The (?:lookahead|lookbehind) [\s\S]+ should not match the empty string as this will cause it to always match.$/ }];
+const errors = [{ message: /^The empty (?:lookahead|lookbehind) [\s\S]+ is non-functional as it matches the empty string.$/ }];
 
 testRule(__filename, undefined, {
 	valid: [
