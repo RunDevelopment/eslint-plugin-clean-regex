@@ -3,8 +3,7 @@
 const { testRule } = require("../../test-util");
 
 const errors = [{
-	message: "This capturing is inside another capturing and has no references to it. " +
-		"Consider replacing it with a non-capturing group."
+	message: "Consider replacing this nested capturing with a non-capturing group."
 }];
 
 testRule(__filename, undefined, {
