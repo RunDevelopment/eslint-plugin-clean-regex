@@ -6,7 +6,6 @@ const errors = [{ message: "Unnecessary non-capturing group." }];
 
 testRule(__filename, undefined, {
 	valid: [
-		String(/(?:a|b)/),
 		String(/(?:a{2})+/),
 		String(/{(?:2)}/),
 		String(/{(?:2,)}/),
@@ -25,16 +24,18 @@ testRule(__filename, undefined, {
 		String(/\u0(?:0)41/),
 		String(/\u(?:0)041/),
 		String(/\c(?:A)/),
-		String(/(?:)/)
+		String(/(?:)/),
+		String(/(?:a|b)c/),
 	],
 	invalid: [
 		{ code: String(/(?:)a/), output: String(/a/), errors },
 		{ code: String(/(?:a)/), output: String(/a/), errors },
-		{ code: String(/(?:(?:a|b))/), output: String(/(?:a|b)/), errors },
 		{ code: String(/(?:a)+/), output: String(/a+/), errors },
 		{ code: String(/(?:\w)/), output: String(/\w/), errors },
 		{ code: String(/(?:[abc])*/), output: String(/[abc]*/), errors },
 		{ code: String(/foo(?:[abc]*)bar/), output: String(/foo[abc]*bar/), errors },
 		{ code: String(/foo(?:bar)/), output: String(/foobar/), errors },
+		{ code: String(/(?:a|b)/), output: String(/a|b/), errors },
+		{ code: String(/a|(?:b|c)/), output: String(/a|b|c/), errors },
 	]
 });
