@@ -1,6 +1,6 @@
 # `no-early-backreference`
 
-Disallow backreferences which appear before the group they reference end.
+Disallow backreferences which appear before the group they reference ends.
 
 Fixable: `no` <br> Recommended configuration: `"error"`
 
