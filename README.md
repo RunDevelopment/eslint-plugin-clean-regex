@@ -1,5 +1,7 @@
 # eslint-plugin-clean-regex
 
+[![Build Status](https://travis-ci.org/RunDevelopment/eslint-plugin-clean-regex.svg?branch=master)](https://travis-ci.org/RunDevelopment/eslint-plugin-clean-regex)
+
 An ESLint plugin for clean regexes
 
 ## Installation
