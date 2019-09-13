@@ -1,6 +1,6 @@
 # `optimal-lookaround-quantifier`
 
-Disallows the alternates of lookarounds the end with a non-constant quantifier.
+Disallows the alternatives of lookarounds the end with a non-constant quantifier.
 
 Fixable: `no` <br> Recommended configuration: `"error"`
 
