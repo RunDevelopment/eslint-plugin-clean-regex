@@ -12,4 +12,18 @@ describe("Recommended config", function () {
 		});
 	});
 
+	it("should contain no other rules", function () {
+		const unknown = Object.keys(configs.recommended.rules).filter(r => {
+			if (!/^clean-regex\//.test(r)) {
+				// not a clean-regex rule
+				return false;
+			}
+			return !(r.substr("clean-regex/".length) in rules);
+		});
+
+		if (unknown.length) {
+			assert.fail(`Unknown rules: ${unknown.join(", ")}`);
+		}
+	});
+
 });
