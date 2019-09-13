@@ -1,6 +1,6 @@
 # `optimized-character-class`
 
-Idk what to say here
+Disallows unnecessary elements in character classes.
 
 Fixable: `yes` <br> Recommended configuration: `"error"`
 
