@@ -56,3 +56,8 @@ Then configure the rules you want to use under the rules section.
 | [optimal-lookaround-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-lookaround-quantifier.md) |  | :heavy_exclamation_mark: | Disallows the alternates of lookarounds the end with a non-constant quantifier. |
 | [optimized-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimized-character-class.md) | :wrench: | :heavy_exclamation_mark: | Idk what to say here |
 | [sort-flags](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/sort-flags.md) | :wrench: | :heavy_exclamation_mark: | Requires the flags of regular expressions to be sorted. |
+
+#### Legend
+
+__Fix:__ Whether the rule is fixable: :wrench: = yes, otherwise no. <br>
+__Rec:__ The setting of the rule in the _recommended_ configuration: :heavy_exclamation_mark: = `error`, :warning: = `warn`, otherwise `off`.
