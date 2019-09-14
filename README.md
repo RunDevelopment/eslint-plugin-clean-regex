@@ -57,6 +57,7 @@ Then configure the rules you want to use under the rules section.
 | [no-unnecessary-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-quantifier.md) | :wrench: | :warning: | Disallow unnecessary quantifiers. |
 | [optimal-lookaround-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-lookaround-quantifier.md) |  | :heavy_exclamation_mark: | Disallows the alternatives of lookarounds the end with a non-constant quantifier. |
 | [optimized-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimized-character-class.md) | :wrench: | :warning: | Disallows unnecessary elements in character classes. |
+| [prefer-predefined-quantifiers](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-quantifiers.md) | :wrench: | :heavy_exclamation_mark: | Prefer predefined quantifiers (+*?) instead of their more verbose form. |
 | [sort-flags](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/sort-flags.md) | :wrench: | :warning: | Requires the flags of regular expressions to be sorted. |
 
 #### Legend
