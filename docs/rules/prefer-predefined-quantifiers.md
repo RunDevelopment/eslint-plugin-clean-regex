@@ -4,7 +4,7 @@ Prefer predefined quantifiers (+*?) instead of their more verbose form.
 
 Fixable: `yes` <br> Recommended configuration: `"error"`
 
-[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/prefer-predefined-quantifiers.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/test/lib/rules/prefer-predefined-quantifiers.js)
+[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/prefer-predefined-quantifiers.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/prefer-predefined-quantifiers.js)
 
 
 ## Description

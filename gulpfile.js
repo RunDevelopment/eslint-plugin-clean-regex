@@ -47,7 +47,7 @@ function getRuleMeta(rule) {
 		recommendedConfig: configs.recommended.rules["clean-regex/" + rule],
 		files: {
 			source: `lib/rules/${rule}.js`,
-			test: `test/lib/rules/${rule}.js`,
+			test: `tests/lib/rules/${rule}.js`,
 			doc: `docs/rules/${rule}.md`,
 		}
 	};
