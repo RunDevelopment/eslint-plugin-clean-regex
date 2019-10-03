@@ -2,46 +2,45 @@
 
 [![Build Status](https://travis-ci.org/RunDevelopment/eslint-plugin-clean-regex.svg?branch=master)](https://travis-ci.org/RunDevelopment/eslint-plugin-clean-regex)
 
-An ESLint plugin for clean regexes
+An ESLint plugin for writing better regular expressions.
 
-## Installation
+## Getting started
 
-You'll first need to install [ESLint](http://eslint.org):
-
-```
-$ npm i eslint --save-dev
-```
-
-Next, install `eslint-plugin-clean-regex`:
+You'll need to install [ESLint](http://eslint.org) and `eslint-plugin-clean-regex`:
 
 ```
-$ npm install eslint-plugin-clean-regex --save-dev
+$ npm i eslint eslint-plugin-clean-regex --save-dev
 ```
 
 **Note:** If you installed ESLint globally (using the `-g` flag) then you must also install `eslint-plugin-clean-regex` globally.
 
-## Usage
-
-Add `clean-regex` to the plugins section of your `.eslintrc` configuration file. You can omit the `eslint-plugin-` prefix:
+Add `clean-regex` to the plugins section of your `.eslintrc` configuration file (you can omit the `eslint-plugin-` prefix) and configure the rules you want:
 
 ```json
 {
     "plugins": [
         "clean-regex"
-    ]
-}
-```
-
-
-Then configure the rules you want to use under the rules section.
-
-```json
-{
+    ],
     "rules": {
         "clean-regex/rule-name": 2
     }
 }
 ```
+
+You can also use the _recommended_ config:
+
+```json
+{
+    "plugins": [
+        "clean-regex"
+    ],
+    "extends": [
+        "plugin:clean-regex/recommended"
+    ]
+}
+```
+
+The setting of every rule in the _recommended_ config can be found in the table below.
 
 ## Supported Rules
 
