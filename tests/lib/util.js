@@ -53,7 +53,7 @@ describe("getConstant", function () {
 	function testPatterns(name, testFn, patterns) {
 		describe(name, function () {
 			for (const regex of patterns) {
-				it(regex.source, function () {
+				it(regex.toString(), function () {
 					testFn(parser.parsePattern(regex.source), parser.parseFlags(regex.flags));
 				});
 			}
