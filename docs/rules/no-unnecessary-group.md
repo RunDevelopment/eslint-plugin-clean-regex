@@ -9,4 +9,7 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 ## Description
 
-TODO
+Non-capturing groups which can be removed without changing the meaning of the pattern are unnecessary.
+E.g. `a(?:bc)d` == `abcd` and `a(?:b)*c` == `ab*c`
+
+Capturing groups will not be reported or removed.

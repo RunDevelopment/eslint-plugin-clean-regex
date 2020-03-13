@@ -9,4 +9,15 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 ## Description
 
-TODO
+This will point out present regex flags that do not change the pattern.
+
+The `i` flag is only necessary if the pattern contains any characters with case variations. If no such characters are part of the pattern, the flag is unnecessary.
+E.g. `/\.{3}/i`
+
+The `m` flag changes the meaning of the `^` and `$` anchors, so if the pattern doesn't contain these anchors, it's unnecessary.
+E.g. `/foo|[^\r\n]*/m`
+
+The `s` flag makes the dot (`.`) match all characters instead of the usually non-line-terminator characters, so if the pattern doesn't contain a dot character set, it will be unnecessary.
+E.g. `/[.:]/s`
+
+No other flags will be checked.
