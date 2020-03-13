@@ -15,7 +15,8 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha tests --recursive"
+    "test": "mocha tests --recursive",
+    "gen-doc": "npx gulp doc"
   },
   "dependencies": {
     "regexpp": "^2.0.1",
