@@ -19,21 +19,21 @@
     "gen-doc": "npx gulp doc"
   },
   "dependencies": {
-    "regexpp": "^2.0.1",
+    "regexpp": "^3.0.0",
     "requireindex": "^1.2.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.1",
-    "@types/eslint": "^4.16.6",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^11.13.0",
+    "@types/chai": "^4.2.10",
+    "@types/eslint": "^6.1.8",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.9.1",
     "chai": "^4.2.0",
-    "eslint": "^6.1.0",
+    "eslint": "^6.8.0",
     "gulp": "^4.0.2",
-    "mocha": "^6.2.0"
+    "mocha": "^7.1.0"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "license": "MIT"
 }
