@@ -10,4 +10,7 @@ Fixable: `no` <br> Recommended configuration: `"warn"`
 ## Description
 
 Constant capturing groups can only match one word.
+
 Because they can only match one word, they should be replaced with the constant string they capture for better performance.
+
+E.g. `/(foo)/`

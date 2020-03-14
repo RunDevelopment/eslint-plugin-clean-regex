@@ -10,11 +10,10 @@ testRule(__filename, undefined, {
 		String(/a?/),
 		String(/(a|b?)*/),
 		String(/(a?){0,3}/),
+		String(/(a|\b)+/),
 	],
 	invalid: [
-		{ code: String(/(a|b?)?/), errors },
-
-		{ code: String(/(a|\b)+/), errors },
 		{ code: String(/(a?){5}/), errors },
+		{ code: String(/(?:a?b*|c+){4}/), errors },
 	]
 });

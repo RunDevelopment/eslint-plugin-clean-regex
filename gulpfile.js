@@ -79,7 +79,7 @@ async function readme() {
 	}
 
 	let readme = await fs.readFile("./README.md", "utf8");
-	readme = readme.replace(/(# Supported Rules\s+)(?:^\|.+$\n?)*/m, "$1" + mdTable);
+	readme = readme.replace(/(# Supported Rules\s+)(?:^\|.+$\r?\n?)*/m, "$1" + mdTable);
 
 	await fs.writeFile("./README.md", readme, "utf8");
 }

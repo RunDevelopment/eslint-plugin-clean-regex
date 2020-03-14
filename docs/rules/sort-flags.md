@@ -9,4 +9,5 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 ## Description
 
-TODO
+The flags of JavaScript regular expressions should be sorted alphabetically because the flags of the `.flags` property of `RegExp` objects are always sorted.
+Not sorting flags in regex literals misleads readers into thinking that the order may have some purpose which it doesn't.

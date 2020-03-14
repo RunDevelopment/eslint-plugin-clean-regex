@@ -15,8 +15,9 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha tests --recursive",
-    "gen-doc": "npx gulp doc"
+    "check": "npx eslint lib/** tests/** gulpfile.js && npx tsc",
+    "gen-doc": "npx gulp doc",
+    "test": "mocha tests --recursive"
   },
   "dependencies": {
     "regexpp": "^3.0.0",
@@ -25,12 +26,14 @@
   "devDependencies": {
     "@types/chai": "^4.2.10",
     "@types/eslint": "^6.1.8",
+    "@types/gulp": "^4.0.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.9.1",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "gulp": "^4.0.2",
-    "mocha": "^7.1.0"
+    "mocha": "^7.1.0",
+    "typescript": "^3.8.3"
   },
   "engines": {
     "node": ">=8.0.0"

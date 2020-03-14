@@ -11,3 +11,5 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 Prefer predefined quantifiers over general quantifiers.
 E.g. `?` instead of `{0,1}`, `*` instead of `{0,}`, and `+` instead of `{1,}`.
+
+Predefined use less characters than their verbose counterparts and are therefore easier to read.
