@@ -14,7 +14,10 @@ testRule(__filename, undefined, {
 		String(/{[2]}/),
 		String(/(.)\1[2]/),
 		{ code: String(/[\b]/), options: [{ avoidEscape: true }] },
-		{ code: String(/[.][*][+][?][{][}][(][)][[][/][$]/), options: [{ avoidEscape: true }] },
+
+		// NodeJS v10 has a bug where / inside character classes will always be escaped.
+		{ code: String.raw`/[.][*][+][?][{][}][(][)][[][/][$]/`, options: [{ avoidEscape: true }] },
+
 		String(/[\4]/), // octal escape
 		String(/(?<foo>a*)[\k]<foo>/),
 	],
