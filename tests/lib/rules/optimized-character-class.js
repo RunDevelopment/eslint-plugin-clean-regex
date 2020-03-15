@@ -22,5 +22,7 @@ testRule(__filename, undefined, {
 		{ code: String(/[a-f\D]/i), output: String(/[\D]/i), errors: [{ message: "a-f (\\x61-\\x66) is already included by \\D." }] },
 
 		{ code: String(/[\w\d]/i), output: String(/[\w]/i), errors: [{ message: "\\d is already included by \\w." }] },
+
+		{ code: String(/[\s\n]/), output: String(/[\s]/), errors: [{ message: "\\n (\\x0a) is already included by \\s." }] },
 	]
 });

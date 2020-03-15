@@ -9,4 +9,13 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 ## Description
 
-TODO
+This will will provide fixes to remove unnecessary characters, character ranges, and character sets from character classes.
+
+### Examples
+
+```
+/[a-zf]/ -> /[a-z]/
+/[a-z\w]/ -> /[\w]/
+/[\s\r\n]/ -> /[\s]/
+/[a-zH]/i -> /[a-z]/
+```
