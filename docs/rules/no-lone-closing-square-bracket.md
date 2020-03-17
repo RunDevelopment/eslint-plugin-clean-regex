@@ -2,7 +2,7 @@
 
 Disallow lone unescaped closing square brackets.
 
-Fixable: `no` <br> Recommended configuration: `"warn"`
+Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-lone-closing-square-bracket.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-lone-closing-square-bracket.js)
 

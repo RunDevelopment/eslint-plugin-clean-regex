@@ -9,7 +9,7 @@ testRule(__filename, undefined, {
 		String(/ab[c]/),
 	],
 	invalid: [
-		{ code: String(/abc]/), errors },
-		{ code: String(/foo(?:])/), errors },
+		{ code: String(/abc]/), output: String(/abc\]/), errors },
+		{ code: String(/foo(?:])/), output: String(/foo(?:\])/),errors },
 	]
 });
