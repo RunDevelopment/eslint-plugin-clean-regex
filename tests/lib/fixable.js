@@ -8,7 +8,7 @@ const { rules, configs } = require("../../lib");
 
 describe("Rules", function () {
 
-	const fixerFunctions = /\b(?:replace|remove)(?:Element|Quantifier|Flags)\b/;
+	const fixerFunctions = /\b(?:replace|remove)(?:Element|Quantifier|Flags|Literal)\b/;
 
 	const rulesDir = `${__dirname}/../../lib/rules`;
 	const ruleNames = fs.readdirSync(rulesDir);
