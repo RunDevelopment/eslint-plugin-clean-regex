@@ -25,5 +25,13 @@ testRule(__filename, undefined, {
 		{ code: String(/(?:[a]|b)/), output: String(/[ab]/), errors },
 		{ code: String(/(?:[^\s]|b)/), output: String(/[\Sb]/), errors },
 		{ code: String(/(?:\w|-|\+|\*|\/)+/), output: String(/[\w\-\+\*\/]+/), errors },
+
+		// always do non-disjoint
+		{ code: String(/(?:a|\w|b\b)/), output: String(/(?:[a\w]|b\b)/), errors },
+
+		// always do match all
+		{ code: String(/(?:\s|\S|b\b)/), output: String(/(?:[\s\S]|b\b)/), errors },
+		{ code: String(/(?:\w|\D|b\b)/), output: String(/(?:[\w\D]|b\b)/), errors },
+		{ code: String(/(?:\w|\W|b\b)/), output: String(/(?:[\w\W]|b\b)/), errors },
 	]
 });
