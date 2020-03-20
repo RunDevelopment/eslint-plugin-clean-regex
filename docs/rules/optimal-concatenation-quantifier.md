@@ -18,7 +18,7 @@ Generally, the optimized pattern will take less backtracking steps to fail.
 
 Choosing optimal quantifiers does not only make your patterns simpler but also faster and most robust against ReDos attacks.
 
-### `fixable: booleans`
+### `fixable: boolean`
 
 With this option you can control whether reported issue will be auto-fixable.
 You might want to turn the fixability off because the optimally-quantified pattern does not express your intend.
