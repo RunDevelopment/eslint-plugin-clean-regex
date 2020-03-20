@@ -24,5 +24,12 @@ testRule(__filename, undefined, {
 		{ code: String(/\w+(?:a|b)+/), output: String(/\w+(?:a|b)/), errors },
 		{ code: String(/\w+(?:(a)|b)*/), output: String(/\w+(?:(a)|b){0}/), errors },
 		{ code: String(/\d{3,5}\w*/), output: String(/\d{3}\w*/), errors },
+
+		{
+			code: String(/\w+\d*/),
+			output: String(/\w+\d*/),
+			options: [{ fixable: false }],
+			errors
+		},
 	]
 });
