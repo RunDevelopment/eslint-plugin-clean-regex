@@ -16,6 +16,10 @@ testRule(__filename, undefined, {
 	],
 	invalid: [
 		{ code: String(/a|b|c/), output: String(/[abc]/), errors },
+		{ code: String(/]|a|b/), output: String(/[\]ab]/), errors },
+		{ code: String(/a|-|c/), output: String(/[a\-c]/), errors },
+		{ code: String(/a|[-]|c/), output: String(/[a\-c]/), errors },
+		{ code: String(/[a^]|c/), output: String(/[a^c]/), errors },
 		{ code: String(/(?:a|b|c)/), output: String(/[abc]/), errors },
 		{ code: String(/(a|b|c)/), output: String(/([abc])/), errors },
 		{ code: String(/(?<name>a|b|c)/), output: String(/(?<name>[abc])/), errors },
