@@ -4,6 +4,8 @@ const { testRule } = require("../../test-util");
 
 testRule(__filename, undefined, {
 	valid: [
+		String(/[]/),
+		String(/[^]/),
 		String(/[a]/),
 		String(/[abc]/),
 		String(/[\s\w]/),
