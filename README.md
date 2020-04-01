@@ -44,6 +44,63 @@ You can also use the _recommended_ config:
 The setting of every rule in the _recommended_ config can be found in the table below.
 
 
+## Highlights
+
+Some highlights of the working and working together of rules in the _recommended_ config.
+
+### Optimize character classes
+
+Before:
+
+```js
+/[0-9]/
+/[^\s]/
+/[a-fA-F0-9]/i
+/[a-zA-Z0-9_-]/
+/[a-z\d\w]/
+/[\S\d]/
+```
+
+After:
+
+```js
+/\d/i
+/\S/
+/[a-f\d]/i
+/[\w-]/
+/\w/
+/\S/
+```
+
+### Simplify patterns
+
+Before:
+
+```js
+/(?:\w|\d)+/
+/(?:a|b|(?:c)|d|(?:ee)){0,}/
+/a+(?=$)/mi
+/[\s\S]#[\0-\uFFFF]/si
+```
+
+After:
+
+```js
+/\w+/
+/(?:[abcd]|ee)*/
+/a+$/im
+/.#./s
+```
+
+### Detect non-functional code
+
+```js
+/\1(a)/     // `\1` won't work
+/(?:\b)?a/  // `(?:\b)?` can be removed
+/(?=a?).*/  // `(?=a?)` always accepts and can be removed
+```
+
+
 ## Supported Rules
 
 | Rule | Fix | Rec | Description |
