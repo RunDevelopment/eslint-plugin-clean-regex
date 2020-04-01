@@ -80,7 +80,7 @@ Before:
 /(?:\w|\d)+/
 /(?:a|b|(?:c)|d|(?:ee)){0,}/
 /a+(?=$)/mi
-/[\s\S]#[\0-\uFFFF]/usi
+/[\s\S]#[\0-\uFFFF]/ysi
 ```
 
 After:
@@ -89,7 +89,7 @@ After:
 /\w+/
 /(?:[abcd]|ee)*/
 /a+$/im
-/.#./su
+/.#./sy
 ```
 
 ### Detect non-functional code
