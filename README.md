@@ -53,7 +53,7 @@ Some highlights of the working and working together of rules in the _recommended
 Before:
 
 ```js
-/[0-9]/
+/[0-9]/i
 /[^\s]/
 /[a-fA-F0-9]/i
 /[a-zA-Z0-9_-]/
@@ -64,7 +64,7 @@ Before:
 After:
 
 ```js
-/\d/i
+/\d/
 /\S/
 /[a-f\d]/i
 /[\w-]/
@@ -80,7 +80,7 @@ Before:
 /(?:\w|\d)+/
 /(?:a|b|(?:c)|d|(?:ee)){0,}/
 /a+(?=$)/mi
-/[\s\S]#[\0-\uFFFF]/si
+/[\s\S]#[\0-\uFFFF]/usi
 ```
 
 After:
@@ -89,7 +89,7 @@ After:
 /\w+/
 /(?:[abcd]|ee)*/
 /a+$/im
-/.#./s
+/.#./su
 ```
 
 ### Detect non-functional code
