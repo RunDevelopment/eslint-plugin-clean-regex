@@ -24,3 +24,21 @@ This rule will only suggest you to merge characters and character classes, if it
 
 Right now, it will only suggest to merge adjacent characters, character classes, and character sets.
 It will not suggest to merge characters which are separated by an alternative which isn't a single character, character class or character set because the order of alternatives matters.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/(?:a|bb)c/
+/(?:a|a*)c/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/a|b|c/       -> /[abc]/
+/(?:a|b)c/    -> /[ab]c/
+/(a|b)c/      -> /([ab])c/
+/(?:[^\s]|b)/ -> /[\Sb]/
+```

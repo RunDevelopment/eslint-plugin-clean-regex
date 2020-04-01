@@ -11,3 +11,20 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 The flags of JavaScript regular expressions should be sorted alphabetically because the flags of the `.flags` property of `RegExp` objects are always sorted.
 Not sorting flags in regex literals misleads readers into thinking that the order may have some purpose which it doesn't.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/abc/
+/abc/iu
+/abc/gimsuy
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/abc/mi
+/abc/us
+```

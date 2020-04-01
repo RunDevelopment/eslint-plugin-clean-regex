@@ -20,7 +20,19 @@ The two regular expression are actually equivalent, meaning that `(?=a{2})` is e
 More generally, if a non-constant quantifier is an __end__ of the expression tree of a __lookahead__, that quantifier can be replaced with a constant quantifier that matched the element minimum-if-the-non-constant-quantifier many times.
 For __lookbehinds__, the non-constant quantifier has to be at the __start__ of the expression tree as lookbehinds are matched from right to left.
 
-Examples:
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+// lookaheads
+/\w+(?=\s*:)/
+
+// lookbehinds
+/(?<=ab+)/
+```
+
+Examples of __invalid__ code for this rule:
 
 ```js
 // lookaheads
@@ -30,7 +42,6 @@ Examples:
 /(?!ab{6,})/ == /(?!ab{6})/
 
 // lookbehinds
-/(?<=ab+)/ == /(?<=ab+)/
 /(?<=a+b)/ == /(?<=ab)/
 /(?<!\w*\s*,)/ == /(?<!,)/
 ```

@@ -12,4 +12,17 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 It's possible to nest lookarounds as deep as you want without changing the formal language of the regular expression.
 The nesting does not add meaning only making the pattern longer.
 
-E.g. `(?=\b)` == `\b` and `(?=(?!a))` == `(?!a)`
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/a(?!$)/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/(?=\b)/    // == \b
+/(?=(?!a))/ //== (?!a)
+```

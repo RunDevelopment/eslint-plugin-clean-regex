@@ -9,9 +9,24 @@ Fixable: `no` <br> Recommended configuration: `"error"`
 
 ## Description
 
-Octal escapes can easily be confused with backreferences because the same character sequence (e.g. `\3`) can either escape characters or refer to a group depending on the number of capturing groups in the pattern.
-This can be a problem during refactoring regular expressions as an octal escape can become a backreference or wise versa without changing the escape or backreference itself.
+Octal escapes can easily be confused with backreferences because the same character sequence (e.g. `\3`) can either be used to escape a character or to reference a capturing group depending on the number of capturing groups in the pattern.
+
+This can be a problem when refactoring regular expressions because an octal escape can become a backreference or wise versa.
 
 To prevent this issue, this rule disallows all octal escapes outside of character classes.
 
-Inside a character class, an octal escape can never become a backreference, so they are allowed in there.
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/\x10\0/
+/(a)\1/
+/[\1]/   // allowed because backreferences cannot be in character classes
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/(a)\2/ // warns about `\2`
+```

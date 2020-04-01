@@ -16,34 +16,42 @@ This is especially the case if the capturing groups only matches the empty word.
 
 E.g. `/(foo)/`, `a()b`, `a(\b)`
 
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/(a)/i
+/(a|b)/
+/(a*)/
+/(a)/  // constant but it doesn't match the empty word
+```
+
+Examples of __valid__ code for this rule:
+
+```js
+/()/   // warn about `()`
+/(\b)/ // warn about `(\b)`
+```
+
 ### `ignoreNonEmpty: boolean`
 
 If this option is get to `true`, the rule will ignore capturing groups that can match non-empty words.
 This option is `true` by default.
 
-#### `ignoreNonEmpty: true`
-
-```js
-// valid
-/(a)/i
-/(a|b)/
-/(a*)/
-/(a)/  // constant but it doesn't match the empty word
-
-// invalid
-/()/   // warn about `()`
-/(\b)/ // warn about `(\b)`
-```
-
 #### `ignoreNonEmpty: false`
 
+Examples of __valid__ code for this rule with `ignoreNonEmpty: false`:
+
 ```js
-// valid
 /(a)/i
 /(a|b)/
 /(a*)/
+```
 
-// invalid
+Examples of __invalid__ code for this rule with `ignoreNonEmpty: false`:
+
+```js
 /(a)/  // warn about `(a)`
 /()/   // warn about `()`
 /(\b)/ // warn about `(\b)`

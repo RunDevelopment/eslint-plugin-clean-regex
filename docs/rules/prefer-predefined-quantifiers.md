@@ -13,3 +13,20 @@ Prefer predefined quantifiers over general quantifiers.
 E.g. `?` instead of `{0,1}`, `*` instead of `{0,}`, and `+` instead of `{1,}`.
 
 Predefined use less characters than their verbose counterparts and are therefore easier to read.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/a+b*c?/
+/a{2,}b{2,6}c{2}/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/a{1,}/
+/a{0,}/
+/a{0,1}/
+```

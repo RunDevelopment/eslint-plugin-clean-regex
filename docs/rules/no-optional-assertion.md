@@ -22,3 +22,18 @@ The `\b` is optional.
 The lookbehind is not optional because following group can consume a character.
 
 The presence of optional assertions don't change the meaning of the pattern, so they are dead code.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/\w+(?::|\b)/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/(?:^)?\w+/   // warns about `^`
+/\w+(?::|$)?/ // warns about `$`
+```

@@ -11,3 +11,19 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 Lone square brackets can mislead people into interpreting these character literals as the boundaries of character classes.
 As such, they are potential source of error and should always be escaped.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/foo\]/
+/a[\[\]]b/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/foo]/    // warns about `]`
+/a[[\]]b/ // warns about the second `[` in `[[\]]`
+```

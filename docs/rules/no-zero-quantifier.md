@@ -14,3 +14,18 @@ They essentially produce dead code.
 
 __Note:__ The rule will not remove zero-quantified elements if they are or contain a capturing group.
 In this case, the quantifier and element will simple be reported.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/a{0,1}/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/a{0}/
+/a{0,0}/
+```

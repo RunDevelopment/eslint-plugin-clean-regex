@@ -15,3 +15,20 @@ An example of this is `(?:a?b*|c+){4}` <br>
 The group is quantified with `{4}` which implies that at least 4 characters will be matched but this is not the case as it will match the empty string.
 It does that because in `a?b*`, it's possible to choose 0 many `a` and `b`.
 So rather than `{4}`, `{0,4}` should be used to reflect the fact that the empty string can be matched.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/a*/
+/(a|b|c)+/
+/a?/
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/(a?){4}/ // warns about `{4}`
+/(a?b*)+/ // warns about `+`
+```

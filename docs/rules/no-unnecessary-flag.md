@@ -21,3 +21,21 @@ The `s` flag makes the dot (`.`) match all characters instead of the usually non
 E.g. `/[.:]/s`
 
 No other flags will be checked.
+
+### Examples
+
+Examples of __valid__ code for this rule:
+
+```js
+/a|b/i
+/^foo$/m
+/a.*?b/s
+```
+
+Examples of __invalid__ code for this rule:
+
+```js
+/\w+/i
+/a|b/m
+/^foo$/s
+```

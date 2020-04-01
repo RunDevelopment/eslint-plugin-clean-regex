@@ -11,7 +11,8 @@ Fixable: `no` <br> Recommended configuration: `"error"`
 
 ### What are _empty lookarounds_?
 
-An empty lookaround is a lookaround which for at least one path in the expression contains only elements which 1) are not assertions and can match the empty or 2) are empty lookarounds.
+An empty lookaround is a lookaround for which at least one path in the lookaround expression contains only elements which 1) are not assertions and can match the empty string or 2) are empty lookarounds.
+This means that the lookaround expression will accept on any position in any string.
 
 __Examples:__
 - `(?=)`: One of simplest empty lookarounds.
@@ -25,4 +26,4 @@ Because empty lookarounds accept the empty string, they are essentially non-func
 I.e. `(?=a*)b` will match `b` just fine; `(?=a*)` doesn't affect whether words are matched.
 The same also happens for negated lookarounds where every path containing the negated lookaround will not be able to match any word. I.e. `(?!a*)b` won't match any words.
 
-The only way to fix empty lookarounds is to either remove them or to rewrite the expression of the lookaround to be non-empty.
+The only way to fix empty lookarounds is to either remove them or to rewrite the lookaround expression to be non-empty.

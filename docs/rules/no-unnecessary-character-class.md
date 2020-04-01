@@ -16,13 +16,16 @@ E.g. `[a]`, `[\x61]`, `[\?]`.
 
 Sometimes characters have to be escaped, in order to remove the character class (e.g. `a[+]` -> `a\+`). The automatic escaping can be disabled by using `{ avoidEscape: true }` in the rule configuration.
 
-Note that this option does not affect characters already escaped in the character class (e.g. `a[\+]` -> `a\+`).
+Note: This option does not affect characters already escaped in the character class (e.g. `a[\+]` -> `a\+`).
 
-#### Without `avoidEscape: true`
+Note: `\b` means backspace (`\x08`) inside of character classes but it will interpreted as a boundary assertion anywhere else, so it will be escaped as `\x08`.
+
+#### With `avoidEscape: false`
 
 ```
 /a[+]/ -> /a\+/
 /a[.]/ -> /a\./
+/[\b]/ -> /\x08/
 
 /a[\s]/ -> /a\s/
 /a[\+]/ -> /a\+/
@@ -33,24 +36,8 @@ Note that this option does not affect characters already escaped in the characte
 ```
 /a[+]/ -> /a[+]/
 /a[.]/ -> /a[.]/
+/[\b]/ -> /[\b]/
 
 /a[\s]/ -> /a\s/
 /a[\+]/ -> /a\+/
 ```
-
-### `\b` (backspace)
-
-`\b` means backspace (`\x08`) inside of character classes but it will interpreted as a boundary assertion anywhere else. You can use `avoidEscape` to change how `[\b]` will handled.
-
-#### Without `avoidEscape: true`
-
-```
-/[\b]/ -> /\x08/
-```
-
-#### With `avoidEscape: true`
-
-```
-/[\b]/ -> /[\b]/
-```
-
