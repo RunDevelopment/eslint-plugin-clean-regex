@@ -96,6 +96,7 @@ After:
 
 ```js
 /\1(a)/     // `\1` won't work
+/a+b*?/     // `b*?` can be removed
 /(?:\b)?a/  // `(?:\b)?` can be removed
 /(?=a?).*/  // `(?=a?)` always accepts and can be removed
 ```
@@ -110,6 +111,7 @@ After:
 | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) |  | :warning: | Disallow capturing groups which can match one word. |
 | [no-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-backreference.md) |  | :heavy_exclamation_mark: | Disallow backreferences that will always be replaced with the empty string. |
 | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) |  | :heavy_exclamation_mark: | Disallow lookarounds which can match the empty string. |
+| [no-lazy-ends](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lazy-ends.md) |  | :warning: | Disallow lazy quantifiers at the end of an expression. |
 | [no-lone-square-bracket](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lone-square-bracket.md) | :wrench: | :warning: | Disallow lone unescaped square brackets. |
 | [no-octal-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-octal-escape.md) |  | :heavy_exclamation_mark: | Disallow octal escapes outside of character classes. |
 | [no-optional-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-optional-assertion.md) |  | :heavy_exclamation_mark: | Disallow optional assertions. |
@@ -117,6 +119,7 @@ After:
 | [no-unnecessary-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-character-class.md) | :wrench: | :warning: | Disallow unnecessary character classes. |
 | [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) | :wrench: | :warning: | Disallow unnecessary regex flags. |
 | [no-unnecessary-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-group.md) | :wrench: | :warning: | Disallow unnecessary non-capturing groups. |
+| [no-unnecessary-lazy](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-lazy.md) | :wrench: | :warning: | Disallow unnecessarily lazy quantifiers. |
 | [no-unnecessary-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-quantifier.md) | :wrench: | :warning: | Disallow unnecessary quantifiers. |
 | [no-zero-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-zero-quantifier.md) | :wrench: | :heavy_exclamation_mark: | Disallow quantifiers with a maximum of 0. |
 | [optimal-concatenation-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-concatenation-quantifier.md) | :wrench: | :warning: | Use optimal quantifiers for concatenated quantified characters. |
