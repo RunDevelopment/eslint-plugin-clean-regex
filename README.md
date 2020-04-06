@@ -129,6 +129,7 @@ After:
 | [prefer-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-character-class.md) | :wrench: | :warning: | Prefer character classes wherever possible instead of alternations. |
 | [prefer-predefined-character-set](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-character-set.md) | :wrench: | :warning: | Prefer predefined character sets instead of their more verbose form. |
 | [prefer-predefined-quantifiers](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-quantifiers.md) | :wrench: | :warning: | Prefer predefined quantifiers (+*?) instead of their more verbose form. |
+| [simple-constant-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/simple-constant-quantifier.md) | :wrench: | :warning: | Prefer simple constant quantifiers over the range form. |
 | [sort-flags](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/sort-flags.md) | :wrench: | :warning: | Requires the flags of regular expressions to be sorted. |
 
 #### Legend
