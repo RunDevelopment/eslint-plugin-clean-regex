@@ -55,6 +55,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run gen-doc
-    - run: git diff-index --quiet HEAD -- # no changes in tracked files
+    - run: git diff HEAD --exit-code # detect changes
       env:
         CI: true
