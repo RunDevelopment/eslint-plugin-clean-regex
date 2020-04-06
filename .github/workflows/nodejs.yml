@@ -42,7 +42,7 @@ jobs:
       env:
         CI: true
 
-  no changes:
+  no-changes:
     runs-on: ubuntu-latest
     strategy:
       matrix:
