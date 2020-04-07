@@ -21,6 +21,7 @@
     "test": "mocha tests --recursive"
   },
   "dependencies": {
+    "refa": "^0.1.1",
     "regexpp": "^3.0.0",
     "requireindex": "^1.2.0"
   },

@@ -1,4 +1,4 @@
-import { Node, Alternative, Character, Element, CharacterClass, CharacterClassRange, CharacterClassElement, RegExpLiteral, Flags, Pattern, Group, CapturingGroup, LookaroundAssertion, Quantifier, UnicodePropertyCharacterSet, EscapeCharacterSet } from "regexpp/ast";
+import { Node, Alternative, Character, Element, CharacterClass, CharacterClassRange, CharacterClassElement, RegExpLiteral, Flags, Pattern, Group, CapturingGroup, LookaroundAssertion, Quantifier, UnicodePropertyCharacterSet, AnyCharacterSet, EscapeCharacterSet } from "regexpp/ast";
 
 export declare type Descendants<T> = T | (T extends Node ? RealDescendants<T> : never);
 
@@ -15,6 +15,7 @@ type SimpleImpl<T> = Omit<T, "parent" | "start" | "end">;
 export type Simple<T extends CharacterClassElement> =
 	T extends Character ? SimpleImpl<Character> : never |
 	T extends UnicodePropertyCharacterSet ? SimpleImpl<UnicodePropertyCharacterSet> : never |
+	T extends AnyCharacterSet ? SimpleImpl<AnyCharacterSet> : never |
 	T extends EscapeCharacterSet ? SimpleImpl<EscapeCharacterSet> : never |
 	T extends CharacterClassRange ? {
 		type: "CharacterClassRange";
