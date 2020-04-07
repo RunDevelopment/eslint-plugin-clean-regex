@@ -59,6 +59,7 @@ Before:
 /[a-zA-Z0-9_-]/
 /[a-z\d\w]/
 /[\S\d]/
+/[\w\p{ASCII}]/u
 ```
 
 After:
@@ -70,6 +71,7 @@ After:
 /[\w-]/
 /\w/
 /\S/
+/\p{ASCII}/u
 ```
 
 ### Simplify patterns
