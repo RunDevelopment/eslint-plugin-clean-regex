@@ -21,20 +21,20 @@
     "test": "mocha tests --recursive"
   },
   "dependencies": {
-    "refa": "^0.1.1",
-    "regexpp": "^3.0.0",
+    "refa": "^0.2.2",
+    "regexpp": "^3.1.0",
     "requireindex": "^1.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
-    "@types/eslint": "^6.1.8",
+    "@types/eslint": "^6.8.0",
     "@types/gulp": "^4.0.6",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.9.1",
+    "@types/node": "^13.13.4",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "gulp": "^4.0.2",
-    "mocha": "^7.1.0",
+    "mocha": "^7.1.2",
     "typescript": "^3.8.3"
   },
   "engines": {

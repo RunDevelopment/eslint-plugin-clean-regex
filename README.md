@@ -46,7 +46,7 @@ The setting of every rule in the _recommended_ config can be found in the table 
 
 ## Highlights
 
-Some highlights of the working and working together of rules in the _recommended_ config.
+Some highlights of the working and working-together of rules in the _recommended_ config.
 
 ### Optimize character classes
 
@@ -97,10 +97,10 @@ After:
 ### Detect non-functional code
 
 ```js
-/\1(a)/     // `\1` won't work
-/a+b*?/     // `b*?` can be removed
-/(?:\b)?a/  // `(?:\b)?` can be removed
-/(?=a?).*/  // `(?=a?)` always accepts and can be removed
+/\1(a)/        // `\1` won't work
+/a+b*?/        // `b*?` can be removed
+/(?:\b)?a/     // `(?:\b)?` can be removed
+/(?=a?)\w\Ba/  // `(?=a?)` and `\B` always accepts and can be removed
 ```
 
 
@@ -119,6 +119,7 @@ After:
 | [no-optional-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-optional-assertion.md) |  | :heavy_exclamation_mark: | Disallow optional assertions. |
 | [no-potentially-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-potentially-empty-backreference.md) |  | :warning: | Disallow backreferences whose referenced group might not be matched. |
 | [no-trivially-nested-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-lookaround.md) | :wrench: | :warning: | Disallow lookarounds which contain an assertion as their only element. |
+| [no-unnecessary-assertions](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-assertions.md) |  | :heavy_exclamation_mark: | Disallow always accepting or rejecting assertions. |
 | [no-unnecessary-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-character-class.md) | :wrench: | :warning: | Disallow unnecessary character classes. |
 | [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) | :wrench: | :warning: | Disallow unnecessary regex flags. |
 | [no-unnecessary-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-group.md) | :wrench: | :warning: | Disallow unnecessary non-capturing groups. |
