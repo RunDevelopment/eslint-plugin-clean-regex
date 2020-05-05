@@ -94,13 +94,14 @@ After:
 /.#./sy
 ```
 
-### Detect non-functional code
+### Detect non-functional code and potential errors
 
 ```js
 /\1(a)/        // `\1` won't work
 /a+b*?/        // `b*?` can be removed
 /(?:\b)?a/     // `(?:\b)?` can be removed
 /(?=a?)\w\Ba/  // `(?=a?)` and `\B` always accepts and can be removed
+/[*/+-^&|]/    // `+-^` will match everything from \x2B to \x5E including all character A to Z
 ```
 
 
@@ -115,6 +116,7 @@ After:
 | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) |  | :heavy_exclamation_mark: | Disallow lookarounds which can match the empty string. |
 | [no-lazy-ends](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lazy-ends.md) |  | :warning: | Disallow lazy quantifiers at the end of an expression. |
 | [no-lone-square-bracket](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lone-square-bracket.md) | :wrench: | :warning: | Disallow lone unescaped square brackets. |
+| [no-obscure-range](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-obscure-range.md) |  | :heavy_exclamation_mark: | Disallow obscure ranges in character classes. |
 | [no-octal-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-octal-escape.md) |  | :heavy_exclamation_mark: | Disallow octal escapes outside of character classes. |
 | [no-optional-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-optional-assertion.md) |  | :heavy_exclamation_mark: | Disallow optional assertions. |
 | [no-potentially-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-potentially-empty-backreference.md) |  | :warning: | Disallow backreferences whose referenced group might not be matched. |
