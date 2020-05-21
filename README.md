@@ -111,11 +111,11 @@ After:
 | :--- | :--: | :--: | :--- |
 | [confusing-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/confusing-quantifier.md) |  | :warning: | Warn about confusing quantifiers. |
 | [consistent-match-all-characters](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/consistent-match-all-characters.md) | :wrench: | :warning: | Use a certain character class consistently whenever all characters have to be matched. |
+| [identity-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/identity-escape.md) | :wrench: | :warning: | How to handle identity escapes. |
 | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) |  | :warning: | Disallow capturing groups which can match one word. |
 | [no-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-backreference.md) |  | :heavy_exclamation_mark: | Disallow backreferences that will always be replaced with the empty string. |
 | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) |  | :heavy_exclamation_mark: | Disallow lookarounds which can match the empty string. |
 | [no-lazy-ends](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lazy-ends.md) |  | :warning: | Disallow lazy quantifiers at the end of an expression. |
-| [no-lone-square-bracket](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lone-square-bracket.md) | :wrench: | :warning: | Disallow lone unescaped square brackets. |
 | [no-obscure-range](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-obscure-range.md) |  | :heavy_exclamation_mark: | Disallow obscure ranges in character classes. |
 | [no-octal-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-octal-escape.md) |  | :heavy_exclamation_mark: | Disallow octal escapes outside of character classes. |
 | [no-optional-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-optional-assertion.md) |  | :heavy_exclamation_mark: | Disallow optional assertions. |
