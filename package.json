@@ -18,7 +18,7 @@
   "scripts": {
     "check": "npx eslint lib/** tests/** gulpfile.js && npx tsc",
     "gen-doc": "npx gulp doc",
-    "prepublish": "npm run check",
+    "prepublishOnly": "npm run check",
     "test": "mocha tests --recursive"
   },
   "dependencies": {
