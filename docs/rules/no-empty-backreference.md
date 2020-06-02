@@ -37,11 +37,17 @@ Examples of __invalid__ code for this rule:
 
 ### Unreachable backreferences
 
-If a backreference cannot be reached from the position of the referenced capturing group without resetting the captured text, then backreference will always be replaced with the empty.
+If a backreference cannot be reached from the position of the referenced capturing group without resetting the captured text, then backreference will always be replaced with the empty string.
 
 If a group (capturing or non-capturing) is entered by the Javascript regex engine, the captured text of all capturing groups inside the group is reset.
 So even though a backreference might be reachable for the position of its referenced capturing group, the text of that capturing might be reset.
 An example of this is `(?:\1(a)){2}`.
+
+Backreferences that appear before the referenced capturing group (e.g. `\1(a)`) will always be replaced with the empty string.
+
+Please note that _before_ depends on the current matching direction.
+RegExps are usually matched from left to right but inside lookbehind groups, text is matched from right to left.
+I.e. the pattern `(?<=\1(a))b` will match all `b`s preceded by two `a`s.
 
 #### Examples
 
