@@ -25,7 +25,7 @@ Examples of __invalid__ code for this rule:
 /#\bfoo/    // \b will always accept
 /foo\bbar/  // \b will always reject
 /$foo/      // $ will always reject
-/(?=\d)\w+/ // (?=\d) will always accept
+/(?=\w)\d+/ // (?=\w) will always accept
 ```
 
 
