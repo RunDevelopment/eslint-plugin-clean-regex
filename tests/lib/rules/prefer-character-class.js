@@ -29,6 +29,14 @@ testRule(__filename, undefined, {
 		{ code: String(/(?:[a]|b)/), output: String(/[ab]/), errors },
 		{ code: String(/(?:[^\s]|b)/), output: String(/[\Sb]/), errors },
 		{ code: String(/(?:\w|-|\+|\*|\/)+/), output: String(/[\w\-\+\*\/]+/), errors },
+		{ code: String(/(?=a|b|c)/), output: String(/(?=[abc])/), errors },
+		{ code: String(/(?!a|b|c)/), output: String(/(?![abc])/), errors },
+		{ code: String(/(?<=a|b|c)/), output: String(/(?<=[abc])/), errors },
+		{ code: String(/(?<!a|b|c)/), output: String(/(?<![abc])/), errors },
+		{ code: String(/(?=a|b|c|dd)/), output: String(/(?=[abc]|dd)/), errors },
+		{ code: String(/(?!a|b|c|dd)/), output: String(/(?![abc]|dd)/), errors },
+		{ code: String(/(?<=a|b|c|dd)/), output: String(/(?<=[abc]|dd)/), errors },
+		{ code: String(/(?<!a|b|c|dd)/), output: String(/(?<![abc]|dd)/), errors },
 
 		// always do non-disjoint
 		{ code: String(/(?:a|\w|b\b)/), output: String(/(?:[a\w]|b\b)/), errors },
