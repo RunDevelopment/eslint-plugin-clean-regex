@@ -37,3 +37,21 @@ Examples of __invalid__ code for this rule:
 /a|(?:b|c)/
 /foo(?:[abc]*)bar/
 ```
+
+### `allowTop: true`
+
+It's sometimes useful to wrap your whole pattern in a non-capturing group (e.g. if the pattern is used as a building block to construct more complex patterns).
+With this option you can allow top-level non-capturing groups.
+
+
+Examples of __valid__ code for this rule with `allowTop: true`:
+
+```js
+/(?:ab)/
+```
+
+Examples of __invalid__ code for this rule with `allowTop: true`:
+
+```js
+/(?:a)b/
+```

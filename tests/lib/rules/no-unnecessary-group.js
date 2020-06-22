@@ -26,6 +26,11 @@ testRule(__filename, undefined, {
 		String(/\c(?:A)/),
 		String(/(?:)/),
 		String(/(?:a|b)c/),
+
+		{
+			code: String(/(?:foo)/),
+			options: [{ allowTop: true }]
+		}
 	],
 	invalid: [
 		{ code: String(/(?:)a/), output: String(/a/), errors },
@@ -37,5 +42,12 @@ testRule(__filename, undefined, {
 		{ code: String(/foo(?:bar)/), output: String(/foobar/), errors },
 		{ code: String(/(?:a|b)/), output: String(/a|b/), errors },
 		{ code: String(/a|(?:b|c)/), output: String(/a|b|c/), errors },
+
+		{
+			code: String(/(?:foo)bar/),
+			output: String(/foobar/),
+			options: [{ allowTop: true }],
+			errors
+		}
 	]
 });
