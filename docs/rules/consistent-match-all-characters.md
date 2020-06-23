@@ -1,19 +1,21 @@
 # `consistent-match-all-characters`
 
-Use a certain character class consistently whenever all characters have to be matched.
+> Use a certain character class consistently whenever all characters have to be
+> matched.
 
 Fixable: `yes` <br> Recommended configuration: `"warn"`
 
+<!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/consistent-match-all-characters.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/consistent-match-all-characters.js)
-
 
 ## Description
 
-There are multiple ways to create a character class which matches all characters.
-This rule can be used to enforce one consistent way to do that.
+There are multiple ways to create a character class which matches all
+characters. This rule can be used to enforce one consistent way to do that.
 
 #### Example
 
+<!-- prettier-ignore -->
 ```js
 /[\s\S]/      -> /[\s\S]/
 /[\d\D]/      -> /[\s\S]/
@@ -24,11 +26,12 @@ This rule can be used to enforce one consistent way to do that.
 
 ### `charClass: string`
 
-By default all match-all character classes will be replaced with `[\s\S]`.
-To change that you can set the `charClass` option to the replacement string.
+By default all match-all character classes will be replaced with `[\s\S]`. To
+change that you can set the `charClass` option to the replacement string.
 
 #### `charClass: "[^]"`
 
+<!-- prettier-ignore -->
 ```js
 /[\s\S]/      -> /[^]/
 /[\d\D]/      -> /[^]/
@@ -39,14 +42,16 @@ To change that you can set the `charClass` option to the replacement string.
 
 ### Replacement modes
 
-The replacement mode will determine how this rule will replace match-all character classes and sets.
+The replacement mode will determine how this rule will replace match-all
+character classes and sets.
 
 #### `mode: "dot-if-dotAll"`
 
-This is the default mode.
-It will replace all match-all character classes with `charClass` if the `s` flag is not present.
-If the `s` flag is present, all match-all character classes will be replaced with a dot.
+This is the default mode. It will replace all match-all character classes with
+`charClass` if the `s` flag is not present. If the `s` flag is present, all
+match-all character classes will be replaced with a dot.
 
+<!-- prettier-ignore -->
 ```js
 // (with charClass: "[^]")
 /[\s\S]/  -> /[^]/
@@ -56,10 +61,12 @@ If the `s` flag is present, all match-all character classes will be replaced wit
 
 #### `mode: "char-class"`
 
-In this mode, all match-all character classes and sets will be replaced with `charClass`.
+In this mode, all match-all character classes and sets will be replaced with
+`charClass`.
 
 If the `s` flag is present, it will be removed.
 
+<!-- prettier-ignore -->
 ```js
 // (with charClass: "[^]")
 /[\s\S]/  -> /[^]/
@@ -69,11 +76,12 @@ If the `s` flag is present, it will be removed.
 
 #### `mode: "dot"`
 
-In this mode, all match-all character classes and sets will be replaced with a dot.
-(The `charClass` options won't be used.)
+In this mode, all match-all character classes and sets will be replaced with a
+dot. (The `charClass` options won't be used.)
 
 If the `s` flag is not present, it will be added.
 
+<!-- prettier-ignore -->
 ```js
 /[\s\S]/  -> /./s
 /[\s\S]/s -> /./s

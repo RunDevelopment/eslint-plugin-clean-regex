@@ -97,12 +97,13 @@ async function generateDocFile(rule) {
 	let overview = [
 		"# `" + rule + "`",
 		"",
-		meta.description,
+		"> " + meta.description,
 		"",
 		`Fixable: \`${meta.fixable ? "yes" : "no"}\` <br> Recommended configuration: \`"${meta.recommendedConfig}"\``,
 		"",
+		"<!-- prettier-ignore -->",
 		`[Source file](${repoTreeRoot}/${meta.files.source}) <br> [Test file](${repoTreeRoot}/${meta.files.test})`
-	].join("\n") + "\n\n\n";
+	].join("\n") + "\n\n";
 	content = content.replace(/[\s\S]*?(?=## Description)/, overview);
 
 	await fs.writeFile("./" + meta.files.doc, content, "utf8");

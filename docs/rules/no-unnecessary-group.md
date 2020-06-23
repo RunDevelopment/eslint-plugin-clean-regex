@@ -1,23 +1,24 @@
 # `no-unnecessary-group`
 
-Disallow unnecessary non-capturing groups.
+> Disallow unnecessary non-capturing groups.
 
 Fixable: `yes` <br> Recommended configuration: `"warn"`
 
+<!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-unnecessary-group.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-unnecessary-group.js)
-
 
 ## Description
 
-Non-capturing groups which can be removed without changing the meaning of the pattern are unnecessary.
-E.g. `a(?:bc)d` == `abcd` and `a(?:b)*c` == `ab*c`
+Non-capturing groups which can be removed without changing the meaning of the
+pattern are unnecessary. E.g. `a(?:bc)d` == `abcd` and `a(?:b)*c` == `ab*c`
 
 Capturing groups will not be reported or removed.
 
 ### Examples
 
-Examples of __valid__ code for this rule:
+Examples of **valid** code for this rule:
 
+<!-- prettier-ignore -->
 ```js
 /(?:a|b)c/
 /(?:a{2})+/
@@ -28,8 +29,9 @@ Examples of __valid__ code for this rule:
 /(?:)/         // `//` is not a valid RegExp literal
 ```
 
-Examples of __invalid__ code for this rule:
+Examples of **invalid** code for this rule:
 
+<!-- prettier-ignore -->
 ```js
 /(?:)a/
 /(?:a)/
@@ -40,18 +42,20 @@ Examples of __invalid__ code for this rule:
 
 ### `allowTop: true`
 
-It's sometimes useful to wrap your whole pattern in a non-capturing group (e.g. if the pattern is used as a building block to construct more complex patterns).
+It's sometimes useful to wrap your whole pattern in a non-capturing group (e.g.
+if the pattern is used as a building block to construct more complex patterns).
 With this option you can allow top-level non-capturing groups.
 
+Examples of **valid** code for this rule with `allowTop: true`:
 
-Examples of __valid__ code for this rule with `allowTop: true`:
-
+<!-- prettier-ignore -->
 ```js
 /(?:ab)/
 ```
 
-Examples of __invalid__ code for this rule with `allowTop: true`:
+Examples of **invalid** code for this rule with `allowTop: true`:
 
+<!-- prettier-ignore -->
 ```js
 /(?:a)b/
 ```
