@@ -9,9 +9,9 @@ Fixable: `no` <br> Recommended configuration: `"error"`
 
 ## Description
 
-Using the range operator can easily be misused (most unintentionally) to
-construct non-obvious character class. This rule will disallow all but obvious
-uses of the range operator.
+The range operator (the `-` inside character classes) can easily be misused
+(most unintentionally) to construct non-obvious character class. This rule will
+disallow all but obvious uses of the range operator.
 
 ### Examples
 
