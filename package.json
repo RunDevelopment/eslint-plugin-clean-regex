@@ -17,7 +17,7 @@
   "main": "lib/index.js",
   "scripts": {
     "check": "eslint lib/** tests/** gulpfile.js && tsc",
-    "gen-doc": "gulp doc",
+    "gen-doc": "gulp doc && npm run format-doc",
     "format-doc": "prettier --write --tab-width 4 --prose-wrap always docs/rules/*.md",
     "prepublishOnly": "npm run check",
     "test": "mocha tests --recursive"
