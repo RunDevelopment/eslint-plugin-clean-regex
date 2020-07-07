@@ -1,4 +1,5 @@
 import { Node, Alternative, Character, Element, CharacterClass, CharacterClassRange, CharacterClassElement, RegExpLiteral, Flags, Pattern, Group, CapturingGroup, LookaroundAssertion, Quantifier, UnicodePropertyCharacterSet, AnyCharacterSet, EscapeCharacterSet } from "regexpp/ast";
+import type { CharSet } from "refa";
 
 export declare type Descendants<T> = T | (T extends Node ? RealDescendants<T> : never);
 
@@ -24,3 +25,22 @@ export type Simple<T extends CharacterClassElement> =
 		raw: string
 	} : never;
 
+
+export interface FirstChar {
+	/**
+	 * A super set of the first character.
+	 *
+	 * We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
+	 * set.
+	 */
+	char: CharSet;
+	/**
+	 * If `false`, then the first character also includes the empty word.
+	 */
+	nonEmpty: boolean;
+	/**
+	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
+	 */
+	exact: boolean;
+
+}

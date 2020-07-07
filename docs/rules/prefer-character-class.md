@@ -9,29 +9,24 @@ Fixable: `yes` <br> Recommended configuration: `"warn"`
 
 ## Description
 
-Instead of single-character alternatives (e.g. `(?:a|b|c)`), you should always
-use character classes (e.g. `[abc]`).
+Instead of single-character alternatives (e.g. `(?:a|b|c)`), you should prefer
+character classes (e.g. `[abc]`).
 
-The main reason for doing this is performance, as a character class doesn't
-require backtracking or choosing the correct alternative via backtracking. They
-are usually heavily optimized (because it's relatively easy and fast) and are as
-fast as you can get. On the other hand, alternatives usually aren't optimized at
-all because said optimization is non-trivial and takes too long for
-interpreter-based engines.
+The main reason for doing this is performance. A character class doesn't require
+backtracking (choosing the correct alternative) and are heavily optimized by the
+regex engine. On the other hand, alternatives usually aren't optimized at all
+because these optimizations are non-trivial and take too long to do them during
+the execution of the program.
 
-Because they don't cause backtracking, they are also somewhat safer than
-alternatives. While `^(?:\w|a)+b$` will takes _O(2^n)_ time to reject a string
-of n many `a`, the regex `^[\wa]+b$` will reject in _O(n)_.
+They are also safer than alternatives because they don't use backtracking. While
+`^(?:\w|a)+b$` will take _O(2^n)_ time to reject a string of _n_ many `a`s, the
+regex `^[\wa]+b$` will reject a string of _n_ many `a`s in _O(n)_.
 
-### Limitations
+### Limitation
 
-This rule will only suggest merging characters and character classes if it is
-safe to do so.
-
-Right now, it will only suggest merging adjacent characters, character classes,
-and character sets. It will not suggest merging characters that are separated by
-an alternative which isn't a single character, character class, or character set
-because the order of alternatives matters.
+The rule might not be able to merge alternatives that it knows cause exponential
+backtracking. In this case, the rule will simply report the exponential
+backtracking without a fix.
 
 ### Examples
 
@@ -48,7 +43,6 @@ Examples of **invalid** code for this rule:
 <!-- prettier-ignore -->
 ```js
 /a|b|c/       -> /[abc]/
-/(?:a|b)c/    -> /[ab]c/
-/(a|b)c/      -> /([ab])c/
-/(?:[^\s]|b)/ -> /[\Sb]/
+/(?:a|b|c)c/    -> /[abc]c/
+/(a|b|c)c/      -> /([abc])c/
 ```
