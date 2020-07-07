@@ -1,6 +1,6 @@
 # `no-empty-lookaround`
 
-> Disallow lookarounds which can match the empty string.
+> Disallow lookarounds that can match the empty string.
 
 Fixable: `no` <br> Recommended configuration: `"error"`
 

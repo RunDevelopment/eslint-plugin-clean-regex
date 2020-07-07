@@ -1,6 +1,6 @@
 # `no-trivially-nested-lookaround`
 
-> Disallow lookarounds which contain an assertion as their only element.
+> Disallow lookarounds that only contain another assertion.
 
 Fixable: `yes` <br> Recommended configuration: `"warn"`
 

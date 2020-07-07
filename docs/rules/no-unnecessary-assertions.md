@@ -1,6 +1,6 @@
 # `no-unnecessary-assertions`
 
-> Disallow always accepting or rejecting assertions.
+> Disallow assertions that are known to always accept (or reject).
 
 Fixable: `no` <br> Recommended configuration: `"error"`
 

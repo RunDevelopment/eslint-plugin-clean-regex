@@ -1,6 +1,6 @@
 # `no-potentially-empty-backreference`
 
-> Disallow backreferences whose referenced group might not be matched.
+> Disallow backreferences that reference a group that might not be matched.
 
 Fixable: `no` <br> Recommended configuration: `"warn"`
 

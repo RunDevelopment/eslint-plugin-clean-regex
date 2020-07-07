@@ -1,6 +1,6 @@
 # `consistent-match-all-characters`
 
-> Use a certain character class consistently whenever all characters have to be
+> Use one character class consistently whenever all characters have to be
 > matched.
 
 Fixable: `yes` <br> Recommended configuration: `"warn"`

@@ -1,6 +1,6 @@
 # `sort-flags`
 
-> Requires the flags of regular expressions to be sorted.
+> Requires the regex flags to be sorted.
 
 Fixable: `yes` <br> Recommended configuration: `"warn"`
 

@@ -1,6 +1,6 @@
 # `no-constant-capturing-group`
 
-> Disallow capturing groups which can match one word.
+> Disallow capturing groups that can match only one word.
 
 Fixable: `no` <br> Recommended configuration: `"warn"`
 
