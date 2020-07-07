@@ -40,17 +40,23 @@ Examples of **invalid** code for this rule:
 ### Unreachable backreferences
 
 If a backreference cannot be reached from the position of the referenced
-capturing group without resetting the captured text, then backreference will
+capturing group without resetting the captured text, then the backreference will
 always be replaced with the empty string.
 
 If a group (capturing or non-capturing) is entered by the Javascript regex
 engine, the captured text of all capturing groups inside the group is reset. So
 even though a backreference might be reachable for the position of its
-referenced capturing group, the text of that capturing might be reset. An
-example of this is `(?:\1(a)){2}`.
+referenced capturing group, the captured text might have been reset. An example
+of this is `(?:\1(a)){2}`. The `\1` is reachable after `(a)` in the second
+iteration but the captured text of `(a)` is reset by their parent non-capturing
+group before `\1` can matched (in the second iteration). This means that the
+Javascript regex `/^(?:\1(a)){2}$/` only accepts the string `aa` but not `aaa`.
+(Note: The regex engines of other programming languages may behave differently.
+I.e. with Python's re module, the regex `^(?:\1(a)){2}$` will accept the string
+`aaa` but not `aa`.)
 
-Backreferences that appear before the referenced capturing group (e.g. `\1(a)`)
-will always be replaced with the empty string.
+Backreferences that appear _before_ their referenced capturing group (e.g.
+`\1(a)`) will always be replaced with the empty string.
 
 Please note that _before_ depends on the current matching direction. RegExps are
 usually matched from left to right but inside lookbehind groups, text is matched
