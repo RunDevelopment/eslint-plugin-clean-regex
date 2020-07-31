@@ -9,8 +9,9 @@ Fixable: `no` <br> Recommended configuration: `"warn"`
 
 ## Description
 
-While (re-)writing long regular expressions, it can happen that one forgets to remove the `|` character of a former alternative. This rule tries to point out these potential mistakes by reporting all empty alternatives.
-
+While (re-)writing long regular expressions, it can happen that one forgets to
+remove the `|` character of a former alternative. This rule tries to point out
+these potential mistakes by reporting all empty alternatives.
 
 ### Examples
 
