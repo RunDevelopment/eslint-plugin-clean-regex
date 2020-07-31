@@ -113,6 +113,7 @@ After:
 | [consistent-match-all-characters](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/consistent-match-all-characters.md) | :wrench: | :warning: | Use one character class consistently whenever all characters have to be matched. |
 | [identity-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/identity-escape.md) | :wrench: | :warning: | How to handle identity escapes. |
 | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) |  | :warning: | Disallow capturing groups that can match only one word. |
+| [no-empty-alternative](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-alternative.md) |  | :warning: | Disallow backreferences that will always be replaced with the empty string. |
 | [no-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-backreference.md) |  | :heavy_exclamation_mark: | Disallow backreferences that will always be replaced with the empty string. |
 | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) |  | :heavy_exclamation_mark: | Disallow lookarounds that can match the empty string. |
 | [no-lazy-ends](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lazy-ends.md) |  | :warning: | Disallow lazy quantifiers at the end of an expression. |
