@@ -111,6 +111,7 @@ After:
 | :--- | :--: | :--: | :--- |
 | [confusing-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/confusing-quantifier.md) |  | :warning: | Warn about confusing quantifiers. |
 | [consistent-match-all-characters](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/consistent-match-all-characters.md) | :wrench: | :warning: | Use one character class consistently whenever all characters have to be matched. |
+| [disjoint-alternatives](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/disjoint-alternatives.md) |  | :warning: | Disallow different alternatives that can match the same words. |
 | [identity-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/identity-escape.md) | :wrench: | :warning: | How to handle identity escapes. |
 | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) |  | :warning: | Disallow capturing groups that can match only one word. |
 | [no-empty-alternative](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-alternative.md) |  | :warning: | Disallow backreferences that will always be replaced with the empty string. |
