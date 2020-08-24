@@ -11,23 +11,23 @@ testRule(__filename, undefined, {
 	invalid: [
 		{
 			code: String(/b+(?:\w+|[+-]?\d+)/),
-			errors: [{ message: "This alternative is not disjoint with /\\w+/. The shared language is /\\d+/i." }]
+			errors: [{ message: "This alternative is not disjoint with `\\w+`. The shared language is /\\d+/i." }]
 		},
 		{
 			code: String(/FOO|foo(?:bar)?/i),
-			errors: [{ message: "This alternative is a superset of /FOO/." }]
+			errors: [{ message: "This alternative is a superset of `FOO`." }]
 		},
 		{
 			code: String(/foo(?:bar)?|foo/),
-			errors: [{ message: "This alternative is a subset of /foo(?:bar)?/ and can be removed." }]
+			errors: [{ message: "This alternative is a subset of `foo(?:bar)?` and can be removed." }]
 		},
 		{
 			code: String(/(?=[\t ]+[\S]{1,}|[\t ]+['"][\S]|[\t ]+$|$)/),
-			errors: [{ message: "This alternative is a subset of /[\\t ]+[\\S]{1,}/ and can be removed." }]
+			errors: [{ message: "This alternative is a subset of `[\\t ]+[\\S]{1,}` and can be removed." }]
 		},
 		{
 			code: String(/\w+(?:\s+(?:\S+|"[^"]*"))*/),
-			errors: [{ message: "This alternative is not disjoint with /\\S+/. This alternative is likely to cause exponential backtracking. The shared language is /\"[^\\s\"]*\"/i." }]
+			errors: [{ message: "This alternative is not disjoint with `\\S+`. The shared language is /\"[^\\s\"]*\"/i. This alternative is likely to cause exponential backtracking." }]
 		},
 	]
 });
