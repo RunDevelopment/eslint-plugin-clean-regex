@@ -88,7 +88,7 @@ Where the behavior of the pattern is intentional or not has to be decided by the
 programmer. This rule only points out potential mistakes.
 
 Assuming that the pattern behaves correctly, a equivalent version with disjoint
-alternatives can be obtained using a lookahead like this: `/Foo|(?!Foo)\w+/`. A
+alternatives can be obtained using a lookahead like this: `/Foo|(?!Foo)\w+/`. An
 equivalent pattern without lookaheads is
 `/F(?:o(?:o|[\dA-Za-np-z_]\w*)?|[\dA-Za-np-z_]\w*)?|[\dA-EG-Za-z_]\w*/`.
 
