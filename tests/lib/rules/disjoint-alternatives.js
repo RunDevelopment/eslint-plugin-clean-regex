@@ -29,5 +29,13 @@ testRule(__filename, undefined, {
 			code: String(/\w+(?:\s+(?:\S+|"[^"]*"))*/),
 			errors: [{ message: "This alternative is not disjoint with `\\S+`. The shared language is /\"[^\\s\"]*\"/i. This alternative is likely to cause exponential backtracking." }]
 		},
+		{
+			code: String(/\b(?:\d|foo|\w+)\b/),
+			errors: [{ message: "This alternative is a superset of `\\d` | `foo`." }]
+		},
+		{
+			code: String(/\d|[a-z]|_|\w/i),
+			errors: [{ message: "This alternative is the same as `\\d` | `[a-z]` | `_` and can be removed." }]
+		},
 	]
 });
