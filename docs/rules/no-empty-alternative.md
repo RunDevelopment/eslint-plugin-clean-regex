@@ -1,6 +1,6 @@
 # `no-empty-alternative`
 
-> Disallow backreferences that will always be replaced with the empty string.
+> Disallow alternatives without elements.
 
 Fixable: `no` <br> Recommended configuration: `"warn"`
 
