@@ -68,8 +68,8 @@ async function readme() {
 		let mdTable = [
 			`### ${type === "layout" ? "Layout" : type.substr(0, 1).toUpperCase() + type.substr(1) + "s"}\n`,
 			"\n",
-			"| Rule | Description |\n",
-			"| :--- | :--- |\n",
+			"| | Rule | Description |\n",
+			"| :--- | :--- | :--- |\n",
 		].join("");
 
 		let ruleCounter = 0;
@@ -78,10 +78,11 @@ async function readme() {
 			if (meta.type !== type) {
 				continue;
 			}
-			const mdColumns = [];
-
-			mdColumns[0] = `[${rule}](${meta.docUrl})${meta.fixable ? " :wrench:" : ""}`;
-			mdColumns[1] = meta.description;
+			const mdColumns = [
+				meta.fixable ? ":wrench:" : "",
+				`[${rule}](${meta.docUrl})`,
+				meta.description,
+			];
 
 			mdTable += `| ${mdColumns.join(" | ")} |\n`;
 			ruleCounter++;

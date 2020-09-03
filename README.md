@@ -108,46 +108,46 @@ After:
 
 ## Supported Rules
 
-Fixable rules are denoted with a :wrench: after their name.
+Fixable rules are denoted with a :wrench:.
 
 <!-- BEGIN RULES -->
 ### Problems
 
-| Rule | Description |
-| :--- | :--- |
-| [confusing-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/confusing-quantifier.md) | Warn about confusing quantifiers. |
-| [disjoint-alternatives](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/disjoint-alternatives.md) | Disallow different alternatives that can match the same words. |
-| [no-empty-alternative](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-alternative.md) | Disallow alternatives without elements. |
-| [no-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-backreference.md) | Disallow backreferences that will always be replaced with the empty string. |
-| [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) | Disallow lookarounds that can match the empty string. |
-| [no-lazy-ends](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lazy-ends.md) | Disallow lazy quantifiers at the end of an expression. |
-| [no-obscure-range](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-obscure-range.md) | Disallow obscure ranges in character classes. |
-| [no-octal-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-octal-escape.md) | Disallow octal escapes outside of character classes. |
-| [no-optional-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-optional-assertion.md) | Disallow optional assertions. |
-| [no-potentially-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-potentially-empty-backreference.md) | Disallow backreferences that reference a group that might not be matched. |
-| [no-unnecessary-assertions](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-assertions.md) | Disallow assertions that are known to always accept (or reject). |
-| [no-zero-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-zero-quantifier.md) :wrench: | Disallow quantifiers with a maximum of 0. |
-| [optimal-lookaround-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-lookaround-quantifier.md) | Disallows the alternatives of lookarounds that end with a non-constant quantifier. |
+| | Rule | Description |
+| :--- | :--- | :--- |
+|  | [confusing-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/confusing-quantifier.md) | Warn about confusing quantifiers. |
+|  | [disjoint-alternatives](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/disjoint-alternatives.md) | Disallow different alternatives that can match the same words. |
+|  | [no-empty-alternative](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-alternative.md) | Disallow alternatives without elements. |
+|  | [no-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-backreference.md) | Disallow backreferences that will always be replaced with the empty string. |
+|  | [no-empty-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-empty-lookaround.md) | Disallow lookarounds that can match the empty string. |
+|  | [no-lazy-ends](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-lazy-ends.md) | Disallow lazy quantifiers at the end of an expression. |
+|  | [no-obscure-range](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-obscure-range.md) | Disallow obscure ranges in character classes. |
+|  | [no-octal-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-octal-escape.md) | Disallow octal escapes outside of character classes. |
+|  | [no-optional-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-optional-assertion.md) | Disallow optional assertions. |
+|  | [no-potentially-empty-backreference](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-potentially-empty-backreference.md) | Disallow backreferences that reference a group that might not be matched. |
+|  | [no-unnecessary-assertions](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-assertions.md) | Disallow assertions that are known to always accept (or reject). |
+| :wrench: | [no-zero-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-zero-quantifier.md) | Disallow quantifiers with a maximum of 0. |
+|  | [optimal-lookaround-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-lookaround-quantifier.md) | Disallows the alternatives of lookarounds that end with a non-constant quantifier. |
 
 ### Suggestions
 
-| Rule | Description |
-| :--- | :--- |
-| [consistent-match-all-characters](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/consistent-match-all-characters.md) :wrench: | Use one character class consistently whenever all characters have to be matched. |
-| [identity-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/identity-escape.md) :wrench: | How to handle identity escapes. |
-| [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) | Disallow capturing groups that can match only one word. |
-| [no-trivially-nested-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-lookaround.md) :wrench: | Disallow lookarounds that only contain another assertion. |
-| [no-unnecessary-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-character-class.md) :wrench: | Disallow unnecessary character classes. |
-| [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) :wrench: | Disallow unnecessary regex flags. |
-| [no-unnecessary-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-group.md) :wrench: | Disallow unnecessary non-capturing groups. |
-| [no-unnecessary-lazy](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-lazy.md) :wrench: | Disallow unnecessarily lazy quantifiers. |
-| [no-unnecessary-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-quantifier.md) :wrench: | Disallow unnecessary quantifiers. |
-| [optimal-concatenation-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-concatenation-quantifier.md) :wrench: | Use optimal quantifiers for concatenated quantified characters. |
-| [optimized-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimized-character-class.md) :wrench: | Disallows unnecessary elements in character classes. |
-| [prefer-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-character-class.md) :wrench: | Prefer character classes wherever possible instead of alternations. |
-| [prefer-predefined-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-assertion.md) :wrench: | Prefer predefined assertions over equivalent lookarounds. |
-| [prefer-predefined-character-set](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-character-set.md) :wrench: | Prefer predefined character sets instead of their more verbose form. |
-| [prefer-predefined-quantifiers](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-quantifiers.md) :wrench: | Prefer predefined quantifiers (+*?) instead of their more verbose form. |
-| [simple-constant-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/simple-constant-quantifier.md) :wrench: | Prefer simple constant quantifiers over the range form. |
-| [sort-flags](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/sort-flags.md) :wrench: | Requires the regex flags to be sorted. |
+| | Rule | Description |
+| :--- | :--- | :--- |
+| :wrench: | [consistent-match-all-characters](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/consistent-match-all-characters.md) | Use one character class consistently whenever all characters have to be matched. |
+| :wrench: | [identity-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/identity-escape.md) | How to handle identity escapes. |
+|  | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) | Disallow capturing groups that can match only one word. |
+| :wrench: | [no-trivially-nested-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-lookaround.md) | Disallow lookarounds that only contain another assertion. |
+| :wrench: | [no-unnecessary-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-character-class.md) | Disallow unnecessary character classes. |
+| :wrench: | [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) | Disallow unnecessary regex flags. |
+| :wrench: | [no-unnecessary-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-group.md) | Disallow unnecessary non-capturing groups. |
+| :wrench: | [no-unnecessary-lazy](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-lazy.md) | Disallow unnecessarily lazy quantifiers. |
+| :wrench: | [no-unnecessary-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-quantifier.md) | Disallow unnecessary quantifiers. |
+| :wrench: | [optimal-concatenation-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimal-concatenation-quantifier.md) | Use optimal quantifiers for concatenated quantified characters. |
+| :wrench: | [optimized-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/optimized-character-class.md) | Disallows unnecessary elements in character classes. |
+| :wrench: | [prefer-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-character-class.md) | Prefer character classes wherever possible instead of alternations. |
+| :wrench: | [prefer-predefined-assertion](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-assertion.md) | Prefer predefined assertions over equivalent lookarounds. |
+| :wrench: | [prefer-predefined-character-set](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-character-set.md) | Prefer predefined character sets instead of their more verbose form. |
+| :wrench: | [prefer-predefined-quantifiers](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/prefer-predefined-quantifiers.md) | Prefer predefined quantifiers (+*?) instead of their more verbose form. |
+| :wrench: | [simple-constant-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/simple-constant-quantifier.md) | Prefer simple constant quantifiers over the range form. |
+| :wrench: | [sort-flags](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/sort-flags.md) | Requires the regex flags to be sorted. |
 <!-- END RULES -->
