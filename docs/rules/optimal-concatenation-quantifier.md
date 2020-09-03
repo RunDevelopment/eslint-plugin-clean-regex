@@ -1,8 +1,8 @@
-# `optimal-concatenation-quantifier`
+# `optimal-concatenation-quantifier` :wrench:
 
 > Use optimal quantifiers for concatenated quantified characters.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/optimal-concatenation-quantifier.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/optimal-concatenation-quantifier.js)

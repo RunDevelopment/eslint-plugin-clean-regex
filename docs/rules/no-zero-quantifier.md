@@ -1,8 +1,8 @@
-# `no-zero-quantifier`
+# `no-zero-quantifier` :wrench:
 
 > Disallow quantifiers with a maximum of 0.
 
-Fixable: `yes` <br> Recommended configuration: `"error"`
+configuration in `plugin:clean-regex/recommended`: `"error"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-zero-quantifier.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-zero-quantifier.js)

@@ -11,6 +11,7 @@ const { repoTreeRoot } = require("./lib/util");
  *
  * @typedef RuleMeta
  * @property {string} name
+ * @property {"problem" | "suggestion" | "layout"} type
  * @property {string} description
  * @property {string} docUrl
  * @property {boolean} fixable
@@ -37,10 +38,16 @@ function getRuleMeta(rule) {
 	 *     schema: []
 	 * }
 	 */
+
+	/** @type {import("eslint").Rule.RuleModule["meta"]} */
 	const meta = rules[rule].meta;
+	if (!meta || !meta.docs || !meta.type || !meta.docs.description || !meta.docs.url) {
+		throw new Error("Incomplete meta data for rule " + rule);
+	}
 
 	return {
 		name: rule,
+		type: meta.type,
 		description: meta.docs.description,
 		docUrl: meta.docs.url,
 		fixable: meta.fixable === "code",
@@ -57,29 +64,38 @@ function getRuleMeta(rule) {
 async function readme() {
 	const ruleNames = Object.keys(rules).sort();
 
-	let mdTable = "| Rule | Fix | Rec | Description |\n" +
-		"| :--- | :--: | :--: | :--- |\n";
+	const generatedMd = ["problem", "suggestion", "layout"].map(type => {
+		let mdTable = [
+			`### ${type === "layout" ? "Layout" : type.substr(0, 1).toUpperCase() + type.substr(1) + "s"}\n`,
+			"\n",
+			"| Rule | Description |\n",
+			"| :--- | :--- |\n",
+		].join("");
 
-	const recIcon = {
-		"off": "",
-		"warn": ":warning:",
-		"error": ":heavy_exclamation_mark:"
-	};
+		let ruleCounter = 0;
+		for (const rule of ruleNames) {
+			const meta = getRuleMeta(rule);
+			if (meta.type !== type) {
+				continue;
+			}
+			const mdColumns = [];
 
-	for (const rule of ruleNames) {
-		const meta = getRuleMeta(rule);
-		const mdColumns = [];
+			mdColumns[0] = `[${rule}](${meta.docUrl})${meta.fixable ? " :wrench:" : ""}`;
+			mdColumns[1] = meta.description;
 
-		mdColumns[0] = `[${rule}](${meta.docUrl})`;
-		mdColumns[1] = meta.fixable ? ":wrench:" : "";
-		mdColumns[2] = recIcon[meta.recommendedConfig];
-		mdColumns[3] = meta.description;
+			mdTable += `| ${mdColumns.join(" | ")} |\n`;
+			ruleCounter++;
+		}
 
-		mdTable += `| ${mdColumns.join(" | ")} |\n`;
-	}
+		if (ruleCounter === 0) {
+			return "";
+		} else {
+			return mdTable;
+		}
+	}).filter(Boolean).join("\n");
 
 	let readme = await fs.readFile("./README.md", "utf8");
-	readme = readme.replace(/(# Supported Rules\s+)(?:^\|.+$\r?\n?)*/m, "$1" + mdTable);
+	readme = readme.replace(/(^<!-- BEGIN RULES -->)[\s\S]*?(?=^<!-- END RULES -->)/m, "$1\n" + generatedMd.trim() + "\n");
 
 	await fs.writeFile("./README.md", readme, "utf8");
 }
@@ -95,16 +111,16 @@ async function generateDocFile(rule) {
 
 	let content = await fs.readFile("./" + meta.files.doc, "utf8").catch(() => "## Description\n\nTODO");
 	let overview = [
-		"# `" + rule + "`",
+		`# \`${rule}\`${meta.fixable ? " :wrench:" : ""}`,
 		"",
 		"> " + meta.description,
 		"",
-		`Fixable: \`${meta.fixable ? "yes" : "no"}\` <br> Recommended configuration: \`"${meta.recommendedConfig}"\``,
+		`configuration in \`plugin:clean-regex/recommended\`: \`"${meta.recommendedConfig}"\``,
 		"",
 		"<!-- prettier-ignore -->",
 		`[Source file](${repoTreeRoot}/${meta.files.source}) <br> [Test file](${repoTreeRoot}/${meta.files.test})`
 	].join("\n") + "\n\n";
-	content = content.replace(/[\s\S]*?(?=## Description)/, overview);
+	content = content.replace(/[\s\S]*?(?=^## Description)/m, overview);
 
 	await fs.writeFile("./" + meta.files.doc, content, "utf8");
 }

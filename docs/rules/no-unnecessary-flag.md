@@ -1,8 +1,8 @@
-# `no-unnecessary-flag`
+# `no-unnecessary-flag` :wrench:
 
 > Disallow unnecessary regex flags.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-unnecessary-flag.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-unnecessary-flag.js)

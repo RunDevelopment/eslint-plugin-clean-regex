@@ -1,8 +1,8 @@
-# `identity-escape`
+# `identity-escape` :wrench:
 
 > How to handle identity escapes.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/identity-escape.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/identity-escape.js)

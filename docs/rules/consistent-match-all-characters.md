@@ -1,9 +1,9 @@
-# `consistent-match-all-characters`
+# `consistent-match-all-characters` :wrench:
 
 > Use one character class consistently whenever all characters have to be
 > matched.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/consistent-match-all-characters.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/consistent-match-all-characters.js)

@@ -2,7 +2,7 @@
 
 > Disallow different alternatives that can match the same words.
 
-Fixable: `no` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/disjoint-alternatives.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/disjoint-alternatives.js)

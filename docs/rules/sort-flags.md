@@ -1,8 +1,8 @@
-# `sort-flags`
+# `sort-flags` :wrench:
 
 > Requires the regex flags to be sorted.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/sort-flags.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/sort-flags.js)

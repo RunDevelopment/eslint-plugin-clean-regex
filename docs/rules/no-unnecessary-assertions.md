@@ -2,7 +2,7 @@
 
 > Disallow assertions that are known to always accept (or reject).
 
-Fixable: `no` <br> Recommended configuration: `"error"`
+configuration in `plugin:clean-regex/recommended`: `"error"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-unnecessary-assertions.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-unnecessary-assertions.js)

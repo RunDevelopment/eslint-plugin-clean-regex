@@ -3,7 +3,7 @@
 > Disallows the alternatives of lookarounds that end with a non-constant
 > quantifier.
 
-Fixable: `no` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/optimal-lookaround-quantifier.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/optimal-lookaround-quantifier.js)

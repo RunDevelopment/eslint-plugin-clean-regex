@@ -1,8 +1,8 @@
-# `prefer-predefined-character-set`
+# `prefer-predefined-character-set` :wrench:
 
 > Prefer predefined character sets instead of their more verbose form.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/prefer-predefined-character-set.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/prefer-predefined-character-set.js)

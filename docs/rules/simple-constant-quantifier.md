@@ -1,8 +1,8 @@
-# `simple-constant-quantifier`
+# `simple-constant-quantifier` :wrench:
 
 > Prefer simple constant quantifiers over the range form.
 
-Fixable: `yes` <br> Recommended configuration: `"warn"`
+configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
 [Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/simple-constant-quantifier.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/simple-constant-quantifier.js)
