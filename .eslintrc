@@ -11,17 +11,29 @@
 			"spread": true
 		}
 	},
-	"extends": "eslint:recommended",
+	"extends": [
+		"eslint:recommended",
+		"plugin:prettier/recommended"
+	],
+	"plugins": [
+		"prettier"
+	],
 	"rules": {
-		"semi": ["error", "always"],
-		"quotes": ["error", "double"],
-
+		"semi": [
+			"error",
+			"always"
+		],
+		"quotes": [
+			"error",
+			"double"
+		],
+		"no-mixed-spaces-and-tabs": "off",
+		"curly": ["error", "all"],
 		// this plugin is literally all about regular expressions, so a few ESLint's rules get in the way
 		"no-useless-escape": "off",
 		"no-empty-character-class": "off", // this rule has massive problems with the new s flag
 		"no-control-regex": "off"
 	},
-
 	"overrides": [
 		{
 			"files": [

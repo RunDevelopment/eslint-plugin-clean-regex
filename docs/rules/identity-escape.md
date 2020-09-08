@@ -23,6 +23,7 @@ mode)
 The `identity-escape` rule is completely configurable via its own ruleset. To
 define a rule, add this to the `identity-escape` rule options:
 
+<!-- prettier-ignore -->
 ```json
 "clean-regex/identity-escape": ["warn", {
     "rules": [
@@ -33,6 +34,7 @@ define a rule, add this to the `identity-escape` rule options:
 
 Each rule is an object like this:
 
+<!-- prettier-ignore -->
 ```json
 {
     "name": "<name>",
@@ -93,6 +95,7 @@ used to overwrite the standard behavior of `identity-escape`.
 There are a few standard rules that are always active but may be overshadowed by
 custom rules. They are defined as follows:
 
+<!-- prettier-ignore -->
 ```json
 [
     {

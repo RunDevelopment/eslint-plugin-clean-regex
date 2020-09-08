@@ -7,7 +7,6 @@ const { rules, configs } = require("../../lib");
 // a test to verify that all rules are mark as fixable iff they use fixers
 
 describe("Rules", function () {
-
 	const fixerFunctions = /\b(?:replace|remove)(?:Element|Quantifier|Flags|Literal)\b/;
 
 	const rulesDir = `${__dirname}/../../lib/rules`;
@@ -30,9 +29,11 @@ describe("Rules", function () {
 	}
 
 	it("should be marked as fixable if the use fixers", function () {
-		Object.keys(rules).map(r => "clean-regex/" + r).forEach(r => {
-			assert.property(configs.recommended.rules, r);
-		});
+		Object.keys(rules)
+			.map(r => "clean-regex/" + r)
+			.forEach(r => {
+				assert.property(configs.recommended.rules, r);
+			});
 	});
 
 	it("should contain no other rules", function () {
@@ -48,5 +49,4 @@ describe("Rules", function () {
 			assert.fail(`Unknown rules: ${unknown.join(", ")}`);
 		}
 	});
-
 });

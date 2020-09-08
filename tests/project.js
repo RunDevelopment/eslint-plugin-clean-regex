@@ -2,7 +2,6 @@ const fs = require("fs");
 const { assert } = require("chai");
 
 describe("Project", () => {
-
 	const rules = fs.readdirSync(`${__dirname}/../lib/rules`);
 	const ruleTests = fs.readdirSync(`${__dirname}/../tests/lib/rules`);
 	const ruleDocs = fs.readdirSync(`${__dirname}/../docs/rules`);
@@ -12,7 +11,9 @@ describe("Project", () => {
 	});
 
 	it("should have doc files for every rule", () => {
-		assert.sameMembers(rules, ruleDocs.map(f => f.replace(/.md$/, ".js")));
+		assert.sameMembers(
+			rules,
+			ruleDocs.map(f => f.replace(/.md$/, ".js"))
+		);
 	});
-
 });

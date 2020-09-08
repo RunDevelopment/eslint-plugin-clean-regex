@@ -5,7 +5,6 @@ const { RegExpParser } = require("regexpp");
 
 const { getConstant } = require("../../lib/util");
 
-
 const parser = new RegExpParser({ ecmaVersion: 2018 });
 
 describe("getConstant", function () {
@@ -41,7 +40,7 @@ describe("getConstant", function () {
 			/[^\s\S]/,
 			/b/i,
 			/[b]/i,
-		]
+		],
 	};
 
 	/**
@@ -62,5 +61,4 @@ describe("getConstant", function () {
 
 	testPatterns("constant", (node, flags) => assert.isObject(getConstant(node, flags)), tests.constant);
 	testPatterns("not constant", (node, flags) => assert.isFalse(getConstant(node, flags)), tests.notConstant);
-
 });

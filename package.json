@@ -18,7 +18,8 @@
   "scripts": {
     "check": "eslint lib/** tests/** gulpfile.js && tsc",
     "gen-doc": "gulp doc && npm run format-doc",
-    "format-doc": "prettier --write --tab-width 4 --prose-wrap always docs/rules/*.md",
+    "format-doc": "prettier --write --print-width 80 --tab-width 4 --prose-wrap always docs/rules/*.md",
+    "format": "prettier --write lib/** tests/** gulpfile.js",
     "prepublishOnly": "npm run check",
     "test": "mocha tests --recursive"
   },
@@ -35,7 +36,11 @@
     "@types/node": "^13.13.4",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "gulp": "^4.0.2",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.3.0",
     "mocha": "^7.1.2",
     "prettier": "^2.0.5",
     "typescript": "^3.8.3"
@@ -43,5 +48,13 @@
   "engines": {
     "node": ">=12.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix"
+  }
 }

@@ -3,9 +3,7 @@
 const { RuleTester } = require("eslint");
 const { filenameToRule } = require("../lib/util");
 
-
 module.exports = {
-
 	/**
 	 *
 	 * @param {string} testFilename
@@ -21,6 +19,5 @@ module.exports = {
 		const ruleTester = new RuleTester({ parserOptions: { ecmaVersion: 2018 }, ...(config || {}) });
 
 		ruleTester.run(ruleName, rule, tests);
-	}
-
+	},
 };
