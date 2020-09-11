@@ -2,8 +2,6 @@
 
 const { testRule } = require("../../test-util");
 
-const errors = [{ message: /[\s\S]+/ }];
-
 testRule(__filename, undefined, {
 	valid: [
 		String(/\w+\d{4}/),
@@ -14,23 +12,23 @@ testRule(__filename, undefined, {
 		String(/(?:a|::)?\w+/),
 	],
 	invalid: [
-		{ code: String(/a\d*\d*a/), output: String(/a\d*a/), errors },
-		{ code: String(/\w+\d+/), output: String(/\w+\d/), errors },
-		{ code: String(/\w+\d?/), output: String(/\w+/), errors },
-		{ code: String(/a+\w+/), output: String(/a\w+/), errors },
-		{ code: String(/\w+\d*/), output: String(/\w+/), errors },
-		{ code: String(/(\d*\w+)/), output: String(/(\w+)/), errors },
-		{ code: String(/;+.*/), output: String(/;.*/), errors },
-		{ code: String(/a+(?:a|bb)+/), output: String(/a(?:a|bb)+/), errors },
-		{ code: String(/\w+(?:a|b)+/), output: String(/\w+(?:a|b)/), errors },
-		{ code: String(/\w+(?:(a)|b)*/), output: String(/\w+(?:(a)|b){0}/), errors },
-		{ code: String(/\d{3,5}\w*/), output: String(/\d{3}\w*/), errors },
+		{ code: String(/a\d*\d*a/), output: String(/a\d*a/), errors: 1 },
+		{ code: String(/\w+\d+/), output: String(/\w+\d/), errors: 1 },
+		{ code: String(/\w+\d?/), output: String(/\w+/), errors: 1 },
+		{ code: String(/a+\w+/), output: String(/a\w+/), errors: 1 },
+		{ code: String(/\w+\d*/), output: String(/\w+/), errors: 1 },
+		{ code: String(/(\d*\w+)/), output: String(/(\w+)/), errors: 1 },
+		{ code: String(/;+.*/), output: String(/;.*/), errors: 1 },
+		{ code: String(/a+(?:a|bb)+/), output: String(/a(?:a|bb)+/), errors: 1 },
+		{ code: String(/\w+(?:a|b)+/), output: String(/\w+(?:a|b)/), errors: 1 },
+		{ code: String(/\w+(?:(a)|b)*/), output: String(/\w+(?:(a)|b){0}/), errors: 1 },
+		{ code: String(/\d{3,5}\w*/), output: String(/\d{3}\w*/), errors: 1 },
 
 		{
 			code: String(/\w+\d*/),
 			output: String(/\w+\d*/),
 			options: [{ fixable: false }],
-			errors
+			errors: 1
 		},
 	]
 });
