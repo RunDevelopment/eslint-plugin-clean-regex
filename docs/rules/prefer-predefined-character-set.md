@@ -15,10 +15,19 @@ and `\w` character sets with their character set representation.
 Note: This will not remove any character classes. Use the
 `no-unnecessary-character-class` rule for that.
 
-#### Examples
+### `allowDigitRange: boolean`
+
+This option determines whether a digit range (`0-9`) is allowed or whether it
+should be replaced with `\d`. Note that if the digit range is the whole
+character class is equivalent to `\d`, then a digit range will always be
+replaced with `\d`. The value defaults to `true`.
+
+### Examples
 
 <!-- prettier-ignore -->
 ```js
-/[0-9]/      -> /[\d]/
-/[0-9a-z_-]/ -> /[\w-]/
+/[0-9]/      // -> /[\d]/
+/[0-9a-z_-]/ // -> /[\w-]/
+/[0-9a-f]/   // -> /[\da-f]/ with `allowDigitRange: false`
+/[0-9a-f]/   // unchanged with `allowDigitRange: true` (default)
 ```
