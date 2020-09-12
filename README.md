@@ -137,6 +137,7 @@ Fixable rules are denoted with a :wrench:.
 | :wrench: | [identity-escape](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/identity-escape.md) | How to handle identity escapes. |
 |  | [no-constant-capturing-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-constant-capturing-group.md) | Disallow capturing groups that can match only one word. |
 | :wrench: | [no-trivially-nested-lookaround](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-lookaround.md) | Disallow lookarounds that only contain another assertion. |
+| :wrench: | [no-trivially-nested-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-trivially-nested-quantifier.md) | Disallow nested quantifiers that can be rewritten as one quantifier. |
 | :wrench: | [no-unnecessary-character-class](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-character-class.md) | Disallow unnecessary character classes. |
 | :wrench: | [no-unnecessary-flag](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-flag.md) | Disallow unnecessary regex flags. |
 | :wrench: | [no-unnecessary-group](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/no-unnecessary-group.md) | Disallow unnecessary non-capturing groups. |
