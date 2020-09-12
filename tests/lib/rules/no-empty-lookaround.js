@@ -14,6 +14,8 @@ testRule(__filename, undefined, {
 		String(/(?=(?=.).*)/),
 		String(/(?=$|a)/),
 		String(/(?=\ba*\b)/),
+
+		String(/b?r(#*)"(?:[^"]|"(?!\1))*"\1/),
 	],
 	invalid: [
 		{ code: String(/(?=)/), errors },
