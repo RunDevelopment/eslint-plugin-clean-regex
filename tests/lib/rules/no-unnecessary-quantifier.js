@@ -10,6 +10,7 @@ testRule(__filename, undefined, {
 		String(/(?:\b)*/),
 		String(/(?:\b|(?!a))*/),
 		String(/(?:\b|(?!))*/),
+		String(/#[\da-z]+|#(?:-|([+/\\*~<>=@%|&?!])\1?)|#(?=\()/),
 	],
 	invalid: [
 		// trivial
