@@ -5,7 +5,7 @@
 configuration in `plugin:clean-regex/recommended`: `"error"`
 
 <!-- prettier-ignore -->
-[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-obscure-range.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-obscure-range.js)
+[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-obscure-range.ts) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-obscure-range.ts)
 
 ## Description
 

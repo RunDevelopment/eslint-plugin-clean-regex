@@ -5,7 +5,7 @@
 configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
-[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-potentially-empty-backreference.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-potentially-empty-backreference.js)
+[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-potentially-empty-backreference.ts) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-potentially-empty-backreference.ts)
 
 ## Description
 

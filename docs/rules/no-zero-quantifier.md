@@ -5,7 +5,7 @@
 configuration in `plugin:clean-regex/recommended`: `"error"`
 
 <!-- prettier-ignore -->
-[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-zero-quantifier.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-zero-quantifier.js)
+[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/no-zero-quantifier.ts) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/no-zero-quantifier.ts)
 
 ## Description
 

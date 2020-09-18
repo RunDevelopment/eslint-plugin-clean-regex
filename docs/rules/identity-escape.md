@@ -5,7 +5,7 @@
 configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
-[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/identity-escape.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/identity-escape.js)
+[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/identity-escape.ts) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/identity-escape.ts)
 
 ## Description
 

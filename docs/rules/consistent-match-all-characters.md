@@ -6,7 +6,7 @@
 configuration in `plugin:clean-regex/recommended`: `"warn"`
 
 <!-- prettier-ignore -->
-[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/consistent-match-all-characters.js) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/consistent-match-all-characters.js)
+[Source file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/lib/rules/consistent-match-all-characters.ts) <br> [Test file](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/tests/lib/rules/consistent-match-all-characters.ts)
 
 ## Description
 
