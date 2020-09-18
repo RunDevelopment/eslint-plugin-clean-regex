@@ -16,7 +16,7 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf dist/** && gulp updateSourceFile && tsc",
+    "build": "rimraf dist/** && gulp updateSourceFile && tsc && npm run gen-doc",
     "check": "eslint lib/** tests/** gulpfile.js && npm run build",
     "gen-doc": "gulp doc && npm run format-doc",
     "format-doc": "prettier --write --print-width 80 --tab-width 4 --prose-wrap always docs/rules/*.md",
