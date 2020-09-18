@@ -14,19 +14,19 @@
     "type": "git",
     "url": "https://github.com/RunDevelopment/eslint-plugin-clean-regex.git"
   },
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "check": "eslint lib/** tests/** gulpfile.js && tsc",
+    "build": "rimraf dist/** && gulp updateSourceFile && tsc",
+    "check": "eslint lib/** tests/** gulpfile.js && npm run build",
     "gen-doc": "gulp doc && npm run format-doc",
     "format-doc": "prettier --write --print-width 80 --tab-width 4 --prose-wrap always docs/rules/*.md",
     "format": "prettier --write lib/** tests/** gulpfile.js",
     "prepublishOnly": "npm run check",
-    "test": "mocha tests --recursive"
+    "test": "mocha -r ts-node/register 'tests/**/*.ts'"
   },
   "dependencies": {
     "refa": "^0.4.0",
-    "regexpp": "^3.1.0",
-    "requireindex": "^1.2.0"
+    "regexpp": "^3.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
@@ -34,6 +34,8 @@
     "@types/gulp": "^4.0.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.4",
+    "@typescript-eslint/eslint-plugin": "^4.1.0",
+    "@typescript-eslint/parser": "^4.1.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
@@ -43,7 +45,9 @@
     "lint-staged": "^10.3.0",
     "mocha": "^7.1.2",
     "prettier": "^2.0.5",
-    "typescript": "^3.8.3"
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^3.9.7"
   },
   "engines": {
     "node": ">=12.0.0"
@@ -55,6 +59,6 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix"
+    "*.ts": "eslint --cache --fix"
   }
 }

@@ -1,13 +1,19 @@
 const { series } = require("gulp");
 const fs = require("fs").promises;
-const { rules, configs } = require("./lib");
-const { repoTreeRoot } = require("./lib/util");
+require('ts-node').register({});
+const { repoTreeRoot, filenameToRule } = require("./lib/rules-util");
+const configs = require("./lib/configs").default;
 
 /**
- *
- * @param {string} rule
- * @returns {RuleMeta}
- *
+ * @param {Record<string, T>} obj
+ * @returns {T[]}
+ * @template T
+ */
+function values(obj) {
+	return Object.keys(obj).map(k => obj[k]);
+}
+
+/**
  * @typedef RuleMeta
  * @property {string} name
  * @property {"problem" | "suggestion" | "layout"} type
@@ -22,44 +28,40 @@ const { repoTreeRoot } = require("./lib/util");
  * @property {string} test
  * @property {string} doc
  */
-function getRuleMeta(rule) {
-	/*
-	 * Looks like this:
-	 *
-	 * {
-	 *     type: "problem",
-	 *     docs: {
-	 *         description: "disallow duplicate alternatives",
-	 *         category: "Possible Errors",
-	 *         url: getDocUrl(__filename)
-	 *     },
-	 *     fixable: "code",
-	 *     schema: []
-	 * }
-	 */
+async function getRules() {
+	/** @type {Record<string, RuleMeta>} */
+	const rules = {};
+	const files = (await fs.readdir(__dirname + "/lib/rules")).filter(p => /\.ts$/i.test(p));
 
-	/** @type {import("eslint").Rule.RuleModule["meta"]} */
-	const meta = rules[rule].meta;
-	if (!meta || !meta.docs || !meta.type || !meta.docs.description || !meta.docs.url) {
-		throw new Error("Incomplete meta data for rule " + rule);
+	for (const file of files) {
+		const rule = filenameToRule(file);
+
+		/** @type {import("eslint").Rule.RuleModule["meta"]} */
+		const meta = require("./lib/rules/" + file).default.meta;
+		if (!meta || !meta.docs || !meta.type || !meta.docs.description || !meta.docs.url) {
+			console.dir(meta);
+			throw new Error("Incomplete meta data for rule " + rule);
+		}
+
+		rules[rule] = {
+			name: rule,
+			type: meta.type,
+			description: meta.docs.description,
+			docUrl: meta.docs.url,
+			fixable: meta.fixable === "code",
+			recommendedConfig: /** @type {any} */(configs.recommended.rules["clean-regex/" + rule]),
+			files: {
+				source: `lib/rules/${rule}.ts`,
+				test: `tests/lib/rules/${rule}.ts`,
+				doc: `docs/rules/${rule}.md`,
+			},
+		};
 	}
-
-	return {
-		name: rule,
-		type: meta.type,
-		description: meta.docs.description,
-		docUrl: meta.docs.url,
-		fixable: meta.fixable === "code",
-		recommendedConfig: configs.recommended.rules["clean-regex/" + rule],
-		files: {
-			source: `lib/rules/${rule}.js`,
-			test: `tests/lib/rules/${rule}.js`,
-			doc: `docs/rules/${rule}.md`,
-		},
-	};
+	return rules;
 }
 
 async function readme() {
+	const rules = await getRules();
 	const ruleNames = Object.keys(rules).sort();
 
 	const generatedMd = ["problem", "suggestion", "layout"]
@@ -73,7 +75,7 @@ async function readme() {
 
 			let ruleCounter = 0;
 			for (const rule of ruleNames) {
-				const meta = getRuleMeta(rule);
+				const meta = rules[rule];
 				if (meta.type !== type) {
 					continue;
 				}
@@ -102,18 +104,20 @@ async function readme() {
 }
 
 async function generateDocFiles() {
+	const rules = await getRules();
+
 	for (const rule in rules) {
-		await generateDocFile(rule);
+		await generateDocFile(rules[rule]);
 	}
 }
-
-async function generateDocFile(rule) {
-	const meta = getRuleMeta(rule);
-
+/**
+ * @param {RuleMeta} meta
+ */
+async function generateDocFile(meta) {
 	let content = await fs.readFile("./" + meta.files.doc, "utf8").catch(() => "## Description\n\nTODO");
 	let overview =
 		[
-			`# \`${rule}\`${meta.fixable ? " :wrench:" : ""}`,
+			`# \`${meta.name}\`${meta.fixable ? " :wrench:" : ""}`,
 			"",
 			"> " + meta.description,
 			"",
@@ -127,6 +131,43 @@ async function generateDocFile(rule) {
 	await fs.writeFile("./" + meta.files.doc, content, "utf8");
 }
 
+async function generateIndex() {
+	const rules = Object.keys(await getRules());
+
+	function toVar(ruleName = "") {
+		return ruleName.replace(/-(\w)/g, (_, letter) => String(letter).toUpperCase());
+	}
+
+	const code = `// THIS IS GENERATED CODE
+// DO NOT EDIT
+
+import _configs from "./configs";
+
+${rules.map(name => `import ${toVar(name)} from "./rules/${name}";`).join("\n")}
+
+export const configs = _configs;
+export const rules = {
+	${rules.map(name => `"${name}": ${toVar(name)},`).join("\n\t")}
+};
+`;
+
+	await fs.writeFile("./lib/index.ts", code, "utf-8");
+}
+
+async function insertRuleName() {
+	const rules = await getRules();
+
+	for (const rule of values(rules)) {
+		const file = "./" + rule.files.source;
+		let code = await fs.readFile(file, "utf-8");
+		code = code.replace(/\bgetDocUrl\([^()]*\)/g, () => {
+			return `getDocUrl(/* #GENERATED */ ${JSON.stringify(rule.name)})`;
+		});
+		await fs.writeFile(file, code, "utf-8");
+	}
+}
+
 module.exports = {
 	doc: series(readme, generateDocFiles),
+	updateSourceFile: series(generateIndex, insertRuleName),
 };
