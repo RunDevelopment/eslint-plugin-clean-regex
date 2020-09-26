@@ -1,5 +1,5 @@
-import { Rule } from "eslint";
-import { RegExpLiteral, SourceLocation } from "estree";
+import type { Rule } from "eslint";
+import type { RegExpLiteral, SourceLocation } from "estree";
 import { RegExpParser, visitRegExpAST } from "regexpp";
 import { Flags, Node, Pattern, Quantifier } from "regexpp/ast";
 import { RegExpVisitor } from "regexpp/visitor";
