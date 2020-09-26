@@ -31,6 +31,8 @@ testRule(__filename, undefined, {
 		{ code: String(/(?!a|b|c|dd|e)/), output: String(/(?![abce]|dd)/), errors: 1 },
 		{ code: String(/(?<=a|b|c|dd|e)/), output: String(/(?<=[abce]|dd)/), errors: 1 },
 		{ code: String(/(?<!a|b|c|dd|e)/), output: String(/(?<![abce]|dd)/), errors: 1 },
+		{ code: String(/[abc]|d/), output: String(/[abcd]/), errors: 1 },
+		{ code: String(/[abc]|d|ee/), output: String(/[abcd]|ee/), errors: 1 },
 
 		// always merge non-disjoint
 		{ code: String(/(?:a|\w|b\b)/), output: String(/(?:[a\w]|b\b)/), errors: 1 },

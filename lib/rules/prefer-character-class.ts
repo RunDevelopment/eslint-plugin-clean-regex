@@ -129,6 +129,18 @@ function categorizeAlternatives(
 	});
 }
 
+function containsCharacterClass(alts: Iterable<CharacterAlternative | NonCharacterAlternative>): boolean {
+	for (const alt of alts) {
+		if (alt.isCharacter && alt.alternative.elements.length === 1) {
+			const e = alt.alternative.elements[0];
+			if (e.type === "CharacterClass") {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 function combineElements(alternatives: readonly (CharacterAlternative | NonCharacterAlternative)[]): CharElementArray {
 	const elements: CharElementArray = [];
 	for (const a of alternatives) {
@@ -333,7 +345,12 @@ export default {
 					// 2) the characters of the character alternatives are not disjoint, or
 					// 3) the union of all character alternatives is the "all" set.
 
-					if (alts.length >= 3 || findNonDisjointAlt(alts) || totalIsAll(alts)) {
+					if (
+						alts.length >= 3 ||
+						findNonDisjointAlt(alts) ||
+						totalIsAll(alts) ||
+						containsCharacterClass(alts)
+					) {
 						const [prefix, suffix] = node.type === "Group" ? ["", ""] : getParentPrefixAndSuffix(node);
 						const replacement = prefix + elementsToCharacterClass(combineElements(alts)) + suffix;
 
@@ -356,7 +373,12 @@ export default {
 
 				const nonDisjointAlt = findNonDisjointAlt(alts);
 
-				if (nonDisjointAlt || characterAlternativesCount >= 3 || totalIsAll(alts)) {
+				if (
+					nonDisjointAlt ||
+					characterAlternativesCount >= 3 ||
+					totalIsAll(alts) ||
+					containsCharacterClass(alts)
+				) {
 					const genericAlts = toGenericAlts(alts, flags);
 					optimizeCharacterAlternatives(genericAlts, flags, true);
 
