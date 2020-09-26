@@ -1,15 +1,35 @@
 import { CharSet } from "refa";
-import { Element, Flags, QuantifiableElement } from "regexpp/ast";
+import {
+	CapturingGroup,
+	Character,
+	CharacterClass,
+	CharacterSet,
+	Element,
+	Flags,
+	Group,
+	QuantifiableElement,
+} from "regexpp/ast";
 import { mention, shorten } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { emptyCharSet, hasSomeDescendant, quantifierToString, toCharSet } from "../util";
+import { emptyCharSet, hasCapturingGroup, hasSomeDescendant, Quant, quantAdd, quantToString, toCharSet } from "../util";
 
-function createChars(element: Element, flags: Flags): { chars: CharSet; complete: boolean } {
-	function empty() {
-		return {
-			chars: emptyCharSet(flags),
-			complete: false,
-		};
+interface Chars {
+	readonly chars: CharSet;
+	readonly complete: boolean;
+}
+
+const EMPTY_UTF16: Chars = {
+	chars: emptyCharSet({}),
+	complete: false,
+};
+const EMPTY_UNICODE: Chars = {
+	chars: emptyCharSet({ unicode: true }),
+	complete: false,
+};
+
+function createChars(element: Element, flags: Flags): Chars {
+	function empty(): Chars {
+		return flags.unicode ? EMPTY_UNICODE : EMPTY_UTF16;
 	}
 
 	switch (element.type) {
@@ -47,10 +67,7 @@ function createChars(element: Element, flags: Flags): { chars: CharSet; complete
 	}
 }
 
-function quantize(
-	element: QuantifiableElement,
-	quant: { min: number; max: number; greedy?: boolean | undefined }
-): string {
+function quantize(element: QuantifiableElement, quant: Quant): string {
 	if (quant.min === 0 && quant.max === 0) {
 		if (hasSomeDescendant(element, d => d.type === "CapturingGroup")) {
 			// we can't just remove a capturing group
@@ -62,11 +79,26 @@ function quantize(
 	if (quant.min === 1 && quant.max === 1) {
 		return element.raw;
 	}
-	return element.raw + quantifierToString(quant);
+	return element.raw + quantToString(quant);
 }
 
 function short(str: string): string {
 	return shorten(str, 20, "center");
+}
+
+function isGroupOrCharacter(
+	element: Element
+): element is Group | CapturingGroup | Character | CharacterClass | CharacterSet {
+	switch (element.type) {
+		case "Group":
+		case "CapturingGroup":
+		case "Character":
+		case "CharacterClass":
+		case "CharacterSet":
+			return true;
+		default:
+			return false;
+	}
 }
 
 interface Replacement {
@@ -79,35 +111,29 @@ function getReplacement(current: Element, next: Element, flags: Flags): Replacem
 		current.min !== current.max &&
 		next.type === "Quantifier" &&
 		next.min !== next.max &&
+		next.greedy === current.greedy &&
 		(current.max === Infinity || next.max === Infinity)
 	) {
 		const currChars = createChars(current.element, flags);
 		const nextChars = createChars(next.element, flags);
+		const greedy = current.greedy;
 
-		let currQuant, nextQuant;
+		let currQuant: Readonly<Quant>, nextQuant: Readonly<Quant>;
 		if (next.max === Infinity && currChars.complete && nextChars.chars.isSupersetOf(currChars.chars)) {
 			// currChars is a subset of nextChars
 			currQuant = {
 				min: current.min,
 				max: current.min,
-				greedy: current.greedy,
+				greedy,
 			};
-			nextQuant = {
-				min: next.min,
-				max: Infinity,
-				greedy: next.greedy,
-			};
+			nextQuant = next; // unchanged
 		} else if (current.max === Infinity && nextChars.complete && currChars.chars.isSupersetOf(nextChars.chars)) {
 			// nextChars is a subset of currChars
-			currQuant = {
-				min: current.min,
-				max: Infinity,
-				greedy: current.greedy,
-			};
+			currQuant = current; // unchanged
 			nextQuant = {
 				min: next.min,
 				max: next.min,
-				greedy: next.greedy,
+				greedy,
 			};
 		} else {
 			return null;
@@ -128,6 +154,32 @@ function getReplacement(current: Element, next: Element, flags: Flags): Replacem
 		}
 
 		return { raw, message };
+	} else if (current.type === "Quantifier" && isGroupOrCharacter(next)) {
+		const currChars = createChars(current.element, flags);
+		const nextChars = createChars(next, flags);
+
+		if (currChars.complete && nextChars.complete && currChars.chars.equals(nextChars.chars)) {
+			const raw = current.element.raw + quantToString(quantAdd(current, 1));
+			return {
+				message: `${short(mention(next))} can be combined with ${short(mention(current))}.`,
+				raw,
+			};
+		} else {
+			return null;
+		}
+	} else if (isGroupOrCharacter(current) && next.type === "Quantifier") {
+		const currChars = createChars(current, flags);
+		const nextChars = createChars(next.element, flags);
+
+		if (currChars.complete && nextChars.complete && currChars.chars.equals(nextChars.chars)) {
+			const raw = next.element.raw + quantToString(quantAdd(next, 1));
+			return {
+				message: `${short(mention(current))} can be combined with ${short(mention(next))}.`,
+				raw,
+			};
+		} else {
+			return null;
+		}
 	} else {
 		return null;
 	}
@@ -167,12 +219,14 @@ export default {
 						const replacement = getReplacement(current, next, flags);
 
 						if (replacement) {
-							const message =
+							let message =
 								`The quantifiers of ${mention(short(current.raw))} and ${mention(
 									short(next.raw)
 								)} are not optimal. ` + replacement.message;
 
-							if (fixable) {
+							const involvesCapturingGroup = hasCapturingGroup(current) || hasCapturingGroup(next);
+
+							if (fixable && !involvesCapturingGroup) {
 								const before = node.raw.substr(0, current.start - node.start);
 								const after = node.raw.substr(next.end - node.start, node.end - next.end);
 
@@ -182,6 +236,11 @@ export default {
 									...reportElements([current, next]), // overwrite report location
 								});
 							} else {
+								if (involvesCapturingGroup) {
+									message +=
+										" This cannot be fixed automatically because it might change a capturing group.";
+								}
+
 								context.report({
 									message,
 									...reportElements([current, next]),

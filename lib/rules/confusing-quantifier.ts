@@ -1,6 +1,6 @@
 import { mention } from "../format";
 import { createRuleListener, getDocUrl, CleanRegexRule } from "../rules-util";
-import { isPotentiallyEmpty, quantifierToString } from "../util";
+import { isPotentiallyEmpty, quantToString } from "../util";
 
 export default {
 	meta: {
@@ -16,7 +16,7 @@ export default {
 			visitAST({
 				onQuantifierEnter(node) {
 					if (node.min > 0 && isPotentiallyEmpty(node.element)) {
-						const proposal = quantifierToString({ ...node, min: 0 });
+						const proposal = quantToString({ ...node, min: 0 });
 						context.report({
 							message:
 								`This quantifier is confusing because its minimum is ${node.min} but it can match the empty string.` +

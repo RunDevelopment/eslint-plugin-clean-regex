@@ -1,9 +1,8 @@
 import { Quantifier } from "regexpp/ast";
 import { mention, shorten } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { hasSomeAncestor, quantifierToString } from "../util";
+import { hasSomeAncestor, quantToString, Quant } from "../util";
 
-type Quant = { min: number; max: number; greedy: boolean };
 function getCombinedQuant(node: Quantifier, nested: Quantifier): Quant | null {
 	if (node.max === 0 || nested.max === 0) {
 		// other rules deal with this case
@@ -70,9 +69,9 @@ export default {
 
 							const newQuant = getCombinedQuant(node, nested);
 							if (newQuant) {
-								const quant = quantifierToString(newQuant);
-								const replacement = nested.element.raw + quant;
-								const messagePreview = shorten(nested.element.raw, 20, "end") + quant;
+								const quantStr = quantToString(newQuant);
+								const replacement = nested.element.raw + quantStr;
+								const messagePreview = shorten(nested.element.raw, 20, "end") + quantStr;
 
 								ignore.add(node);
 								context.report({

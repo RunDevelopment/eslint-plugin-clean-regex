@@ -437,6 +437,17 @@ export function hasSomeDescendant<T extends Node>(
 }
 
 /**
+ * Returns whether the given node is or contains a capturing group.
+ *
+ * This function is justified because it's extremely important to check for capturing groups when providing fixers.
+ *
+ * @param node
+ */
+export function hasCapturingGroup(node: Node): boolean {
+	return hasSomeDescendant(node, d => d.type === "CapturingGroup");
+}
+
+/**
  * Returns whether two nodes are semantically equivalent.
  */
 export function areEqual(x: Node | null, y: Node | null): boolean {
@@ -712,10 +723,16 @@ export function assertNever(value: never): never {
 	throw new Error(`This part of the code should never be reached but ${value} made it through.`);
 }
 
+export interface Quant {
+	min: number;
+	max: number;
+	greedy?: boolean;
+}
+
 /**
  * Returns the string representation of the given quantifier.
  */
-export function quantifierToString(quant: { min: number; max: number; greedy?: boolean }): string {
+export function quantToString(quant: Readonly<Quant>): string {
 	if (
 		quant.max < quant.min ||
 		quant.min < 0 ||
@@ -744,6 +761,25 @@ export function quantifierToString(quant: { min: number; max: number; greedy?: b
 		return value + "?";
 	} else {
 		return value;
+	}
+}
+export function quantAdd(quant: Readonly<Quant>, other: number | Readonly<Quant>): Quant {
+	if (typeof other === "number") {
+		return {
+			min: quant.min + other,
+			max: quant.max + other,
+			greedy: quant.greedy,
+		};
+	} else {
+		if (quant.greedy === other.greedy || quant.greedy === undefined || other.greedy === undefined) {
+			return {
+				min: quant.min + other.min,
+				max: quant.max + other.max,
+				greedy: quant.greedy ?? other.greedy,
+			};
+		} else {
+			throw Error("The `greedy` property of the given quants is not compatible.");
+		}
 	}
 }
 
@@ -1059,11 +1095,17 @@ export function toCharSet(
 	}
 }
 
+const EMPTY_UTF16_CHARSET = CharSet.empty(0xffff);
+const EMPTY_UNICODE_CHARSET = CharSet.empty(0x10ffff);
 /**
  * Returns an empty character set for the given flags.
  */
 export function emptyCharSet(flags: Partial<Flags>): CharSet {
-	return JS.createCharSet([], flags);
+	if (flags.unicode) {
+		return EMPTY_UNICODE_CHARSET;
+	} else {
+		return EMPTY_UTF16_CHARSET;
+	}
 }
 
 /**

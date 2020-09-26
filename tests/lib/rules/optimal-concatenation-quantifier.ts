@@ -19,8 +19,13 @@ testRule(__filename, undefined, {
 		{ code: String(/;+.*/), output: String(/;.*/), errors: 1 },
 		{ code: String(/a+(?:a|bb)+/), output: String(/a(?:a|bb)+/), errors: 1 },
 		{ code: String(/\w+(?:a|b)+/), output: String(/\w+(?:a|b)/), errors: 1 },
-		{ code: String(/\w+(?:(a)|b)*/), output: String(/\w+(?:(a)|b){0}/), errors: 1 },
 		{ code: String(/\d{3,5}\w*/), output: String(/\d{3}\w*/), errors: 1 },
+
+		{ code: String(/\w\w*/), output: String(/\w+/), errors: 1 },
+		{ code: String(/\w*\w/), output: String(/\w+/), errors: 1 },
+		{ code: String(/\w?\w/), output: String(/\w{1,2}/), errors: 1 },
+		{ code: String(/\w+\w/), output: String(/\w{2,}/), errors: 1 },
+		{ code: String(/[ab]*(?:a|b)/), output: String(/[ab]+/), errors: 1 },
 
 		{
 			code: String(/\w+\d*/),
@@ -28,5 +33,10 @@ testRule(__filename, undefined, {
 			options: [{ fixable: false }],
 			errors: 1
 		},
+
+		// careful with capturing groups
+		{ code: String(/\w+(?:(a)|b)*/), output: String(/\w+(?:(a)|b)*/), errors: 1 },
+		{ code: String(/(\d)*\w+/), output: String(/(\d)*\w+/), errors: 1 },
+		{ code: String(/(\d)\d+/), output: String(/(\d)\d+/), errors: 1 },
 	]
 });

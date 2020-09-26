@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { getQuantifierRaw, quantifierToString } from "../util";
+import { getQuantifierRaw, quantToString } from "../util";
 
 export default {
 	meta: {
@@ -21,7 +21,7 @@ export default {
 					}
 
 					const currentRaw = getQuantifierRaw(node);
-					const simpleRaw = quantifierToString(node);
+					const simpleRaw = quantToString(node);
 
 					if (simpleRaw !== currentRaw) {
 						context.report({
