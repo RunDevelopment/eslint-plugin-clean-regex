@@ -262,14 +262,16 @@ export function replaceQuantifier(
 }
 /**
  * Replaces the flags of the given regex literal with the given string.
+ *
+ * This will actually replace the whole literal as well because the flags affect the whole pattern.
  */
 export function replaceFlags(fixer: Rule.RuleFixer, node: RegExpLiteral, replacement: string): Rule.Fix {
 	if (!node.range) {
 		throw new Error("The given node does not have range information.");
 	}
 
-	const start = node.range[1] - node.regex.flags.length;
-	return fixer.replaceTextRange([start, node.range[1]], replacement);
+	const raw = `/${node.regex.pattern}/${replacement}`;
+	return fixer.replaceTextRange(node.range, raw);
 }
 
 export const repoTreeRoot = "https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master";
