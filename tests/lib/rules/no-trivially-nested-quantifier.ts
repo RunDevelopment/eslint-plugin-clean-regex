@@ -14,5 +14,11 @@ testRule(__filename, undefined, {
 		{ code: String(/(?:a{2,}){4}/), output: String(/a{8,}/), errors: 1 },
 		{ code: String(/(?:a{4,}){5}/), output: String(/a{20,}/), errors: 1 },
 		{ code: String(/(?:a{3}){4}/), output: String(/a{12}/), errors: 1 },
+
+		{ code: String(/(?:a+|b)*/), output: String(/(?:a|b)*/), errors: 1 },
+		{ code: String(/(a+|b)*/), output: String(/(a|b)*/), errors: 1 },
+		{ code: String(/(a?|b)*/), output: String(/(a|b)*/), errors: 1 },
+		{ code: String(/(a{0,4}|b)*/), output: String(/(a|b)*/), errors: 1 },
+		{ code: String(/(a{0,4}|b)+/), output: String(/(a?|b)+/), errors: 1 },
 	]
 });
