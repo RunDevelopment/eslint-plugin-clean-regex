@@ -1,9 +1,8 @@
 import type { Rule } from "eslint";
 import type { RegExpLiteral, SourceLocation } from "estree";
 import { RegExpParser, visitRegExpAST } from "regexpp";
-import { Flags, Node, Pattern, Quantifier } from "regexpp/ast";
+import { Alternative, CharacterClassElement, Element, Flags, Pattern, Quantifier } from "regexpp/ast";
 import { RegExpVisitor } from "regexpp/visitor";
-import { toRegExpString } from "./format";
 
 export type CleanRegexRule = Rule.RuleModule & {
 	meta: Rule.RuleMetaData & {
@@ -15,19 +14,33 @@ export type CleanRegexRule = Rule.RuleModule & {
 	};
 };
 
+export type PatternElement = Pattern | Element | CharacterClassElement | Alternative;
+export interface RegexFixOptions {
+	/**
+	 * The fix depends on these nodes. This means that the fix may not change these nodes but the rule creating the fix
+	 * assumes that they are not changed by another fix.
+	 */
+	dependsOn?: PatternElement | readonly PatternElement[];
+	/**
+	 * Similar to `dependsOn`, this means that the fix depends on at least one flags. This means that flags may not be
+	 * changed by other fixes.
+	 */
+	dependsOnFlags?: boolean;
+}
+
 export interface RegexRuleListenerContext {
 	readonly pattern: Pattern;
 	readonly flags: Flags;
 	readonly visitAST: (handlers: RegExpVisitor.Handlers) => void;
-	readonly reportElement: (element: Node) => ReportProps;
+	readonly reportElement: (element: PatternElement) => ReportProps;
 	readonly reportQuantifier: (element: Quantifier) => ReportProps;
 	readonly reportFlags: () => ReportProps;
-	readonly reportElements: (elements: readonly Node[]) => ReportProps;
+	readonly reportElements: (elements: readonly PatternElement[]) => ReportProps;
 	readonly replaceLiteral: (patternReplacement: string, flagsReplacement: string) => ReplaceProps;
-	readonly replaceElement: (element: Node, replacement: string) => ReplaceProps;
-	readonly replaceQuantifier: (element: Quantifier, replacement: string) => ReplaceProps;
-	readonly replaceFlags: (replacement: string) => ReplaceProps;
-	readonly removeElement: (element: Node) => ReplaceProps;
+	readonly replaceElement: (element: PatternElement, replacement: string, options?: RegexFixOptions) => ReplaceProps;
+	readonly replaceQuantifier: (element: Quantifier, replacement: string, options?: RegexFixOptions) => ReplaceProps;
+	readonly replaceFlags: (replacement: string, options?: RegexFixOptions) => ReplaceProps;
+	readonly removeElement: (element: PatternElement, options?: RegexFixOptions) => ReplaceProps;
 	readonly parseExpression: (expression: string) => Pattern | null;
 }
 export interface ReportProps {
@@ -79,6 +92,54 @@ function createListenerContext(regexNode: RegExpLiteral): RegexRuleListenerConte
 		return null;
 	}
 
+	function replaceLiteralImpl(patternReplacement: string, flagsReplacement: string): ReplaceProps {
+		const range = regexNode.range;
+		if (!range) {
+			throw new Error("The regex literal node does not have a range associated with it.");
+		}
+		return {
+			loc: copyLoc(regexNode.loc),
+			fix: fixer => fixer.replaceTextRange(range, `/${patternReplacement}/${flagsReplacement}`),
+		};
+	}
+	function replaceElementImpl(
+		element: ElementLocation,
+		replacement: string,
+		options?: RegexFixOptions
+	): ReplaceProps {
+		if (options?.dependsOnFlags) {
+			// replace the whole literal
+			const pattern = regexNode.regex.pattern;
+			const flags = regexNode.regex.flags;
+
+			const patternReplacement =
+				pattern.substring(0, element.start) + replacement + pattern.substring(element.end);
+			return replaceLiteralImpl(patternReplacement, flags);
+		} else {
+			const region: ElementLocation = elementLocUnion([...toArray(options?.dependsOn), element]) ?? element;
+
+			if (region.start === element.start && region.end === element.end) {
+				// the element doesn't depend on anything
+				return {
+					loc: locOfElement(regexNode, element),
+					fix: fixer => replaceElement(fixer, regexNode, element, replacement),
+				};
+			} else {
+				// the elements also depends on some other elements
+				const regionPattern = regexNode.regex.pattern.substring(region.start, region.end);
+				const regionReplacement =
+					regionPattern.substring(0, element.start - region.start) +
+					replacement +
+					regionPattern.substring(element.end - region.start);
+
+				return {
+					loc: locOfElement(regexNode, element),
+					fix: fixer => replaceElement(fixer, regexNode, region, regionReplacement),
+				};
+			}
+		}
+	}
+
 	const listenerContext: RegexRuleListenerContext = {
 		pattern,
 		flags,
@@ -90,77 +151,42 @@ function createListenerContext(regexNode: RegExpLiteral): RegexRuleListenerConte
 			return { loc: locOfElement(regexNode, element) };
 		},
 		reportQuantifier(element) {
-			return { loc: locOfQuantifier(regexNode, element) };
+			return { loc: locOfElement(regexNode, elementLocOfQuantifier(element)) };
 		},
 		reportFlags() {
 			return { loc: locOfRegexFlags(regexNode) };
 		},
 
 		reportElements(elements) {
-			if (elements.length === 0) {
+			const union = elementLocUnion(elements);
+			if (!union) {
 				throw new Error("There has to be at least one element to report!");
 			}
+			return { loc: locOfElement(regexNode, union) };
+		},
 
-			const locs = elements.map(e => locOfElement(regexNode, e));
-			let min = locs[0].start;
-			let max = locs[0].end;
-
-			for (const { start, end } of locs) {
-				if (start.line < min.line || (start.line === min.line && start.column <= min.column)) {
-					min = start;
-				}
-				if (end.line > max.line || (end.line === max.line && end.column >= max.column)) {
-					max = end;
-				}
+		replaceLiteral: replaceLiteralImpl,
+		replaceElement: replaceElementImpl,
+		replaceQuantifier(element, replacement, options) {
+			const quant = elementLocOfQuantifier(element);
+			return replaceElementImpl(quant, replacement, options);
+		},
+		replaceFlags(replacement, options) {
+			if (options?.dependsOn) {
+				// we depend on some elements, so let's just replace the whole literal
+				return {
+					loc: locOfRegexFlags(regexNode),
+					fix: fixer => replaceFlags(fixer, regexNode, replacement),
+				};
+			} else {
+				return {
+					loc: locOfRegexFlags(regexNode),
+					fix: replaceLiteralImpl(regexNode.regex.pattern, replacement).fix,
+				};
 			}
-
-			return { loc: { start: min, end: max } };
 		},
 
-		replaceLiteral(patternReplacement, flagsReplacement) {
-			const range = regexNode.range;
-			if (!range) {
-				throw new Error("The regex literal node does not have a range associated with it.");
-			}
-			return {
-				loc: copyLoc(regexNode.loc),
-				fix(fixer) {
-					return fixer.replaceTextRange(
-						range,
-						toRegExpString({
-							source: patternReplacement,
-							flags: flagsReplacement,
-						})
-					);
-				},
-			};
-		},
-		replaceElement(element, replacement) {
-			return {
-				loc: locOfElement(regexNode, element),
-				fix(fixer) {
-					return replaceElement(fixer, regexNode, element, replacement);
-				},
-			};
-		},
-		replaceQuantifier(element, replacement) {
-			return {
-				loc: locOfQuantifier(regexNode, element),
-				fix(fixer) {
-					return replaceQuantifier(fixer, regexNode, element, replacement);
-				},
-			};
-		},
-		replaceFlags(replacement) {
-			return {
-				loc: locOfRegexFlags(regexNode),
-				fix(fixer) {
-					return replaceFlags(fixer, regexNode, replacement);
-				},
-			};
-		},
-
-		removeElement(element) {
+		removeElement(element, options) {
 			const parent = element.parent;
 
 			if (parent && parent.type === "Alternative" && parent.elements.length === 1) {
@@ -171,17 +197,18 @@ function createListenerContext(regexNode: RegExpLiteral): RegexRuleListenerConte
 
 					// if this element was removed, the pattern's source would be an empty string which
 					// is invalid (//), so replace it with an empty non-capturing group instead.
-					return listenerContext.replaceElement(element, "(?:)");
+					return replaceElementImpl(element, "(?:)", options);
 				}
 			}
 
 			if (parent && parent.type === "Quantifier") {
 				// if this element was removed, the quantifier will quantify the preceding element.
-				return listenerContext.replaceElement(element, "(?:)");
+				return replaceElementImpl(element, "(?:)", options);
 			}
 
-			return listenerContext.replaceElement(element, "");
+			return replaceElementImpl(element, "", options);
 		},
+
 		parseExpression(expression) {
 			return getPattern(expression, regexNode.regex.flags.indexOf("u") != -1);
 		},
@@ -204,7 +231,31 @@ export function createRuleListener(listener: (context: RegexRuleListenerContext)
 	};
 }
 
-export function copyLoc(loc: SourceLocation | undefined | null): SourceLocation {
+/**
+ * The location of a RegExpp element (all nodes except the flags).
+ */
+interface ElementLocation {
+	start: number;
+	end: number;
+}
+function elementLocUnion(array: readonly Readonly<ElementLocation>[]): ElementLocation | undefined {
+	if (array.length === 0) {
+		return undefined;
+	} else {
+		let start = array[0].start;
+		let end = array[0].end;
+		for (const item of array) {
+			start = Math.min(start, item.start);
+			end = Math.max(end, item.end);
+		}
+		return { start, end };
+	}
+}
+function elementLocOfQuantifier(element: Readonly<Quantifier>): ElementLocation {
+	return { start: element.element.end, end: element.end };
+}
+
+function copyLoc(loc: SourceLocation | undefined | null): SourceLocation {
 	if (!loc) {
 		throw new Error("The node does not include source location information!");
 	}
@@ -213,31 +264,24 @@ export function copyLoc(loc: SourceLocation | undefined | null): SourceLocation 
 		end: { ...loc.end },
 	};
 }
-export function locOfRegexFlags(node: RegExpLiteral): SourceLocation {
-	const loc = copyLoc(node.loc);
-	const flagCount = Math.max(1, node.regex.flags.length);
-	loc.start.column = loc.end.column - flagCount;
-	return loc;
-}
-export function locOfElement(node: RegExpLiteral, element: Node): SourceLocation {
+function locOfElement(node: RegExpLiteral, element: Readonly<ElementLocation>): SourceLocation {
 	const loc = copyLoc(node.loc);
 	const offset = loc.start.column + "/".length;
 	loc.start.column = offset + element.start;
 	loc.end.column = offset + element.end;
 	return loc;
 }
-export function locOfQuantifier(node: RegExpLiteral, element: Quantifier): SourceLocation {
+function locOfRegexFlags(node: RegExpLiteral): SourceLocation {
 	const loc = copyLoc(node.loc);
-	const offset = loc.start.column + "/".length;
-	loc.start.column = offset + element.element.end;
-	loc.end.column = offset + element.end;
+	const flagCount = Math.max(1, node.regex.flags.length);
+	loc.start.column = loc.end.column - flagCount;
 	return loc;
 }
 
-export function replaceElement(
+function replaceElement(
 	fixer: Rule.RuleFixer,
 	node: RegExpLiteral,
-	element: Node,
+	element: Readonly<ElementLocation>,
 	replacement: string
 ): Rule.Fix {
 	if (!node.range) {
@@ -247,31 +291,27 @@ export function replaceElement(
 	const offset = node.range[0] + "/".length;
 	return fixer.replaceTextRange([offset + element.start, offset + element.end], replacement);
 }
-export function replaceQuantifier(
-	fixer: Rule.RuleFixer,
-	node: RegExpLiteral,
-	element: Quantifier,
-	replacement: string
-): Rule.Fix {
-	if (!node.range) {
-		throw new Error("The given node does not have range information.");
-	}
-
-	const offset = node.range[0] + "/".length;
-	return fixer.replaceTextRange([offset + element.element.end, offset + element.end], replacement);
-}
 /**
  * Replaces the flags of the given regex literal with the given string.
- *
- * This will actually replace the whole literal as well because the flags affect the whole pattern.
  */
-export function replaceFlags(fixer: Rule.RuleFixer, node: RegExpLiteral, replacement: string): Rule.Fix {
+function replaceFlags(fixer: Rule.RuleFixer, node: RegExpLiteral, replacement: string): Rule.Fix {
 	if (!node.range) {
 		throw new Error("The given node does not have range information.");
 	}
 
-	const raw = `/${node.regex.pattern}/${replacement}`;
-	return fixer.replaceTextRange(node.range, raw);
+	const start = node.range[1] - node.regex.flags.length;
+	return fixer.replaceTextRange([start, node.range[1]], replacement);
+}
+
+function toArray<T>(value: T | readonly T[] | undefined): readonly T[] {
+	if (Array.isArray(value)) {
+		return value;
+	} else if (value === undefined) {
+		return [];
+	} else {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		return [value as any];
+	}
 }
 
 export const repoTreeRoot = "https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master";

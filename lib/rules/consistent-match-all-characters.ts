@@ -104,7 +104,7 @@ export default {
 				nodesToReplace.forEach(({ node, message, replacement }) => {
 					context.report({
 						message: message,
-						...replaceElement(node, replacement),
+						...replaceElement(node, replacement, { dependsOnFlags: true }),
 					});
 				});
 			} else {

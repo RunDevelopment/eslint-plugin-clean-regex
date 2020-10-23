@@ -356,7 +356,10 @@ export default {
 
 						context.report({
 							message: `This can be replaced with ${mention(replacement)}.`,
-							...replaceElement(node, replacement),
+							...replaceElement(node, replacement, {
+								// the replacement might depend on the i flag
+								dependsOnFlags: true,
+							}),
 						});
 					}
 					return;
@@ -411,7 +414,10 @@ export default {
 
 						context.report({
 							message: `This can be replaced with ${mention(displayRaw)}.`,
-							...replaceElement(node, newRaw),
+							...replaceElement(node, newRaw, {
+								// the replacement might depend on the i flag
+								dependsOnFlags: true,
+							}),
 							...reportElements(changedNodes),
 						});
 						return;

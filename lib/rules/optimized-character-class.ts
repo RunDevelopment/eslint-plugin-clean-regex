@@ -122,7 +122,10 @@ export default {
 						if (replaceElement) {
 							context.report({
 								message,
-								...replaceElement(element, replacement),
+								...replaceElement(element, replacement, {
+									// the replacement might depend on the i flag.
+									dependsOnFlags: true,
+								}),
 							});
 						} else {
 							context.report({
