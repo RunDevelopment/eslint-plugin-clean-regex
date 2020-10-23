@@ -67,7 +67,7 @@ After:
 ```js
 /\d/
 /\S/
-/[a-f\d]/i
+/[a-f0-9]/i
 /[\w-]/
 /\w/
 /\S/
@@ -80,18 +80,20 @@ Before:
 
 ```js
 /(?:\w|\d)+/
-/(?:a|b|(?:c)|d|(?:ee)){0,}/
-/a+(?=$)/mi
+/(?:a|(b)|c|(?:d)|(?:ee)){0,}/
+/(?<!\w)a+(?=$)/mi
 /[\s\S]#[\0-\uFFFF]/ysi
+/\d*\w(?:[a-z_]|\d+)*/im
 ```
 
 After:
 
 ```js
 /\w+/
-/(?:[abcd]|ee)*/
-/a+$/im
+/(?:[acd]|(b)|ee)*/
+/\ba+$/im
 /.#./sy
+/\w+/
 ```
 
 ### Detect non-functional code and potential errors

@@ -3,6 +3,8 @@ const fs = require("fs").promises;
 require('ts-node').register({});
 const { repoTreeRoot, filenameToRule } = require("./lib/rules-util");
 const configs = require("./lib/configs").default;
+const eslint = require("eslint");
+
 
 /**
  * @param {Record<string, T>} obj
@@ -11,6 +13,31 @@ const configs = require("./lib/configs").default;
  */
 function values(obj) {
 	return Object.keys(obj).map(k => obj[k]);
+}
+
+/**
+ * Applies all ESLint fixes of this plugin to the given code.
+ *
+ * @param {string} code
+ * @returns {string}
+ */
+function fixCode(code) {
+	const linter = new eslint.Linter();
+
+	const rules = require("./lib/index").rules;
+	for (const name in rules) {
+		if (rules.hasOwnProperty(name)) {
+			linter.defineRule("clean-regex/" + name, rules[name]);
+		}
+	}
+
+	return linter.verifyAndFix(code, {
+		parserOptions: {
+			ecmaVersion: 2019,
+			sourceType: "script"
+		},
+		...configs.recommended
+	}).output;
 }
 
 /**
@@ -95,10 +122,32 @@ async function readme() {
 		.join("\n");
 
 	let readme = await fs.readFile("./README.md", "utf8");
+
+	// insert the rule table
 	readme = readme.replace(
 		/(^<!-- BEGIN RULES -->)[\s\S]*?(?=^<!-- END RULES -->)/m,
 		"$1\n" + generatedMd.trim() + "\n"
 	);
+
+	// simplify the examples
+	readme = readme.replace(/^Before:\s*^```js($[\s\S]+?)^```\s*^After:\s*^```js$[\s\S]+?^```/gm, (_, b) => {
+		const before = String(b).trim().split(/\r?\n/g);
+		const after = before.map(c => fixCode(c));
+
+		return [
+			"Before:",
+			"",
+			"```js",
+			...before,
+			"```",
+			"",
+			"After:",
+			"",
+			"```js",
+			...after,
+			"```",
+		].join("\n");
+	});
 
 	await fs.writeFile("./README.md", readme, "utf8");
 }
