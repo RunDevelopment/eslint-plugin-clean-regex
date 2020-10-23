@@ -32,7 +32,7 @@ harder to reason about. Examples of non-disjoint alternatives include:
     Example: `/(Foo|\w+)\b/`
 
     If an alternative is a superset of a previous alternative, the previous
-    alternative might be unnecessary. This has to be decided on a case-by-case
+    alternative _might_ be unnecessary. This has to be decided on a case-by-case
     basis whether the previous subset alternative can be removed.
 
     (In the above example, the `Foo` alternative can be removed but only because
@@ -52,7 +52,7 @@ all other cases, it's not so simple.
 
 One of the main problems when trying to make alternatives disjoint is that the
 order of alternatives matters. Whether alternatives can be prefixes of each
-other, lookarounds, and assertions all have to be taken into account also.
+other, lookarounds, and assertions all have to be taken into account as well.
 
 #### Example 1
 
@@ -87,38 +87,43 @@ will match the whole string.
 Where the behavior of the pattern is intentional or not has to be decided by the
 programmer. This rule only points out potential mistakes.
 
-Assuming that the pattern behaves correctly, a equivalent version with disjoint
+Assuming that the pattern behaves correctly, an equivalent version with disjoint
 alternatives can be obtained using a lookahead like this: `/Foo|(?!Foo)\w+/`. An
 equivalent pattern without lookaheads is
-`/F(?:o(?:o|[\dA-Za-np-z_]\w*)?|[\dA-Za-np-z_]\w*)?|[\dA-EG-Za-z_]\w*/`.
+`/F(?:o(?:o|[\dA-Za-np-z_]\w*)?|[\dA-Za-np-z_]\w*)?|[\dA-EG-Za-z_]\w*/`. The
+pattern without lookaheads may look daunting (because it is) but this isn't
+always the case. If the subset alternative is only a single character long (e.g.
+`/\d|\w+/`), then the disjoint lookahead pattern (e.g. `/\d|(?!\d)\w+/`) and the
+lookahead-free pattern (e.g. `/\d|[A-Za-z_]\w*/`) can be similarly complex.
 
-**Note:** Because of the limitations of this rule, alternatives containing
-lookaheads cannot be analyzed. This means that almost any lookahead will prevent
-the warning simply because the patterns cannot be analyzed.
+**Note:** Because of the limitations the analysis of this rule, alternatives
+containing lookaheads cannot be analyzed. This means that almost any lookahead
+will prevent warnings simply because the patterns cannot be analyzed. If
+possible, try to avoid using lookaheads to make alternatives disjoint.
 
 #### Example 2
 
-A pattern to match number of like `123`, `.123`, `123.`, and `123.456` might
-written like this: `/(?<![\d.])(?:\d*\.\d+|\d+\.\d*|\d+)(?![\d.])/`. For this
-pattern, we'll get the following warning:
+A pattern to match numbers like `123`, `.123`, `123.`, and `123.456` might be
+written like this: `/^(?:\d*\.\d+|\d+\.\d*|\d+)$/`. For this pattern, we'll get
+the following warning:
 
 ```
-/(?<![\d.])(?:\d*\.\d+|\d+\.\d*|\d+)(?![\d.])/
-                       ^~~~~~~~
+/^(?:\d*\.\d+|\d+\.\d*|\d+)$/
+              ^~~~~~~~
 This alternative is not disjoint with `\d*\.\d+`. The shared language is /\d+\.\d+/i.
 ```
 
-As warning points out, all numbers of the form `/\d+\.\d+/i` (e.g. `123.456`)
-can be matched by both the `\d*\.\d+` alternative and the `\d+\.\d*`
+As the warning points out, all numbers of the form `/\d+\.\d+/i` (e.g.
+`123.456`) can be matched by both the `\d*\.\d+` alternative and the `\d+\.\d*`
 alternative.
 
-While the alternatives aren't disjoint, it isn't necessarily a problem. The
+While the alternatives aren't disjoint, this isn't necessarily a problem. The
 pattern is guarded by lookarounds, so we don't have to worry about the order of
-alternatives and only a prefix of the input string being matched (see example
-1). Since the pattern behaves correctly, the programmer might choose to either
+alternatives or only a prefix of the input string being matched (see example 1).
+Since the pattern behaves correctly, the programmer might choose to either
 disable this rule of the pattern or to rewrite the pattern to make the
-alternatives disjoint. The latter option should be preferred to get warnings
-should the pattern change in the future.
+alternatives disjoint. The latter option should be preferred to get warnings if
+should the pattern changed in the future.
 
 One way to make alternatives disjoint is to make sure that the first character
 of all alternatives is different.
@@ -131,7 +136,7 @@ types all start with many digits, so let's write it as `\d+(?:\.|\.\d+)?` which
 can be simplified to `\d+(?:\.\d*)?`.
 
 Putting it all together, the full pattern with disjoint alternatives is
-`/(?<![\d.])(?:\.\d+|\d+(?:\.\d*)?)(?![\d.])/`.
+`/^(?:\.\d+|\d+(?:\.\d*)?)$/`.
 
 ### Exponential backtracking
 

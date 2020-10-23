@@ -35,5 +35,5 @@ Examples of **invalid** code for this rule:
 ```js
 /[A-\x43]/   // what's \x43? Bring me my ASCII table!
 /[\41-\x45]/ // the minimum isn't hexadecimal
-/[*/+-^&|]/  // because of +-^ it also matches all characters A-Z (among other)
+/[*/+-^&|]/  // because of +-^, it also matches all characters A-Z (among other)
 ```
