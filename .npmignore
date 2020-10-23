@@ -1,9 +1,0 @@
-.github/
-.vscode/
-docs/
-tests/
-
-.eslintignore
-.eslintrc
-gulpfile.js
-tsconfig.json

@@ -60,5 +60,8 @@
   },
   "lint-staged": {
     "*.ts": "eslint --cache --fix"
-  }
+  },
+  "files": [
+    "dist/**/*.js"
+  ]
 }
