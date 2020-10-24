@@ -1,15 +1,23 @@
 import { CharacterClassElement, CharacterClassRange } from "regexpp/ast";
+import { mention } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { assertNever, emptyCharSet, minimalHexEscape, toCharSet } from "../util";
+import { assertNever, emptyCharSet, minimalHexEscape as hexEscape, toCharSet } from "../util";
 
-function elementToString(element: CharacterClassElement): string {
+function mentionCharElement(element: CharacterClassElement): string {
 	switch (element.type) {
 		case "Character":
-			return `${element.raw} (${minimalHexEscape(element.value)})`;
+			return `${mention(element)} (${hexEscape(element.value)})`;
 		case "CharacterClassRange":
-			return `${element.raw} (${minimalHexEscape(element.min.value)}-${minimalHexEscape(element.max.value)})`;
+			return `${mention(element)} (${hexEscape(element.min.value)}-${hexEscape(element.max.value)})`;
 		case "CharacterSet":
-			return element.raw;
+			switch (element.kind) {
+				case "digit":
+					return `${mention(element)} ([${element.negate ? "^" : ""}0-9])`;
+				case "word":
+					return `${mention(element)} ([${element.negate ? "^" : ""}0-9A-Za-z_])`;
+				default:
+					return mention(element);
+			}
 		default:
 			throw assertNever(element);
 	}
@@ -46,7 +54,7 @@ export default {
 
 						if (range.min.value === range.max.value) {
 							reports.set(range, {
-								message: `${elementToString(range)} contains only a single value.`,
+								message: `${mentionCharElement(range)} contains only a single value.`,
 								replacement: range.min.raw === "-" ? "\\-" : range.min.raw,
 							});
 						}
@@ -55,7 +63,7 @@ export default {
 							const min = range.min.raw === "-" ? "\\-" : range.min.raw;
 							const max = range.max.raw === "-" ? "\\-" : range.max.raw;
 							reports.set(range, {
-								message: `${elementToString(range)} contains only its two ends.`,
+								message: `${mentionCharElement(range)} contains only its two ends.`,
 								replacement: min + max,
 							});
 						}
@@ -101,16 +109,16 @@ export default {
 
 								if (simpleSuper === undefined) {
 									reports.set(current, {
-										message: `${elementToString(
+										message: `${mentionCharElement(
 											current
 										)} is already included by some combination of other elements.`,
 										replacement: "",
 									});
 								} else {
 									reports.set(current, {
-										message: `${elementToString(current)} is already included by ${elementToString(
-											simpleSuper
-										)}.`,
+										message: `${mentionCharElement(
+											current
+										)} is already included by ${mentionCharElement(simpleSuper)}.`,
 										replacement: "",
 									});
 								}
@@ -119,7 +127,7 @@ export default {
 					}
 
 					for (const [element, { message, replacement }] of reports) {
-						if (replaceElement) {
+						if (replacement) {
 							context.report({
 								message,
 								...replaceElement(element, replacement, {
@@ -130,7 +138,10 @@ export default {
 						} else {
 							context.report({
 								message,
-								...removeElement(element),
+								...removeElement(element, {
+									// the replacement might depend on the i flag.
+									dependsOnFlags: true,
+								}),
 							});
 						}
 					}
