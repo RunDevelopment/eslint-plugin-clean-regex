@@ -1,6 +1,6 @@
 const { series } = require("gulp");
 const fs = require("fs").promises;
-require('ts-node').register({});
+require('ts-node').register({ transpileOnly: true });
 const { repoTreeRoot, filenameToRule } = require("./lib/rules-util");
 const configs = require("./lib/configs").default;
 const eslint = require("eslint");
