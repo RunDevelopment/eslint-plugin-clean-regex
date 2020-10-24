@@ -1,5 +1,6 @@
 import { FiniteAutomaton, JS } from "refa";
-import { Node } from "regexpp/ast";
+import { CharacterClassElement, Node } from "regexpp/ast";
+import { assertNever, minimalHexEscape as hexEscape } from "./util";
 
 interface Literal {
 	readonly source: string;
@@ -46,6 +47,29 @@ export function toRegExpString(value: Literal | FiniteAutomaton): string {
  */
 export function mention(node: Node | string): string {
 	return "`" + (typeof node === "string" ? node : node.raw) + "`";
+}
+
+/**
+ * A version of `mention` that add some details about the character class element mentioned.
+ */
+export function mentionCharElement(element: CharacterClassElement): string {
+	switch (element.type) {
+		case "Character":
+			return `${mention(element)} (${hexEscape(element.value)})`;
+		case "CharacterClassRange":
+			return `${mention(element)} (${hexEscape(element.min.value)}-${hexEscape(element.max.value)})`;
+		case "CharacterSet":
+			switch (element.kind) {
+				case "digit":
+					return `${mention(element)} ([${element.negate ? "^" : ""}0-9])`;
+				case "word":
+					return `${mention(element)} ([${element.negate ? "^" : ""}0-9A-Za-z_])`;
+				default:
+					return mention(element);
+			}
+		default:
+			throw assertNever(element);
+	}
 }
 
 export function many(count: number, unit: string, unitPlural?: string): string {

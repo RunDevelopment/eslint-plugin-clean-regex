@@ -1,5 +1,6 @@
 import { RegExpParser } from "regexpp";
 import { Character, CharacterClass, CharacterSet, Flags } from "regexpp/ast";
+import { mentionCharElement } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { toCharSet } from "../util";
 
@@ -12,6 +13,7 @@ interface LiteralEscape {
 	name: string | undefined;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function processLiteralEscapeOption(literalOptions: readonly any[]): LiteralEscape[] {
 	const escapes: LiteralEscape[] = [];
 
@@ -340,7 +342,9 @@ export default {
 								case "disallow":
 									if (isEscaped) {
 										context.report({
-											message: `The character should be unescaped${causedBy}.`,
+											message: `The character ${mentionCharElement(
+												node
+											)} should be unescaped${causedBy}.`,
 											...replaceElement(node, toggled),
 										});
 									}
@@ -349,7 +353,9 @@ export default {
 								case "require":
 									if (!isEscaped) {
 										context.report({
-											message: `The character should be escaped${causedBy}.`,
+											message: `The character ${mentionCharElement(
+												node
+											)} should be escaped${causedBy}.`,
 											...replaceElement(node, toggled),
 										});
 									}

@@ -1,27 +1,7 @@
 import { CharacterClassElement, CharacterClassRange } from "regexpp/ast";
-import { mention } from "../format";
+import { mentionCharElement } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { assertNever, emptyCharSet, minimalHexEscape as hexEscape, toCharSet } from "../util";
-
-function mentionCharElement(element: CharacterClassElement): string {
-	switch (element.type) {
-		case "Character":
-			return `${mention(element)} (${hexEscape(element.value)})`;
-		case "CharacterClassRange":
-			return `${mention(element)} (${hexEscape(element.min.value)}-${hexEscape(element.max.value)})`;
-		case "CharacterSet":
-			switch (element.kind) {
-				case "digit":
-					return `${mention(element)} ([${element.negate ? "^" : ""}0-9])`;
-				case "word":
-					return `${mention(element)} ([${element.negate ? "^" : ""}0-9A-Za-z_])`;
-				default:
-					return mention(element);
-			}
-		default:
-			throw assertNever(element);
-	}
-}
+import { emptyCharSet, toCharSet } from "../util";
 
 export default {
 	meta: {
