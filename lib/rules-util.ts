@@ -114,7 +114,10 @@ function createListenerContext(regexNode: RegExpLiteral): RegexRuleListenerConte
 
 			const patternReplacement =
 				pattern.substring(0, element.start) + replacement + pattern.substring(element.end);
-			return replaceLiteralImpl(patternReplacement, flags);
+			return {
+				loc: locOfElement(regexNode, element),
+				fix: replaceLiteralImpl(patternReplacement, flags).fix,
+			};
 		} else {
 			const region: ElementLocation = elementLocUnion([...toArray(options?.dependsOn), element]) ?? element;
 
