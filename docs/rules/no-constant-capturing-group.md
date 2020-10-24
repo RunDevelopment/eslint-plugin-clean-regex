@@ -29,7 +29,7 @@ Examples of **valid** code for this rule:
 /(a)/  // constant but it doesn't match the empty word
 ```
 
-Examples of **valid** code for this rule:
+Examples of **invalid** code for this rule:
 
 <!-- prettier-ignore -->
 ```js
@@ -39,7 +39,7 @@ Examples of **valid** code for this rule:
 
 ### `ignoreNonEmpty: boolean`
 
-If this option is get to `true`, the rule will ignore capturing groups that can
+If this option is set to `true`, the rule will ignore capturing groups that can
 match non-empty words. This option is `true` by default.
 
 #### `ignoreNonEmpty: false`
