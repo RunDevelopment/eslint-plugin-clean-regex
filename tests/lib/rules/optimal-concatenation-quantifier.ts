@@ -8,6 +8,7 @@ testRule(__filename, undefined, {
 		String(/\w{3,5}\d*/),
 		String(/a+b+c+d+[abc]+/),
 		String(/(?:a|::)?\w+/),
+		String(/aa?/),
 	],
 	invalid: [
 		{ code: String(/a\d*\d*a/), output: String(/a\d*a/), errors: 1 },

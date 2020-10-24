@@ -171,6 +171,11 @@ function getReplacement(current: Element, next: Element, flags: Flags): Replacem
 		const currChars = createChars(current, flags);
 		const nextChars = createChars(next.element, flags);
 
+		if (next.min === 0 && next.max === 1) {
+			// The pattern /aa?/ is extremely common and the replacement /a{1,2}/ is a lot less readable.
+			return null;
+		}
+
 		if (currChars.complete && nextChars.complete && currChars.chars.equals(nextChars.chars)) {
 			const raw = next.element.raw + quantToString(quantAdd(next, 1));
 			return {
