@@ -1,6 +1,35 @@
 # Changelog
 
 
+## 0.5.0 (2020-10-26)
+
+I ❤️ Typescript + Prettier! <br>
+The whole project is now implemented in Typescript and uses Prettier for formatting.
+
+### Added
+
+- `no-obscure-range`: A new rule to report most likely unintended ranges in character classes due to unescaped `-`s.
+- `no-empty-alternative`: A new rule to detect empty alternatives in groups and patterns that are likely a mistake.
+- `prefer-predefined-assertion`: This will suggest predefined assertions (`\b\B^$`) if a lookaround behaves like one.
+- `disjoint-alternatives`: A new rule to report disjoint alternatives to prevent mistakes and exponential backtracking.
+- `no-trivially-nested-quantifier`: A new rule to fix trivially quantifiers.
+
+### Changed
+
+- `no-unnecessary-group`: New option to allow non-capturing groups that wrap the whole regex.
+- `prefer-character-class`: The rule is now also active inside lookarounds, will reorder alternatives, and more aggressively merge into existing character classes.
+- `no-unnecessary-lazy`: It can now analyse single-character quantifiers.
+- `prefer-predefined-character-set`: It will now leave `0-9` as is.
+- `optimal-concatenation-quantifier`: It can now merge characters and quantifiers.
+- New rules table in README.
+- Better error messages for a lot of rules.
+
+### Fixed
+
+- `no-empty-lookaround` didn't handle backreferences correctly.
+- Many, many typos and other mistakes in the docs.
+
+
 ## 0.4.0 (2020-05-05)
 
 Clean regex now uses [refa](https://github.com/RunDevelopment/refa), a library for NFA and DFA operations and converting JS RegExp to NFA.
