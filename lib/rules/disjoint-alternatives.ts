@@ -23,7 +23,7 @@ export default {
 			function toNfa(alt: Alternative): ReadonlyNFA {
 				const result = parser.parseElement(alt, { lookarounds: "disable" });
 				const nfa = NFA.fromRegex(result.expression, { maxCharacter: result.maxCharacter });
-				nfa.removeEmptyWord();
+				nfa.withoutEmptyWord();
 				return nfa;
 			}
 
@@ -74,7 +74,7 @@ export default {
 						const altIndex = alternatives.indexOf(alt);
 						const beforeAlternatives = alternatives.slice(0, altIndex);
 
-						const intersection = NFA.intersect(total, nfa);
+						const intersection = NFA.fromIntersection(total, nfa);
 						const isSubset = nfaEquals(nfa, intersection);
 
 						// try to find the alternatives that are not disjoint with this one
@@ -98,10 +98,17 @@ export default {
 								message += " This alternative contains a capturing group so be careful when removing.";
 							}
 						} else {
+							let sharedLanguageMsg;
+							try {
+								sharedLanguageMsg = ` The shared language is ${toRegExpString(intersection)}.`;
+							} catch (e) {
+								// the regex of the intersection might be too big in which case the implementation will
+								// throw an error
+								sharedLanguageMsg = "";
+							}
 							message = isSuperset
 								? `This alternative is a superset of ${causeMsg}.`
-								: `This alternative is not disjoint with ${causeMsg}.` +
-								  ` The shared language is ${toRegExpString(intersection)}.`;
+								: `This alternative is not disjoint with ${causeMsg}.${sharedLanguageMsg}`;
 						}
 
 						// whether this ambiguity might cause exponential backtracking

@@ -22,7 +22,7 @@ import {
 	RegExpLiteral,
 	AnyCharacterSet,
 } from "regexpp/ast";
-import { JS, DFA, CharSet, NFA, ReadonlyNFA, NFAOptions } from "refa";
+import { JS, DFA, CharSet, NFA, ReadonlyNFA } from "refa";
 
 export interface FirstChar {
 	/**
@@ -1505,9 +1505,9 @@ export function nfaEquals(a: ReadonlyNFA, b: ReadonlyNFA): boolean {
 		return false;
 	}
 
-	const aDfa = DFA.fromNFA(a);
+	const aDfa = DFA.fromFA(a);
 	aDfa.minimize();
-	const bDfa = DFA.fromNFA(b);
+	const bDfa = DFA.fromFA(b);
 	bDfa.minimize();
 
 	return aDfa.structurallyEqual(bDfa);
@@ -1520,7 +1520,7 @@ export function nfaIsSupersetOf(superset: ReadonlyNFA, subset: ReadonlyNFA): boo
 export function nfaIsSubsetOf(subset: ReadonlyNFA, superset: ReadonlyNFA): boolean {
 	return nfaIsSupersetOf(superset, subset);
 }
-export function nfaUnionAll(nfas: Iterable<ReadonlyNFA>, options: Readonly<NFAOptions>): NFA {
+export function nfaUnionAll(nfas: Iterable<ReadonlyNFA>, options: Readonly<NFA.Options>): NFA {
 	const total = NFA.empty(options);
 	for (const nfa of nfas) {
 		total.union(nfa);

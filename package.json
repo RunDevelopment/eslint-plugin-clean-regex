@@ -25,7 +25,7 @@
     "test": "mocha -r ts-node/register 'tests/**/*.ts'"
   },
   "dependencies": {
-    "refa": "0.4.1",
+    "refa": "^0.5.0",
     "regexpp": "^3.1.0"
   },
   "devDependencies": {
