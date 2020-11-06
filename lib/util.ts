@@ -21,10 +21,11 @@ import {
 	CharacterClassRange,
 	RegExpLiteral,
 	AnyCharacterSet,
+	EdgeAssertion,
 } from "regexpp/ast";
 import { JS, DFA, CharSet, NFA, ReadonlyNFA } from "refa";
 
-export interface FirstChar {
+export interface FirstLookChar {
 	/**
 	 * A super set of the first character.
 	 *
@@ -33,13 +34,59 @@ export interface FirstChar {
 	 */
 	char: CharSet;
 	/**
-	 * If `false`, then the first character also includes the empty word.
+	 * If `true`, then the first character can the start/end of the string.
 	 */
-	nonEmpty: boolean;
+	edge: boolean;
 	/**
 	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
 	 */
 	exact: boolean;
+}
+export type FirstConsumedChar = FirstFullyConsumedChar | FirstPartiallyConsumedChar;
+/**
+ * This is equivalent to a regex fragment `[char]`.
+ */
+export interface FirstFullyConsumedChar {
+	/**
+	 * A super set of the first character.
+	 *
+	 * We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
+	 * set.
+	 */
+	char: CharSet;
+	/**
+	 * If `true`, then the first character also includes the empty word.
+	 */
+	empty: false;
+	/**
+	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
+	 */
+	exact: boolean;
+}
+/**
+ * This is equivalent to a regex fragment `[char]|(?=[look.char])` or `[char]|(?=[look.char]|$)` depending on
+ * `look.edge`.
+ */
+export interface FirstPartiallyConsumedChar {
+	/**
+	 * A super set of the first character.
+	 *
+	 * We can usually only guarantee a super set because lookaround in the pattern may narrow down the actual character
+	 * set.
+	 */
+	char: CharSet;
+	/**
+	 * If `true`, then the first character also includes the empty word.
+	 */
+	empty: true;
+	/**
+	 * If `true`, then `char` is guaranteed to be exactly the first character and not just a super set of it.
+	 */
+	exact: boolean;
+	/**
+	 * A set of characters that may come after the consumed character
+	 */
+	look: FirstLookChar;
 }
 
 /**
@@ -1035,6 +1082,11 @@ export function matchingDirection(node: Node): MatchingDirection {
 export function invertMatchingDirection(direction: LookaroundAssertion["kind"] | MatchingDirection): MatchingDirection {
 	return direction === "ltr" || direction === "lookahead" ? "rtl" : "ltr";
 }
+export function assertionKindToMatchingDirection(
+	kind: LookaroundAssertion["kind"] | EdgeAssertion["kind"]
+): MatchingDirection {
+	return kind === "end" || kind === "lookahead" ? "ltr" : "rtl";
+}
 
 /**
  * Returns whether the given element contains or is an assertion that looks into the given direction.
@@ -1105,6 +1157,27 @@ export function emptyCharSet(flags: Partial<Flags>): CharSet {
 		return EMPTY_UNICODE_CHARSET;
 	} else {
 		return EMPTY_UTF16_CHARSET;
+	}
+}
+const ALL_UTF16_CHARSET = CharSet.all(0xffff);
+const ALL_UNICODE_CHARSET = CharSet.all(0x10ffff);
+/**
+ * Returns a full character set for the given flags.
+ */
+export function allCharSet(flags: Partial<Flags>): CharSet {
+	if (flags.unicode) {
+		return ALL_UNICODE_CHARSET;
+	} else {
+		return ALL_UTF16_CHARSET;
+	}
+}
+const LINE_TERMINATOR_UTF16_CHARSET = JS.createCharSet([{ kind: "any" }], { unicode: false }).negate();
+const LINE_TERMINATOR_UNICODE_CHARSET = JS.createCharSet([{ kind: "any" }], { unicode: true }).negate();
+export function lineTerminatorCharSet(flags: Partial<Flags>): CharSet {
+	if (flags.unicode) {
+		return LINE_TERMINATOR_UNICODE_CHARSET;
+	} else {
+		return LINE_TERMINATOR_UTF16_CHARSET;
 	}
 }
 
@@ -1191,54 +1264,87 @@ export function getLengthRange(element: Element | Alternative | Alternative[]): 
  * If `exact` is `true` then it is guaranteed that the returned character is guaranteed to be the actual
  * character at all times if this element is not influenced by lookarounds outside itself.
  */
-export function getFirstCharOf(
+export function getFirstCharConsumedBy(
 	element: Element | Alternative | Alternative[],
 	direction: MatchingDirection,
 	flags: Flags
-): FirstChar {
+): FirstConsumedChar {
 	if (Array.isArray(element)) {
-		let nonEmpty = true;
-		let exact = true;
-		let char = emptyCharSet(flags);
-
-		for (const alt of element) {
-			const altChar = getFirstCharOf(alt, direction, flags);
-			char = char.union(altChar.char);
-			nonEmpty = nonEmpty && altChar.nonEmpty;
-			exact = exact && altChar.exact;
-		}
-
-		return { char, nonEmpty, exact };
+		return firstConsumedCharUnion(
+			element.map(e => getFirstCharConsumedBy(e, direction, flags)),
+			flags
+		);
 	}
 
 	switch (element.type) {
 		case "Assertion":
-			return { char: emptyCharSet(flags), nonEmpty: false, exact: true };
+			switch (element.kind) {
+				case "word":
+					return misdirectedAssertion();
+				case "end":
+				case "start":
+					if (assertionKindToMatchingDirection(element.kind) === direction) {
+						if (flags.multiline) {
+							return lineAssertion();
+						} else {
+							return edgeAssertion();
+						}
+					} else {
+						return misdirectedAssertion();
+					}
+				case "lookahead":
+				case "lookbehind":
+					if (assertionKindToMatchingDirection(element.kind) === direction) {
+						if (element.negate) {
+							// we can only meaningfully analyse negative lookarounds of the form `(?![a])`
+							if (hasSomeDescendant(element, d => d !== element && d.type === "Assertion")) {
+								return misdirectedAssertion();
+							}
+							const firstChar = getFirstCharConsumedBy(element.alternatives, direction, flags);
+							if (firstChar.empty) {
+								// trivially rejecting
+								return { char: emptyCharSet(flags), empty: false, exact: true };
+							} else if (!firstChar.exact) {
+								// the goal to to convert `(?![a])` to `(?=[^a]|$)` but this negation is only correct
+								// if the characters are exact
+								return misdirectedAssertion();
+							} else if (getLengthRange(element.alternatives).max !== 1) {
+								// if the negative lookaround asserts more than 1 char, then the first character of the
+								// negation is always the full (all) char set.
+								// E.g. `(?![a][b])` == `(?=$|[^a]|[a][^b])`
+								return misdirectedAssertion();
+							} else {
+								return emptyWord({ char: firstChar.char.negate(), edge: true, exact: true });
+							}
+						} else {
+							const firstChar = getFirstCharConsumedBy(element.alternatives, direction, flags);
+							return emptyWord(firstConsumedToLook(firstChar));
+						}
+					} else {
+						return misdirectedAssertion();
+					}
+				default:
+					throw assertNever(element);
+			}
 
 		case "Character":
 		case "CharacterSet":
-			return { char: toCharSet([element], flags), nonEmpty: true, exact: true };
+			return { char: toCharSet([element], flags), empty: false, exact: true };
 
 		case "CharacterClass":
-			return { char: toCharSet(element, flags), nonEmpty: true, exact: true };
+			return { char: toCharSet(element, flags), empty: false, exact: true };
 
 		case "Quantifier": {
 			if (element.max === 0) {
-				return { char: emptyCharSet(flags), nonEmpty: false, exact: true };
+				return emptyWord();
 			}
-			const elementChar = getFirstCharOf(element.element, direction, flags);
-			let exact = elementChar.exact;
-			if (exact && element.max > 1 && hasAssertionWithDirection(element, invertMatchingDirection(direction))) {
-				// This is a conservative approximation!
-				// The main idea here is that the first char of element of /((?<!a)\w)+/ is exactly \w
-				// but the lookbehind will influence \w, so \w isn't exact.
-				exact = false;
+
+			const firstChar = getFirstCharConsumedBy(element.element, direction, flags);
+			if (element.min === 0) {
+				return firstConsumedCharUnion([emptyWord(), firstChar], flags);
+			} else {
+				return firstChar;
 			}
-			return {
-				char: elementChar.char,
-				nonEmpty: elementChar.nonEmpty && element.min > 0,
-				exact: exact,
-			};
 		}
 
 		case "Alternative": {
@@ -1248,66 +1354,257 @@ export function getFirstCharOf(
 				elements.reverse();
 			}
 
-			let nonEmpty = false;
-			let exact = true;
-			let char = emptyCharSet(flags);
-			for (let i = 0; i < elements.length; i++) {
-				const e = elements[i];
-				const eChar = getFirstCharOf(e, direction, flags);
-				char = char.union(eChar.char);
-				exact = exact && eChar.exact;
-
-				if (eChar.nonEmpty) {
-					nonEmpty = true;
-					if (exact) {
-						const rest = elements.slice(i + 1);
-						const invDir = invertMatchingDirection(direction);
-						if (rest.some(r => hasAssertionWithDirection(r, invDir))) {
-							// This is a conservative approximation!
-							// Example: /\w(?<=a)/
-							exact = false;
-						}
+			return firstConsumedCharConcat(
+				(function* (): Iterable<FirstConsumedChar> {
+					for (const e of elements) {
+						yield getFirstCharConsumedBy(e, direction, flags);
 					}
-					break;
-				} else {
-					if (hasAssertionWithDirection(e, direction)) {
-						// This is a conservative approximation!
-						// Example: /(?=a)\w/
-						exact = false;
-					}
-				}
-			}
-
-			return { char, nonEmpty, exact };
+				})(),
+				flags
+			);
 		}
 
 		case "CapturingGroup":
 		case "Group":
-			return getFirstCharOf(element.alternatives, direction, flags);
+			return getFirstCharConsumedBy(element.alternatives, direction, flags);
 
 		case "Backreference": {
 			if (isEmptyBackreference(element)) {
-				return { char: emptyCharSet(flags), nonEmpty: false, exact: true };
+				return emptyWord();
 			}
-			const resolvedChar = getFirstCharOf(element.resolved, direction, flags);
+			const resolvedChar = getFirstCharConsumedBy(element.resolved, direction, flags);
 
-			let exact = resolvedChar.exact;
-			if (exact) {
-				// the resolved character is only exact if it is only a single character.
-				// i.e. /(\w)\1/ here the (\w) will capture exactly any word character, but the \1 can only match
-				// one word character and that is the only (\w) matched.
-				exact = resolvedChar.char.size === 1;
+			// the resolved character is only exact if it is only a single character.
+			// i.e. /(\w)\1/ here the (\w) will capture exactly any word character, but the \1 can only match
+			// one word character and that is the only (\w) matched.
+			resolvedChar.exact = resolvedChar.exact && resolvedChar.char.size <= 1;
+
+			if (backreferenceAlwaysAfterGroup(element)) {
+				return resolvedChar;
+			} else {
+				// there is at least one path through which the backreference will (possibly) be replaced with the
+				// empty string
+				return firstConsumedCharUnion([resolvedChar, emptyWord()], flags);
 			}
-
-			return {
-				char: resolvedChar.char,
-				nonEmpty: resolvedChar.nonEmpty && backreferenceAlwaysAfterGroup(element),
-				exact,
-			};
 		}
 
 		default:
 			throw assertNever(element);
+	}
+
+	/**
+	 * The result for an assertion that (partly) assert for the wrong matching direction.
+	 */
+	function misdirectedAssertion(): FirstPartiallyConsumedChar {
+		return emptyWord({
+			char: allCharSet(flags),
+			edge: true,
+			// This is the important part.
+			// Since the allowed chars depend on the previous chars, we don't know which will be allowed.
+			exact: false,
+		});
+	}
+	function edgeAssertion(): FirstPartiallyConsumedChar {
+		return emptyWord(firstLookCharEdgeAccepting(flags));
+	}
+	function lineAssertion(): FirstPartiallyConsumedChar {
+		return emptyWord({
+			char: lineTerminatorCharSet(flags),
+			edge: true,
+			exact: true,
+		});
+	}
+	function emptyWord(look?: FirstLookChar): FirstPartiallyConsumedChar {
+		return firstConsumedCharEmptyWord(flags, look);
+	}
+}
+/**
+ * Returns first-look-char that is equivalent to a trivially-accepting lookaround.
+ */
+function firstLookCharTriviallyAccepting(flags: Flags): FirstLookChar {
+	return { char: allCharSet(flags), edge: true, exact: true };
+}
+/**
+ * Returns first-look-char that is equivalent to `/$/`.
+ */
+function firstLookCharEdgeAccepting(flags: Flags): FirstLookChar {
+	return { char: emptyCharSet(flags), edge: true, exact: true };
+}
+/**
+ * Returns first-consumed-char that is equivalent to consuming nothing (the empty word) followed by a trivially
+ * accepting lookaround.
+ */
+function firstConsumedCharEmptyWord(flags: Flags, look?: FirstLookChar): FirstPartiallyConsumedChar {
+	return {
+		char: emptyCharSet(flags),
+		empty: true,
+		exact: true,
+		look: look ?? firstLookCharTriviallyAccepting(flags),
+	};
+}
+class CharUnion {
+	char: CharSet;
+	exact: boolean;
+	private constructor(char: CharSet) {
+		this.char = char;
+		this.exact = true;
+	}
+	add(char: CharSet, exact: boolean): void {
+		// basic idea here is that the union or an exact superset with an inexact subset will be exact
+		if (this.exact && !exact && !this.char.isSupersetOf(char)) {
+			this.exact = false;
+		} else if (!this.exact && exact && char.isSupersetOf(this.char)) {
+			this.exact = true;
+		}
+
+		this.char = this.char.union(char);
+	}
+	static emptyFromFlags(flags: Flags): CharUnion {
+		return new CharUnion(emptyCharSet(flags));
+	}
+	static emptyFromMaximum(maximum: number): CharUnion {
+		return new CharUnion(CharSet.empty(maximum));
+	}
+}
+function firstConsumedCharUnion(iter: Iterable<Readonly<FirstConsumedChar>>, flags: Flags): FirstConsumedChar {
+	const union = CharUnion.emptyFromFlags(flags);
+	const looks: FirstLookChar[] = [];
+
+	for (const itemChar of iter) {
+		union.add(itemChar.char, itemChar.exact);
+		if (itemChar.empty) {
+			looks.push(itemChar.look);
+		}
+	}
+
+	if (looks.length > 0) {
+		// This means that the unioned elements look something like this:
+		//   (a|(?=g)|b?|x)
+		//
+		// Adding the trivially accepting look after all all alternatives that can be empty, we'll get:
+		//   (a|(?=g)|b?|x)
+		//   (a|(?=g)|b?(?=[^]|$)|x)
+		//   (a|(?=g)|b(?=[^]|$)|(?=[^]|$)|x)
+		//
+		// Since we are only interested in the first character, the look in `b(?=[^]|$)` can be removed.
+		//   (a|(?=g)|b|(?=[^]|$)|x)
+		//   (a|b|x|(?=g)|(?=[^]|$))
+		//   ([abx]|(?=g)|(?=[^]|$))
+		//
+		// To union the looks, we can simply use the fact that `(?=a)|(?=b)` == `(?=a|b)`
+		//   ([abx]|(?=g)|(?=[^]|$))
+		//   ([abx]|(?=g|[^]|$))
+		//   ([abx]|(?=[^]|$))
+		//
+		// And with that we are done. This is exactly the form of a first partial char. Getting the exactness of the
+		// union of normal chars and look chars follows the same rules.
+
+		const lookUnion = CharUnion.emptyFromFlags(flags);
+		let edge = false;
+		for (const look of looks) {
+			lookUnion.add(look.char, look.exact);
+			edge = edge || look.edge;
+		}
+		return {
+			char: union.char,
+			exact: union.exact,
+			empty: true,
+			look: { char: lookUnion.char, exact: lookUnion.exact, edge },
+		};
+	} else {
+		return { char: union.char, exact: union.exact, empty: false };
+	}
+}
+function firstConsumedCharConcat(iter: Iterable<Readonly<FirstConsumedChar>>, flags: Flags): FirstConsumedChar {
+	const union = CharUnion.emptyFromFlags(flags);
+	let look = firstLookCharTriviallyAccepting(flags);
+
+	for (const item of iter) {
+		union.add(item.char.intersect(look.char), look.exact && item.exact);
+
+		if (item.empty) {
+			// This is the hard case. We need to convert the expression
+			//   (a|(?=b))(c|(?=d))
+			// into an expression
+			//   e|(?=f)
+			// (we will completely ignore edge assertions for now)
+			//
+			// To do that, we'll use the following idea:
+			//   (a|(?=b))(c|(?=d))
+			//   a(c|(?=d))|(?=b)(c|(?=d))
+			//   ac|a(?=d)|(?=b)c|(?=b)(?=d)
+			//
+			// Since we are only interested in the first char, we can remove the `c` in `ac` and the `(?=d)` in
+			// `a(?=d)`. Furthermore, `(?=b)c` is a single char, so let's call it `C` for now.
+			//   ac|a(?=d)|(?=b)c|(?=b)(?=d)
+			//   a|a|C|(?=b)(?=d)
+			//   [aC]|(?=b)(?=d)
+			//   [aC]|(?=(?=b)d)
+			//
+			// This is *almost* the desired form. We now have to convert `(?=(?=b)d)` to an expression of the form
+			// `(?=f)`. This is the point where we can't ignore edge assertions any longer. Let's look at all possible
+			// cases and see how it plays out. Also, let `D` be the char intersection of `b` and `d`.
+			//   (1) (?=(?=b)d)
+			//       (?=D)
+			//
+			//   (2) (?=(?=b)(d|$))
+			//       (?=(?=b)d|(?=b)$)
+			//       (?=D)
+			//
+			//   (3) (?=(?=b|$)d)
+			//       (?=((?=b)|$)d)
+			//       (?=(?=b)d|$d)
+			//       (?=D)
+			//
+			//   (4) (?=(?=b|$)(d|$))
+			//       (?=((?=b)|$)(d|$))
+			//       (?=(?=b)(d|$)|$(d|$))
+			//       (?=(?=b)d|(?=b)$|$d|$$)
+			//       (?=D|$)
+			//
+			// As we can see, the look char is always `D` and the edge is only accepted if it's accepted by both.
+
+			const charIntersection = look.char.intersect(item.look.char);
+			look = {
+				char: charIntersection,
+				exact: (look.exact && item.look.exact) || charIntersection.isEmpty,
+				edge: look.edge && item.look.edge,
+			};
+		} else {
+			return { char: union.char, exact: union.exact, empty: false };
+		}
+	}
+	return { char: union.char, exact: union.exact, empty: true, look };
+}
+/**
+ * This wraps the first-consumed-char object in a look.
+ */
+function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar {
+	if (first.empty) {
+		// We have 2 cases:
+		//   (1) (?=a|(?=b))
+		//       (?=a|b)
+		//       (?=[ab])
+		//   (2) (?=a|(?=b|$))
+		//       (?=a|b|$)
+		//       (?=[ab]|$)
+		const union = CharUnion.emptyFromMaximum(first.char.maximum);
+		union.add(first.char, first.exact);
+		union.add(first.look.char, first.look.exact);
+
+		return {
+			char: union.char,
+			exact: union.exact,
+			edge: first.look.edge,
+		};
+	} else {
+		// It's already in the correct form:
+		//   (?=a)
+		return {
+			char: first.char,
+			exact: first.exact,
+			edge: false,
+		};
 	}
 }
 
@@ -1319,8 +1616,8 @@ export function getFirstCharOf(
  *
  * All restrictions and limitation of `getFirstCharOf` apply.
  */
-export function getFirstCharAfter(afterThis: Element, direction: MatchingDirection, flags: Flags): FirstChar {
-	function advanceElement(element: Element, direction: MatchingDirection): (Element | "end")[] {
+export function getFirstCharAfter(afterThis: Element, direction: MatchingDirection, flags: Flags): FirstLookChar {
+	function advanceElement(element: Element): (Element | "end")[] {
 		const parent = element.parent;
 		if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
 			throw new Error("The given element cannot be part of a character class.");
@@ -1328,9 +1625,9 @@ export function getFirstCharAfter(afterThis: Element, direction: MatchingDirecti
 
 		if (parent.type === "Quantifier") {
 			if (parent.max <= 1) {
-				return advanceElement(parent, direction);
+				return advanceElement(parent);
 			}
-			return [parent, ...advanceElement(parent, direction)];
+			return [parent, ...advanceElement(parent)];
 		} else {
 			let altElements = parent.elements;
 			if (direction === "rtl") {
@@ -1351,7 +1648,7 @@ export function getFirstCharAfter(afterThis: Element, direction: MatchingDirecti
 					return ["end"];
 				}
 				if (parentParent.type === "CapturingGroup" || parentParent.type === "Group") {
-					return advanceElement(parentParent, direction);
+					return advanceElement(parentParent);
 				}
 				throw assertNever(parentParent);
 			} else {
@@ -1360,32 +1657,25 @@ export function getFirstCharAfter(afterThis: Element, direction: MatchingDirecti
 			}
 		}
 	}
-
-	let nonEmpty = true;
-	let exact = true;
-	let char = emptyCharSet(flags);
-
-	let nextElements = advanceElement(afterThis, direction);
-	while (nextElements.length > 0) {
-		const elements = nextElements;
-		nextElements = [];
-
+	function firstCharOf(elements: Iterable<Element | "end">): FirstConsumedChar {
+		const firsts: FirstConsumedChar[] = [];
 		for (const element of elements) {
 			if (element === "end") {
-				nonEmpty = false;
+				firsts.push(firstConsumedCharEmptyWord(flags));
 			} else {
-				const firstChar = getFirstCharOf(element, direction, flags);
-				char = char.union(firstChar.char);
-				exact = exact && firstChar.exact;
-				if (!firstChar.nonEmpty) {
-					// keep going
-					nextElements.push(...advanceElement(element, direction));
+				let firstChar = getFirstCharConsumedBy(element, direction, flags);
+				if (firstChar.empty) {
+					const nextChar = firstCharOf(advanceElement(element));
+					firstChar = firstConsumedCharConcat([firstChar, nextChar], flags);
 				}
+				firsts.push(firstChar);
 			}
 		}
+		return firstConsumedCharUnion(firsts, flags);
 	}
 
-	return { char, nonEmpty, exact };
+	const firstChar = firstCharOf(advanceElement(afterThis));
+	return firstConsumedToLook(firstChar);
 }
 
 /**

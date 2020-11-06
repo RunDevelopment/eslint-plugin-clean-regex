@@ -71,7 +71,7 @@ export default {
 					// (?!\W).+ == (?=\w|$).+ == (?=\w).+
 
 					const direction = node.kind === "lookahead" ? "ltr" : "rtl";
-					const hasNextCharacter = getFirstCharAfter(node, direction, flags).nonEmpty;
+					const hasNextCharacter = !getFirstCharAfter(node, direction, flags).edge;
 					if (hasNextCharacter) {
 						// we can successfully negate the lookaround
 						lookaroundNegated = !lookaroundNegated;
@@ -84,7 +84,7 @@ export default {
 
 				const otherDirection = invertMatchingDirection(node.kind);
 				const other = getFirstCharAfter(node, otherDirection, flags);
-				if (!other.nonEmpty) {
+				if (other.edge) {
 					// to do the branch elimination necessary, we need to know the previous/next character
 					return;
 				}

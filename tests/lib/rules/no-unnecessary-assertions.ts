@@ -52,22 +52,39 @@ testRule(__filename, undefined, {
 		{ code: String(/foo$\w/), errors: [{ message: "`$` will always reject because it is followed by a character." }] },
 		{ code: String(/foo$\n/), errors: [{ message: "`$` will always reject because it is followed by a character." }] },
 
-		{ code: String(/(?=\w)hello/), errors: [{ message: "The lookahead will always accept." }] },
-		{ code: String(/(?=\w)\d/), errors: [{ message: "The lookahead will always accept." }] },
-		{ code: String(/(?=\w)\w/), errors: [{ message: "The lookahead will always accept." }] },
-		{ code: String(/(?=\w)(?:a+|b*c?|\d)d/), errors: [{ message: "The lookahead will always accept." }] },
-		{ code: String(/(?!\w)hello/), errors: [{ message: "The lookahead will always reject." }] },
-		{ code: String(/(?!\w)\d/), errors: [{ message: "The lookahead will always reject." }] },
-		{ code: String(/(?!\w)\w/), errors: [{ message: "The lookahead will always reject." }] },
-		{ code: String(/(?!\w)(?:a+|b*c?|\d)d/), errors: [{ message: "The lookahead will always reject." }] },
+		{ code: String(/(?=\w)hello/), errors: [{ message: "The lookahead `(?=\\w)` will always accept." }] },
+		{ code: String(/(?=\w)\d/), errors: [{ message: "The lookahead `(?=\\w)` will always accept." }] },
+		{ code: String(/(?=\w)\w/), errors: [{ message: "The lookahead `(?=\\w)` will always accept." }] },
+		{ code: String(/(?=\w)(?:a+|b*c?|\d)d/), errors: [{ message: "The lookahead `(?=\\w)` will always accept." }] },
+		{ code: String(/(?!\w)hello/), errors: [{ message: "The negative lookahead `(?!\\w)` will always reject." }] },
+		{ code: String(/(?!\w)\d/), errors: [{ message: "The negative lookahead `(?!\\w)` will always reject." }] },
+		{ code: String(/(?!\w)\w/), errors: [{ message: "The negative lookahead `(?!\\w)` will always reject." }] },
+		{ code: String(/(?!\w)(?:a+|b*c?|\d)d/), errors: [{ message: "The negative lookahead `(?!\\w)` will always reject." }] },
 
-		{ code: String(/(?=\w),/), errors: [{ message: "The lookahead will always reject." }] },
-		{ code: String(/(?=a)(,|b|c|(da)+)a/), errors: [{ message: "The lookahead will always reject." }] },
-		{ code: String(/(?!\w),/), errors: [{ message: "The lookahead will always accept." }] },
-		{ code: String(/(?!a)(,|b|c|(da)+)a/), errors: [{ message: "The lookahead will always accept." }] },
+		{ code: String(/(?=\w),/), errors: [{ message: "The lookahead `(?=\\w)` will always reject." }] },
+		{ code: String(/(?=a)(,|b|c|(da)+)a/), errors: [{ message: "The lookahead `(?=a)` will always reject." }] },
+		{ code: String(/(?!\w),/), errors: [{ message: "The negative lookahead `(?!\\w)` will always accept." }] },
+		{ code: String(/(?!a)(,|b|c|(da)+)a/), errors: [{ message: "The negative lookahead `(?!a)` will always accept." }] },
 
-		{ code: String(/(\d)(?=\w)\1/), errors: [{ message: "The lookahead will always accept." }] },
-		{ code: String(/(\d)(?!\w)\1/), errors: [{ message: "The lookahead will always reject." }] },
+		{ code: String(/(\d)(?=\w)\1/), errors: [{ message: "The lookahead `(?=\\w)` will always accept." }] },
+		{ code: String(/(\d)(?!\w)\1/), errors: [{ message: "The negative lookahead `(?!\\w)` will always reject." }] },
+
+		{ code: String(/[a-z_]\w*\b(?=\s*;)/), errors: [{ message: "`\\b` will always accept because it is preceded by a word character and followed by a non-word character." }] },
+		{ code: String(/[a-z_]\w*(?!\\)(?=\s*;)/), errors: [{ message: "The negative lookahead `(?!\\\\)` will always accept." }] },
+		{
+			code: String(/[a-z_]\w*(?!\\)\b(?=\s*;)/),
+			errors: [
+				{ message: "The negative lookahead `(?!\\\\)` will always accept." },
+				{ message: "`\\b` will always accept because it is preceded by a word character and followed by a non-word character." },
+			]
+		},
+		{
+			code: String(/[a-z_]\w*\b(?!\\)(?=\s*;)/),
+			errors: [
+				{ message: "`\\b` will always accept because it is preceded by a word character and followed by a non-word character." },
+				{ message: "The negative lookahead `(?!\\\\)` will always accept." },
+			]
+		},
 
 	]
 });

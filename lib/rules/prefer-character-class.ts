@@ -5,8 +5,8 @@ import {
 	elementsToCharacterClass,
 	findIndex,
 	findLastIndex,
-	FirstChar,
-	getFirstCharOf,
+	FirstConsumedChar,
+	getFirstCharConsumedBy,
 	getParentPrefixAndSuffix,
 	matchingDirection,
 	Simple,
@@ -45,7 +45,7 @@ interface GenericCharAlt {
 interface GenericNonCharAlt {
 	isCharacter: false;
 	raw: string;
-	firstChar: FirstChar;
+	firstChar: FirstConsumedChar;
 }
 
 /**
@@ -167,7 +167,7 @@ function toGenericAlts(
 		} else {
 			result.push({
 				isCharacter: false,
-				firstChar: getFirstCharOf(a.alternative, matchingDirection(a.alternative), flags),
+				firstChar: getFirstCharConsumedBy(a.alternative, matchingDirection(a.alternative), flags),
 				raw: a.alternative.raw,
 			});
 		}
@@ -240,7 +240,7 @@ function optimizeCharacterAlternatives(
 					}
 				} else {
 					// non-character alternative
-					if (far.firstChar.nonEmpty) {
+					if (!far.firstChar.empty) {
 						if (nonCharTotal === undefined) {
 							nonCharTotal = far.firstChar.char;
 						} else {

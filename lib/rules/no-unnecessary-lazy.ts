@@ -1,6 +1,6 @@
 import { Quantifier } from "regexpp/ast";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { getFirstCharAfter, getFirstCharOf, getQuantifierRaw, matchingDirection } from "../util";
+import { getFirstCharAfter, getFirstCharConsumedBy, getQuantifierRaw, matchingDirection } from "../util";
 
 function withoutLazy(node: Quantifier): string {
 	let raw = getQuantifierRaw(node);
@@ -42,10 +42,10 @@ export default {
 					// E.g. /a+?b+/ == /a+b+/
 
 					const matchingDir = matchingDirection(node);
-					const firstChar = getFirstCharOf(node, matchingDir, flags);
-					if (firstChar.nonEmpty && !firstChar.char.isAll) {
+					const firstChar = getFirstCharConsumedBy(node, matchingDir, flags);
+					if (!firstChar.empty) {
 						const afterChar = getFirstCharAfter(node, matchingDir, flags);
-						if (afterChar.nonEmpty && firstChar.char.isDisjointWith(afterChar.char)) {
+						if (!afterChar.edge && firstChar.char.isDisjointWith(afterChar.char)) {
 							context.report({
 								message:
 									"The lazy modifier is unnecessary because the first character of the quantified element are always different from the characters that come after the quantifier.",

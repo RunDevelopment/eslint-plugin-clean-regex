@@ -4,10 +4,11 @@ import { JS } from "refa";
 import {
 	assertNever,
 	getFirstCharAfter,
-	getFirstCharOf,
+	getFirstCharConsumedBy,
 	getLengthRange,
 	hasSomeDescendant,
 	isPotentiallyEmpty,
+	assertionKindToMatchingDirection,
 } from "../util";
 import { EdgeAssertion, LookaroundAssertion, WordBoundaryAssertion } from "regexpp/ast";
 
@@ -21,18 +22,21 @@ export default {
 	},
 
 	create(context) {
-		return createRuleListener(({ visitAST, flags, reportElement }) => {
+		return createRuleListener(({ visitAST, pattern, flags, reportElement }) => {
+			if (pattern.raw === /[a-z_]\w*(?!\\)\b(?=\s*;)/.source) {
+				console.log("got you");
+			}
 			function checkStartOrEnd(node: EdgeAssertion): void {
 				// Note: /^/ is the same as /(?<!.)/s and /^/m is the same as /(?<!.)/
 				// Note: /$/ is the same as /(?!.)/s and /$/m is the same as /(?!.)/
 
 				// get the "next" character
-				const direction = node.kind === "start" ? "rtl" : "ltr";
+				const direction = assertionKindToMatchingDirection(node.kind);
 				const nextChar = getFirstCharAfter(node, direction, flags);
 
 				const followed = node.kind === "end" ? "followed" : "preceded";
 
-				if (nextChar.nonEmpty) {
+				if (!nextChar.edge) {
 					// there is always some character of `node`
 
 					if (!flags.multiline) {
@@ -75,7 +79,7 @@ export default {
 				const next = getFirstCharAfter(node, "ltr", flags);
 				const prev = getFirstCharAfter(node, "rtl", flags);
 
-				if (!prev.nonEmpty || !next.nonEmpty) {
+				if (prev.edge || next.edge) {
 					// we can only do this analysis if we know the previous and next character
 					return;
 				}
@@ -139,14 +143,14 @@ export default {
 					return;
 				}
 
-				const direction = node.kind === "lookahead" ? "ltr" : "rtl";
+				const direction = assertionKindToMatchingDirection(node.kind);
 				const after = getFirstCharAfter(node, direction, flags);
-				if (!after.nonEmpty) {
+				if (after.edge) {
 					return;
 				}
 
-				const firstOf = getFirstCharOf(node.alternatives, direction, flags);
-				if (!firstOf.nonEmpty) {
+				const firstOf = getFirstCharConsumedBy(node.alternatives, direction, flags);
+				if (firstOf.empty) {
 					return;
 				}
 
@@ -154,12 +158,14 @@ export default {
 				const accept = node.negate ? "reject" : "accept";
 				const reject = node.negate ? "accept" : "reject";
 
+				const nodeName = `${node.negate ? "negative " : ""}${node.kind} ${mention(node)}`;
+
 				// Careful now! If exact is false, we are only guaranteed to have a superset of the actual character.
 				// False negatives are fine but we can't have false positives.
 
 				if (after.char.isDisjointWith(firstOf.char)) {
 					context.report({
-						message: `The ${node.kind} will always ${reject}.`,
+						message: `The ${nodeName} will always ${reject}.`,
 						...reportElement(node),
 					});
 				}
@@ -175,7 +181,7 @@ export default {
 						// require exactness
 						if (firstOf.exact && after.char.isSubsetOf(firstOf.char)) {
 							context.report({
-								message: `The ${node.kind} will always ${accept}.`,
+								message: `The ${nodeName} will always ${accept}.`,
 								...reportElement(node),
 							});
 						}
