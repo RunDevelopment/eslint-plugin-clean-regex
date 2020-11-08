@@ -1,12 +1,16 @@
 import { CharSet, JS } from "refa";
 import { AST } from "regexpp";
-import { CharacterClass, CharacterClassElement, CharacterSet } from "regexpp/ast";
+import { Character, CharacterClass, CharacterClassElement, CharacterSet } from "regexpp/ast";
 import { Simple, assertNever } from "./util";
 
 type Flags = Partial<Readonly<AST.Flags>>;
 
 export function toCharSet(
-	elements: (Simple<CharacterClassElement> | Simple<CharacterSet>)[] | CharacterClass,
+	elements:
+		| (Simple<CharacterClassElement> | Simple<CharacterSet>)[]
+		| CharacterClass
+		| Simple<CharacterSet>
+		| Simple<Character>,
 	flags: Flags
 ): CharSet {
 	if (Array.isArray(elements)) {
@@ -26,11 +30,23 @@ export function toCharSet(
 			flags
 		);
 	} else {
-		const chars = toCharSet(elements.elements, flags);
-		if (elements.negate) {
-			return chars.negate();
+		switch (elements.type) {
+			case "Character": {
+				return JS.createCharSet([elements.value], flags);
+			}
+			case "CharacterClass": {
+				const chars = toCharSet(elements.elements, flags);
+				if (elements.negate) {
+					return chars.negate();
+				}
+				return chars;
+			}
+			case "CharacterSet": {
+				return JS.createCharSet([elements], flags);
+			}
+			default:
+				throw assertNever(elements);
 		}
-		return chars;
 	}
 }
 
@@ -65,6 +81,23 @@ export function lineTerminatorCharSet(flags: Flags): CharSet {
 		return LINE_TERMINATOR_UNICODE_CHARSET;
 	} else {
 		return LINE_TERMINATOR_UTF16_CHARSET;
+	}
+}
+const WORD_UTF16_CHARSET = JS.createCharSet([{ kind: "word", negate: false }], { unicode: false });
+const WORD_UNICODE_CHARSET = JS.createCharSet([{ kind: "word", negate: false }], { unicode: true, ignoreCase: false });
+const WORD_UNICODE_IGNORE_CASE_CHARSET = JS.createCharSet([{ kind: "word", negate: false }], {
+	unicode: true,
+	ignoreCase: true,
+});
+export function wordCharSet(flags: Flags): CharSet {
+	if (flags.unicode) {
+		if (flags.ignoreCase) {
+			return WORD_UNICODE_IGNORE_CASE_CHARSET;
+		} else {
+			return WORD_UNICODE_CHARSET;
+		}
+	} else {
+		return WORD_UTF16_CHARSET;
 	}
 }
 

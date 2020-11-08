@@ -1238,8 +1238,6 @@ export function getFirstCharConsumedBy(
 
 		case "Character":
 		case "CharacterSet":
-			return { char: toCharSet([element], flags), empty: false, exact: true };
-
 		case "CharacterClass":
 			return { char: toCharSet(element, flags), empty: false, exact: true };
 

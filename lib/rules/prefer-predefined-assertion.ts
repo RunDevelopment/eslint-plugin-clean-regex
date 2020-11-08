@@ -1,27 +1,8 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-
-import { CharSet, JS } from "refa";
-import { CharacterClass, CharacterSet, Element, Flags, LookaroundAssertion } from "regexpp/ast";
+import { CharSet } from "refa";
+import { CharacterClass, CharacterSet, Element, LookaroundAssertion } from "regexpp/ast";
 import { assertionKindToMatchingDirection, getFirstCharAfter, invertMatchingDirection } from "../ast-util";
-import { isMatchAll } from "../char-util";
-
-const _wordCharSetCache = new Map<string, CharSet>();
-function getWordCharSet(flags: Flags): CharSet {
-	let cacheKey = "";
-	if (flags.ignoreCase) {
-		cacheKey += "i";
-	}
-	if (flags.unicode) {
-		cacheKey += "u";
-	}
-
-	let set = _wordCharSetCache.get(cacheKey);
-	if (!set) {
-		set = JS.createCharSet([{ kind: "word", negate: false }], flags);
-		_wordCharSetCache.set(cacheKey, set);
-	}
-	return set;
-}
+import { isMatchAll, wordCharSet } from "../char-util";
 
 function getCharacters(lookaround: LookaroundAssertion): CharacterSet | CharacterClass | null {
 	if (lookaround.alternatives.length === 1) {
@@ -51,8 +32,8 @@ export default {
 			// /\b/ == /(?<!\w)(?=\w)|(?<=\w)(?!\w)/
 			// /\B/ == /(?<=\w)(?=\w)|(?<!\w)(?!\w)/
 
-			const isWord = (chars: CharSet) => chars.isSubsetOf(getWordCharSet(flags));
-			const isNonWord = (chars: CharSet) => chars.isDisjointWith(getWordCharSet(flags));
+			const isWord = (chars: CharSet) => chars.isSubsetOf(wordCharSet(flags));
+			const isNonWord = (chars: CharSet) => chars.isDisjointWith(wordCharSet(flags));
 
 			function replaceWordAssertion(node: LookaroundAssertion, wordNegated: boolean): void {
 				const direction = assertionKindToMatchingDirection(node.kind);

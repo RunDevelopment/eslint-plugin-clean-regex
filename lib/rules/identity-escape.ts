@@ -49,7 +49,7 @@ function processLiteralEscapeOption(literalOptions: readonly any[]): LiteralEsca
 			throw new Error(errorMessage);
 		}
 
-		const set = char.type === "CharacterClass" ? toCharSet(char, flags) : toCharSet([char], flags);
+		const set = toCharSet(char, flags);
 
 		let matches: (character: number) => boolean;
 		if (set.isEmpty) {

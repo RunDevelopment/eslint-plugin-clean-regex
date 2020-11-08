@@ -11,6 +11,7 @@ import {
 } from "../ast-util";
 import { EdgeAssertion, LookaroundAssertion, WordBoundaryAssertion } from "regexpp/ast";
 import { assertNever } from "../util";
+import { wordCharSet } from "../char-util";
 
 export default {
 	meta: {
@@ -71,7 +72,7 @@ export default {
 			}
 
 			function checkWordBoundary(node: WordBoundaryAssertion): void {
-				const word = JS.createCharSet([{ kind: "word", negate: false }], flags);
+				const word = wordCharSet(flags);
 
 				const next = getFirstCharAfter(node, "ltr", flags);
 				const prev = getFirstCharAfter(node, "rtl", flags);

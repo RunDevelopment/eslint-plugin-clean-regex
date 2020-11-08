@@ -37,7 +37,7 @@ function createChars(element: Element, flags: Flags): Chars {
 		case "Character":
 		case "CharacterSet":
 			return {
-				chars: toCharSet([element], flags),
+				chars: toCharSet(element, flags),
 				complete: true,
 			};
 
