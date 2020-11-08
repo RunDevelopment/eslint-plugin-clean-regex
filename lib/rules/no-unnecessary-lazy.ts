@@ -1,6 +1,6 @@
 import { Quantifier } from "regexpp/ast";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { getFirstCharAfter, getFirstCharConsumedBy, getQuantifierRaw, matchingDirection } from "../util";
+import { getFirstCharAfter, getFirstCharConsumedBy, getQuantifierRaw, matchingDirection } from "../ast-util";
 
 function withoutLazy(node: Quantifier): string {
 	let raw = getQuantifierRaw(node);

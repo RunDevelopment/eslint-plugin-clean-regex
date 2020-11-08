@@ -1,6 +1,6 @@
 import { Group, QuantifiableElement } from "regexpp/ast";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { areEqual } from "../util";
+import { areEqual } from "../ast-util";
 
 /**
  * Returns whether the given group is the top-level group of its pattern.

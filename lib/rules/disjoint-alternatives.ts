@@ -2,7 +2,8 @@ import { JS, NFA, ReadonlyNFA } from "refa";
 import { Alternative, CapturingGroup, Group, LookaroundAssertion, Node, Pattern } from "regexpp/ast";
 import { mention, toRegExpString } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { hasSomeDescendant, nfaEquals, nfaIsSupersetOf, nfaUnionAll, underAStar } from "../util";
+import { hasSomeDescendant, underAStar } from "../ast-util";
+import { nfaEquals, nfaIsSupersetOf, nfaUnionAll } from "../fa-util";
 
 export default {
 	meta: {

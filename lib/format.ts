@@ -1,6 +1,7 @@
 import { FiniteAutomaton, JS } from "refa";
 import { CharacterClassElement, Node } from "regexpp/ast";
-import { assertNever, minimalHexEscape as hexEscape } from "./util";
+import { assertNever } from "./util";
+import { minimalHexEscape as hexEscape } from "./ast-util";
 
 interface Literal {
 	readonly source: string;

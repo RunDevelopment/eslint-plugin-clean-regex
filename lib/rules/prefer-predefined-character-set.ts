@@ -1,7 +1,9 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { JS } from "refa";
 import { CharacterClassElement, Node } from "regexpp/ast";
-import { elementsToCharacterClass, Simple, toCharSet } from "../util";
+import { Simple } from "../util";
+import { elementsToCharacterClass } from "../ast-util";
+import { toCharSet } from "../char-util";
 
 function isDigitRange(node: Node): boolean {
 	return node.type === "CharacterClassRange" && node.min.value === 0x30 && node.max.value === 0x39;

@@ -2,7 +2,8 @@ import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 
 import { CharSet, JS } from "refa";
 import { CharacterClass, CharacterSet, Flags, LookaroundAssertion } from "regexpp/ast";
-import { getFirstCharAfter, invertMatchingDirection, isMatchAll } from "../util";
+import { getFirstCharAfter, invertMatchingDirection } from "../ast-util";
+import { isMatchAll } from "../char-util";
 
 const _wordCharSetCache = new Map<string, CharSet>();
 function getWordCharSet(flags: Flags): CharSet {

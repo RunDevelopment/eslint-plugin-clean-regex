@@ -1,7 +1,7 @@
 import { Quantifier, Node } from "regexpp/ast";
 import { mention, shorten } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { hasSomeAncestor, quantToString, Quant } from "../util";
+import { hasSomeAncestor, quantToString, Quant } from "../ast-util";
 
 function getCombinedQuant(node: Quantifier, nested: Quantifier): Quant | null {
 	if (node.max === 0 || nested.max === 0) {

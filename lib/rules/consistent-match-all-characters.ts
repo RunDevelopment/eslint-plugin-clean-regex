@@ -1,7 +1,8 @@
 import { AnyCharacterSet, CharacterClass, Flags, Node } from "regexpp/ast";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { many, mention } from "../format";
-import { assertNever, isMatchAll } from "../util";
+import { assertNever } from "../util";
+import { isMatchAll } from "../char-util";
 
 function removeDescendantNodes<T extends { node: Node }>(nodes: (T & { node: Node })[]): T[] {
 	// this is a O(n^2) implementation

@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { isEmptyBackreference, isZeroLength } from "../util";
+import { isEmptyBackreference, isZeroLength } from "../ast-util";
 
 export default {
 	meta: {

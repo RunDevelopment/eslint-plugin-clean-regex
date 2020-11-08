@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { hasSomeDescendant } from "../util";
+import { hasSomeDescendant } from "../ast-util";
 
 export default {
 	meta: {

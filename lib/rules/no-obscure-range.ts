@@ -1,6 +1,6 @@
 import { CharRange } from "refa";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { isControlEscapeSequence, isHexadecimalEscapeSequence, isOctalEscapeSequence } from "../util";
+import { isControlEscapeSequence, isHexadecimalEscapeSequence, isOctalEscapeSequence } from "../ast-util";
 
 const allowedRanges: readonly CharRange[] = [
 	// digits 0-9

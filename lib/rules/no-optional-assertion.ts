@@ -1,7 +1,8 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { mention } from "../format";
 import { Assertion, CapturingGroup, Group, Node, Quantifier } from "regexpp/ast";
-import { assertNever, isZeroLength } from "../util";
+import { assertNever } from "../util";
+import { isZeroLength } from "../ast-util";
 
 /**
  * Returns the closest ascendant quantifier with a minimum of 0.

@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { getQuantifierRaw } from "../util";
+import { getQuantifierRaw } from "../ast-util";
 
 const predefined: { min: number; max: number; raw: string }[] = [
 	{ min: 0, max: Infinity, raw: "*" },

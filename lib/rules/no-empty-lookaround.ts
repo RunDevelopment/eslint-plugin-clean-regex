@@ -1,6 +1,6 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { mention } from "../format";
-import { isPotentiallyEmpty } from "../util";
+import { isPotentiallyEmpty } from "../ast-util";
 
 export default {
 	meta: {

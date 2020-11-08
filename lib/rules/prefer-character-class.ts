@@ -3,16 +3,12 @@ import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { mention } from "../format";
 import {
 	elementsToCharacterClass,
-	findIndex,
-	findLastIndex,
 	FirstConsumedChar,
 	getFirstCharConsumedBy,
 	getParentPrefixAndSuffix,
 	matchingDirection,
-	Simple,
-	toCharSet,
 	underAStar,
-} from "../util";
+} from "../ast-util";
 import {
 	Alternative,
 	Assertion,
@@ -24,6 +20,8 @@ import {
 	Pattern,
 } from "regexpp/ast";
 import { CharSet } from "refa";
+import { findIndex, findLastIndex, Simple } from "../util";
+import { toCharSet } from "../char-util";
 
 type CharElementArray = Readonly<Simple<CharacterClassElement>>[];
 interface CharacterAlternative {

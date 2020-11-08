@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { getQuantifierRaw, quantToString } from "../util";
+import { getQuantifierRaw, quantToString } from "../ast-util";
 
 export default {
 	meta: {

@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { isOctalEscapeSequence } from "../util";
+import { isOctalEscapeSequence } from "../ast-util";
 
 export default {
 	meta: {

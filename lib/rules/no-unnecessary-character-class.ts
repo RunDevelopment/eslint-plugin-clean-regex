@@ -1,5 +1,5 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { areEqual, isEscapeSequence, isOctalEscapeSequence, negateCharacterSetRaw } from "../util";
+import { areEqual, isEscapeSequence, isOctalEscapeSequence, negateCharacterSetRaw } from "../ast-util";
 
 const SPECIAL_CHARACTERS = new Set(".*+?|()[]{}^$/");
 

@@ -2,15 +2,15 @@ import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 import { mention } from "../format";
 import { JS } from "refa";
 import {
-	assertNever,
 	getFirstCharAfter,
 	getFirstCharConsumedBy,
 	getLengthRange,
 	hasSomeDescendant,
 	isPotentiallyEmpty,
 	assertionKindToMatchingDirection,
-} from "../util";
+} from "../ast-util";
 import { EdgeAssertion, LookaroundAssertion, WordBoundaryAssertion } from "regexpp/ast";
+import { assertNever } from "../util";
 
 export default {
 	meta: {

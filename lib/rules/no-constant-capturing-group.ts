@@ -1,6 +1,6 @@
 import { mention } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { getConstant } from "../util";
+import { getConstant } from "../ast-util";
 
 export default {
 	meta: {

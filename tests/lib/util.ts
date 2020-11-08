@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { RegExpParser } from "regexpp";
 import { Flags, Node } from "regexpp/ast";
-import { getConstant } from "../../lib/util";
+import { getConstant } from "../../lib/ast-util";
 
 const parser = new RegExpParser({ ecmaVersion: 2018 });
 

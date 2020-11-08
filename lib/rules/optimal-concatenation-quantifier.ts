@@ -11,7 +11,8 @@ import {
 } from "regexpp/ast";
 import { mention, shorten } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { emptyCharSet, hasCapturingGroup, hasSomeDescendant, Quant, quantAdd, quantToString, toCharSet } from "../util";
+import { hasCapturingGroup, hasSomeDescendant, Quant, quantAdd, quantToString } from "../ast-util";
+import { emptyCharSet, toCharSet } from "../char-util";
 
 interface Chars {
 	readonly chars: CharSet;

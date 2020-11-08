@@ -2,7 +2,7 @@ import { RegExpParser } from "regexpp";
 import { Character, CharacterClass, CharacterSet, Flags } from "regexpp/ast";
 import { mentionCharElement } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { toCharSet } from "../util";
+import { toCharSet } from "../char-util";
 
 type LiteralEscapeMode = "require" | "disallow" | "allow";
 type LiteralContext = "inside" | "outside" | "all";

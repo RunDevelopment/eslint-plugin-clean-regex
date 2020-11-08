@@ -1,7 +1,7 @@
 import { CharacterClassElement, CharacterClassRange } from "regexpp/ast";
 import { mentionCharElement } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
-import { emptyCharSet, toCharSet } from "../util";
+import { emptyCharSet, toCharSet } from "../char-util";
 
 export default {
 	meta: {
