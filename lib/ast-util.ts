@@ -1,5 +1,5 @@
 import { CharSet } from "refa";
-import { visitRegExpAST } from "regexpp";
+import { visitRegExpAST, AST } from "regexpp";
 import {
 	Alternative,
 	Assertion,
@@ -15,7 +15,6 @@ import {
 	Element,
 	Node,
 	Pattern,
-	Flags,
 	EscapeCharacterSet,
 	UnicodePropertyCharacterSet,
 	BranchNode,
@@ -25,6 +24,8 @@ import {
 } from "regexpp/ast";
 import { allCharSet, emptyCharSet, lineTerminatorCharSet, toCharSet } from "./char-util";
 import { assertNever, Simple } from "./util";
+
+type Flags = Partial<Readonly<AST.Flags>>;
 
 /**
  * Returns whether the given node is constant meaning that it can only match one string and what this string is.
@@ -1516,15 +1517,24 @@ function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar 
 	}
 }
 
+export interface FirstCharAfter {
+	/**
+	 * The first character after the given element.
+	 */
+	char: FirstLookChar;
+	/**
+	 * A list of elements that all contributed to the result. All sub-elements of the listed elements also contribute.
+	 */
+	elements: Element[];
+}
+
 /**
  * Returns the first character after the given element.
  *
  * What "after" means depends the on the given direction which will be interpreted as the current matching
  * direction. You can use this to get the previous character of an element as well.
- *
- * All restrictions and limitation of `getFirstCharOf` apply.
  */
-export function getFirstCharAfter(afterThis: Element, direction: MatchingDirection, flags: Flags): FirstLookChar {
+export function getFirstCharAfter(afterThis: Element, direction: MatchingDirection, flags: Flags): FirstCharAfter {
 	function advanceElement(element: Element): (Element | "end")[] {
 		const parent = element.parent;
 		if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
@@ -1565,25 +1575,28 @@ export function getFirstCharAfter(afterThis: Element, direction: MatchingDirecti
 			}
 		}
 	}
-	function firstCharOf(elements: Iterable<Element | "end">): FirstConsumedChar {
+	function firstCharOf(inputElements: Iterable<Element | "end">): { char: FirstConsumedChar; elements: Element[] } {
 		const firsts: FirstConsumedChar[] = [];
-		for (const element of elements) {
+		const elements: Element[] = [];
+		for (const element of inputElements) {
 			if (element === "end") {
 				firsts.push(firstConsumedCharEmptyWord(flags));
 			} else {
+				elements.push(element);
 				let firstChar = getFirstCharConsumedBy(element, direction, flags);
 				if (firstChar.empty) {
-					const nextChar = firstCharOf(advanceElement(element));
-					firstChar = firstConsumedCharConcat([firstChar, nextChar], flags);
+					const after = firstCharOf(advanceElement(element));
+					elements.push(...after.elements);
+					firstChar = firstConsumedCharConcat([firstChar, after.char], flags);
 				}
 				firsts.push(firstChar);
 			}
 		}
-		return firstConsumedCharUnion(firsts, flags);
+		return { char: firstConsumedCharUnion(firsts, flags), elements };
 	}
 
-	const firstChar = firstCharOf(advanceElement(afterThis));
-	return firstConsumedToLook(firstChar);
+	const first = firstCharOf(advanceElement(afterThis));
+	return { char: firstConsumedToLook(first.char), elements: first.elements };
 }
 
 /**

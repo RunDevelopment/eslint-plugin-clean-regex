@@ -44,12 +44,12 @@ export default {
 					const matchingDir = matchingDirection(node);
 					const firstChar = getFirstCharConsumedBy(node, matchingDir, flags);
 					if (!firstChar.empty) {
-						const afterChar = getFirstCharAfter(node, matchingDir, flags);
-						if (!afterChar.edge && firstChar.char.isDisjointWith(afterChar.char)) {
+						const after = getFirstCharAfter(node, matchingDir, flags);
+						if (!after.char.edge && firstChar.char.isDisjointWith(after.char.char)) {
 							context.report({
 								message:
 									"The lazy modifier is unnecessary because the first character of the quantified element are always different from the characters that come after the quantifier.",
-								...replaceQuantifier(node, withoutLazy(node)),
+								...replaceQuantifier(node, withoutLazy(node), { dependsOn: after.elements }),
 							});
 							return;
 						}

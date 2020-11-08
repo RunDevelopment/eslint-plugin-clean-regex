@@ -1,8 +1,8 @@
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
 
 import { CharSet, JS } from "refa";
-import { CharacterClass, CharacterSet, Flags, LookaroundAssertion } from "regexpp/ast";
-import { getFirstCharAfter, invertMatchingDirection } from "../ast-util";
+import { CharacterClass, CharacterSet, Element, Flags, LookaroundAssertion } from "regexpp/ast";
+import { assertionKindToMatchingDirection, getFirstCharAfter, invertMatchingDirection } from "../ast-util";
 import { isMatchAll } from "../char-util";
 
 const _wordCharSetCache = new Map<string, CharSet>();
@@ -48,13 +48,16 @@ export default {
 
 	create(context) {
 		return createRuleListener(({ visitAST, flags, replaceElement }) => {
-			// /\b/ == /(?:(?<!\w)(?=\w)|(?<=\w)(?!\w))/
-			// /\B/ == /(?:(?<=\w)(?=\w)|(?<!\w)(?!\w))/
+			// /\b/ == /(?<!\w)(?=\w)|(?<=\w)(?!\w)/
+			// /\B/ == /(?<=\w)(?=\w)|(?<!\w)(?!\w)/
 
 			const isWord = (chars: CharSet) => chars.isSubsetOf(getWordCharSet(flags));
 			const isNonWord = (chars: CharSet) => chars.isDisjointWith(getWordCharSet(flags));
 
 			function replaceWordAssertion(node: LookaroundAssertion, wordNegated: boolean): void {
+				const direction = assertionKindToMatchingDirection(node.kind);
+				const dependsOn: Element[] = [];
+
 				/**
 				 * Whether the lookaround is equivalent to (?!\w) / (?<!\w) or (?=\w) / (?<=\w)
 				 */
@@ -71,8 +74,10 @@ export default {
 					//                        eliminate the $ alternative because it will always reject.
 					// (?!\W).+ == (?=\w|$).+ == (?=\w).+
 
-					const direction = node.kind === "lookahead" ? "ltr" : "rtl";
-					const hasNextCharacter = !getFirstCharAfter(node, direction, flags).edge;
+					const after = getFirstCharAfter(node, direction, flags);
+					dependsOn.push(...after.elements);
+
+					const hasNextCharacter = !after.char.edge;
 					if (hasNextCharacter) {
 						// we can successfully negate the lookaround
 						lookaroundNegated = !lookaroundNegated;
@@ -83,18 +88,18 @@ export default {
 					}
 				}
 
-				const otherDirection = invertMatchingDirection(node.kind);
-				const other = getFirstCharAfter(node, otherDirection, flags);
-				if (other.edge) {
+				const before = getFirstCharAfter(node, invertMatchingDirection(direction), flags);
+				dependsOn.push(...before.elements);
+				if (before.char.edge) {
 					// to do the branch elimination necessary, we need to know the previous/next character
 					return;
 				}
 
 				let otherNegated;
-				if (isWord(other.char)) {
+				if (isWord(before.char.char)) {
 					// we can think of the previous/next character as \w
 					otherNegated = false;
-				} else if (isNonWord(other.char)) {
+				} else if (isNonWord(before.char.char)) {
 					// we can think of the previous/next character as \W
 					otherNegated = true;
 				} else {
@@ -106,13 +111,13 @@ export default {
 					// \B
 					context.report({
 						message: "This assertion can be replaced with a negated word boundary assertion (\\B).",
-						...replaceElement(node, "\\B"),
+						...replaceElement(node, "\\B", { dependsOn }),
 					});
 				} else {
 					// \b
 					context.report({
 						message: "This assertion can be replaced with a word boundary assertion (\\b).",
-						...replaceElement(node, "\\b"),
+						...replaceElement(node, "\\b", { dependsOn }),
 					});
 				}
 			}
@@ -125,7 +130,7 @@ export default {
 					// suggest the change
 					context.report({
 						message: `This assertion can be replaced with ${replacement}.`,
-						...replaceElement(node, replacement),
+						...replaceElement(node, replacement, { dependsOnFlags: true }),
 					});
 				}
 			}

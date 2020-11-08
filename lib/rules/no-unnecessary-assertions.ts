@@ -22,21 +22,18 @@ export default {
 	},
 
 	create(context) {
-		return createRuleListener(({ visitAST, pattern, flags, reportElement }) => {
-			if (pattern.raw === /[a-z_]\w*(?!\\)\b(?=\s*;)/.source) {
-				console.log("got you");
-			}
+		return createRuleListener(({ visitAST, flags, reportElement }) => {
 			function checkStartOrEnd(node: EdgeAssertion): void {
 				// Note: /^/ is the same as /(?<!.)/s and /^/m is the same as /(?<!.)/
 				// Note: /$/ is the same as /(?!.)/s and /$/m is the same as /(?!.)/
 
 				// get the "next" character
 				const direction = assertionKindToMatchingDirection(node.kind);
-				const nextChar = getFirstCharAfter(node, direction, flags);
+				const next = getFirstCharAfter(node, direction, flags);
 
 				const followed = node.kind === "end" ? "followed" : "preceded";
 
-				if (!nextChar.edge) {
+				if (!next.char.edge) {
 					// there is always some character of `node`
 
 					if (!flags.multiline) {
@@ -54,14 +51,14 @@ export default {
 						const dot = JS.createCharSet([{ kind: "any" }], flags);
 						flags.dotAll = oldDotAll;
 
-						if (nextChar.char.isSubsetOf(dot)) {
+						if (next.char.char.isSubsetOf(dot)) {
 							context.report({
 								message: `${mention(
 									node
 								)} will always reject because it is ${followed} by a non-line-terminator character.`,
 								...reportElement(node),
 							});
-						} else if (nextChar.char.isDisjointWith(dot)) {
+						} else if (next.char.char.isDisjointWith(dot)) {
 							context.report({
 								message: `${mention(
 									node
@@ -79,15 +76,15 @@ export default {
 				const next = getFirstCharAfter(node, "ltr", flags);
 				const prev = getFirstCharAfter(node, "rtl", flags);
 
-				if (prev.edge || next.edge) {
+				if (prev.char.edge || next.char.edge) {
 					// we can only do this analysis if we know the previous and next character
 					return;
 				}
 
-				const nextIsWord = next.char.isSubsetOf(word);
-				const prevIsWord = prev.char.isSubsetOf(word);
-				const nextIsNonWord = next.char.isDisjointWith(word);
-				const prevIsNonWord = prev.char.isDisjointWith(word);
+				const nextIsWord = next.char.char.isSubsetOf(word);
+				const prevIsWord = prev.char.char.isSubsetOf(word);
+				const nextIsNonWord = next.char.char.isDisjointWith(word);
+				const prevIsNonWord = prev.char.char.isDisjointWith(word);
 
 				// Note: /\b/ == /(?:(?<!\w)(?=\w)|(?<=\w)(?!\w))/  (other flags may apply)
 
@@ -145,7 +142,7 @@ export default {
 
 				const direction = assertionKindToMatchingDirection(node.kind);
 				const after = getFirstCharAfter(node, direction, flags);
-				if (after.edge) {
+				if (after.char.edge) {
 					return;
 				}
 
@@ -163,7 +160,7 @@ export default {
 				// Careful now! If exact is false, we are only guaranteed to have a superset of the actual character.
 				// False negatives are fine but we can't have false positives.
 
-				if (after.char.isDisjointWith(firstOf.char)) {
+				if (after.char.char.isDisjointWith(firstOf.char)) {
 					context.report({
 						message: `The ${nodeName} will always ${reject}.`,
 						...reportElement(node),
@@ -179,7 +176,7 @@ export default {
 					// character
 					if (range.max === 1) {
 						// require exactness
-						if (firstOf.exact && after.char.isSubsetOf(firstOf.char)) {
+						if (firstOf.exact && after.char.char.isSubsetOf(firstOf.char)) {
 							context.report({
 								message: `The ${nodeName} will always ${accept}.`,
 								...reportElement(node),

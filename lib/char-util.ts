@@ -1,10 +1,13 @@
 import { CharSet, JS } from "refa";
-import { CharacterClass, CharacterClassElement, CharacterSet, Flags } from "regexpp/ast";
+import { AST } from "regexpp";
+import { CharacterClass, CharacterClassElement, CharacterSet } from "regexpp/ast";
 import { Simple, assertNever } from "./util";
+
+type Flags = Partial<Readonly<AST.Flags>>;
 
 export function toCharSet(
 	elements: (Simple<CharacterClassElement> | Simple<CharacterSet>)[] | CharacterClass,
-	flags: Partial<Flags>
+	flags: Flags
 ): CharSet {
 	if (Array.isArray(elements)) {
 		return JS.createCharSet(
@@ -36,7 +39,7 @@ const EMPTY_UNICODE_CHARSET = CharSet.empty(0x10ffff);
 /**
  * Returns an empty character set for the given flags.
  */
-export function emptyCharSet(flags: Partial<Flags>): CharSet {
+export function emptyCharSet(flags: Flags): CharSet {
 	if (flags.unicode) {
 		return EMPTY_UNICODE_CHARSET;
 	} else {
@@ -48,7 +51,7 @@ const ALL_UNICODE_CHARSET = CharSet.all(0x10ffff);
 /**
  * Returns a full character set for the given flags.
  */
-export function allCharSet(flags: Partial<Flags>): CharSet {
+export function allCharSet(flags: Flags): CharSet {
 	if (flags.unicode) {
 		return ALL_UNICODE_CHARSET;
 	} else {
@@ -57,7 +60,7 @@ export function allCharSet(flags: Partial<Flags>): CharSet {
 }
 const LINE_TERMINATOR_UTF16_CHARSET = JS.createCharSet([{ kind: "any" }], { unicode: false }).negate();
 const LINE_TERMINATOR_UNICODE_CHARSET = JS.createCharSet([{ kind: "any" }], { unicode: true }).negate();
-export function lineTerminatorCharSet(flags: Partial<Flags>): CharSet {
+export function lineTerminatorCharSet(flags: Flags): CharSet {
 	if (flags.unicode) {
 		return LINE_TERMINATOR_UNICODE_CHARSET;
 	} else {
@@ -68,7 +71,7 @@ export function lineTerminatorCharSet(flags: Partial<Flags>): CharSet {
 /**
  * Returns whether the given character class/set matches all characters.
  */
-export function isMatchAll(char: CharacterClass | CharacterSet, flags: Partial<Flags>): boolean {
+export function isMatchAll(char: CharacterClass | CharacterSet, flags: Flags): boolean {
 	if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
 			return JS.createCharSet([char], flags).isAll;
@@ -93,7 +96,7 @@ export function isMatchAll(char: CharacterClass | CharacterSet, flags: Partial<F
 /**
  * Returns whether the given character class/set matches no characters.
  */
-export function isMatchNone(char: CharacterClass | CharacterSet, flags: Partial<Flags>): boolean {
+export function isMatchNone(char: CharacterClass | CharacterSet, flags: Flags): boolean {
 	if (char.type === "CharacterSet") {
 		if (char.kind === "property") {
 			return JS.createCharSet([char], flags).isEmpty;
