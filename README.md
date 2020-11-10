@@ -103,7 +103,7 @@ After:
 /a+b*?/        // `b*?` can be removed
 /(?:\b)?a/     // `(?:\b)?` can be removed
 /[a-z]+|Foo/i  // `Foo` can be removed
-/(?=a?)\w\Ba/  // `(?=a?)` and `\B` always accepts and can be removed
+/(?=a?)\w\Ba/  // `(?=a?)` and `\B` always accept and can be removed
 /[*/+-^&|]/    // `+-^` will match everything from \x2B to \x5E including all character A to Z
 ```
 
