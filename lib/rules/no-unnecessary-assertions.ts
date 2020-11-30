@@ -175,7 +175,7 @@ export default {
 					const range = getLengthRange(node.alternatives);
 					// we only check the first character, so it's only correct if the assertion requires only one
 					// character
-					if (range.max === 1) {
+					if (range && range.max === 1) {
 						// require exactness
 						if (firstOf.exact && after.char.char.isSubsetOf(firstOf.char)) {
 							context.report({

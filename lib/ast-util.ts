@@ -1028,19 +1028,29 @@ export function hasAssertionWithDirection(
 
 /**
  * Returns how many characters the given element can consume at most and has to consume at least.
+ *
+ * If `undefined`, then the given element can't consume any characters.
  */
-export function getLengthRange(element: Element | Alternative | Alternative[]): { min: number; max: number } {
+export function getLengthRange(
+	element: Element | Alternative | Alternative[]
+): { min: number; max: number } | undefined {
 	if (Array.isArray(element)) {
-		let min = 0;
+		let min = Infinity;
 		let max = 0;
 
 		for (const e of element) {
 			const eRange = getLengthRange(e);
-			min += eRange.min;
-			max += eRange.max;
+			if (eRange) {
+				min = Math.min(min, eRange.min);
+				max = Math.max(max, eRange.max);
+			}
 		}
 
-		return { min, max };
+		if (min > max) {
+			return undefined;
+		} else {
+			return { min, max };
+		}
 	}
 
 	switch (element.type) {
@@ -1057,6 +1067,10 @@ export function getLengthRange(element: Element | Alternative | Alternative[]): 
 				return { min: 0, max: 0 };
 			}
 			const elementRange = getLengthRange(element.element);
+			if (!elementRange) {
+				return element.min === 0 ? { min: 0, max: 0 } : undefined;
+			}
+
 			if (elementRange.max === 0) {
 				return { min: 0, max: 0 };
 			}
@@ -1075,6 +1089,9 @@ export function getLengthRange(element: Element | Alternative | Alternative[]): 
 
 			for (const e of element.elements) {
 				const eRange = getLengthRange(e);
+				if (!eRange) {
+					return undefined;
+				}
 				min += eRange.min;
 				max += eRange.max;
 			}
@@ -1091,6 +1108,10 @@ export function getLengthRange(element: Element | Alternative | Alternative[]): 
 				return { min: 0, max: 0 };
 			}
 			const resolvedRange = getLengthRange(element.resolved);
+			if (!resolvedRange) {
+				return backreferenceAlwaysAfterGroup(element) ? undefined : { min: 0, max: 0 };
+			}
+
 			if (resolvedRange.min > 0 && !backreferenceAlwaysAfterGroup(element)) {
 				resolvedRange.min = 0;
 			}
@@ -1111,7 +1132,7 @@ export interface FirstLookChar {
 	 */
 	char: CharSet;
 	/**
-	 * If `true`, then the first character can the start/end of the string.
+	 * If `true`, then the first character can be the start/end of the string.
 	 */
 	edge: boolean;
 	/**
@@ -1210,16 +1231,15 @@ export function getFirstCharConsumedBy(
 								return misdirectedAssertion();
 							}
 							const firstChar = getFirstCharConsumedBy(element.alternatives, direction, flags);
-							if (firstChar.empty) {
+							const range = getLengthRange(element.alternatives);
+							if (firstChar.empty || !range) {
 								// trivially rejecting
 								return { char: emptyCharSet(flags), empty: false, exact: true };
-							} else if (!firstChar.exact) {
+							}
+
+							if (!firstChar.exact || range.max !== 1) {
 								// the goal to to convert `(?![a])` to `(?=[^a]|$)` but this negation is only correct
-								// if the characters are exact
-								return misdirectedAssertion();
-							} else if (getLengthRange(element.alternatives).max !== 1) {
-								// if the negative lookaround asserts more than 1 char, then the first character of the
-								// negation is always the full (all) char set.
+								// if the characters are exact and if the assertion asserts at most one character
 								// E.g. `(?![a][b])` == `(?=$|[^a]|[a][^b])`
 								return misdirectedAssertion();
 							} else {
