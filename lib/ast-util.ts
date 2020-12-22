@@ -1074,12 +1074,8 @@ export function getLengthRange(
 			if (elementRange.max === 0) {
 				return { min: 0, max: 0 };
 			}
-			if (element.min === 0) {
-				elementRange.min = 0;
-			}
-			if (element.max === Infinity) {
-				elementRange.max = Infinity;
-			}
+			elementRange.min *= element.min;
+			elementRange.max *= element.max;
 			return elementRange;
 		}
 
