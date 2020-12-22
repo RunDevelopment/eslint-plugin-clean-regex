@@ -9,26 +9,67 @@ function getCombinedQuant(node: Quantifier, nested: Quantifier): Quant | null {
 		return null;
 	} else if (node.greedy === nested.greedy) {
 		const greedy = node.greedy;
-		if (nested.min === nested.max && node.min === node.max) {
-			// e.g. (?:a{2}){4} == a{8}
-			const prod = nested.min * node.min;
+
+		// Explanation of the following condition:
+		//
+		// We are currently given a regular expression of the form `(R{a,b}){c,d}` with a<=b, c<=d, b>0, and d>0. The
+		// question is: For what numbers a,b,c,d is `(R{a,b}){c,d}` == `R{a*c,b*d}`?
+		//
+		// Let's reformulate the question in terms of integer intervals. First, some definitions:
+		//   x∈[a,b] ⇔ a <= x <= b
+		//   [a,b]*x = [a*x, b*x] for x != 0
+		//           = [0, 0] for x == 0
+		//
+		// The question: For what intervals [a, b] and [c, d] is X=Y for
+		//   X = [a*c, b*d] and
+		//   Y = { x | x ∈ [a,b]*i where i∈[c,d] } ?
+		//
+		// The first thing to note is that X ⊇ Y, so we only have to show X\Y = ∅. We can think of the elements X\Y
+		// as holes in Y. Holes can only appear between intervals [a,b]*j and [a,b]*(j+1), so let's look at a hole h
+		// between [a,b]*c and [a,b]*(c+1):
+		//
+		// 1.  We can see that [a,b]*(c+1) ⊆ Y iff c+1 <= d ⇔ c != d since we are dealing with integers only and know
+		//     that c<=d.
+		// 2.  h > b*c and h < a*(c+1). Let's just pick h=b*c+1, then we'll get b*c+1 < a*(c+1).
+		//
+		// The condition for _no_ hole between [a,b]*c and [a,b]*(c+1) is:
+		//   c=d ∨ b*c+1 >= a*(c+1)
+		//
+		// However, this condition is not defined for b=∞ and c=0. Since [a,b]*x = [0, 0] for x == 0, we will just
+		// define 0*∞ = 0. It makes sense for our problem, so the condition for b=∞ and c=0 is:
+		//   a <= 1
+		//
+		// Now to proof that it's sufficient to only check for a hole between the first two intervals. We want to show
+		// that if h=b*c+1 is not a hole then there will be no j, c<j<d such that b*j+1 is a hole. The first thing to
+		// not that j can only exist if c!=d, so the condition for h to not exist simplifies to b*c+1 >= a*(c+1).
+		//
+		// 1)  b=∞ and c=0:
+		//     b*c+1 >= a*(c+1) ⇔ 1 >= a ⇔ a <= 1. If a <= 1, then h does not exist but since b=∞, we know that the
+		//     union of the next interval [a, ∞]*1 = [a, ∞] and [0, 0] = [a, ∞]*0 is [0, ∞]. [0, ∞] is the largest
+		//     possible interval meaning that there could not possibly be any holes after it. Therefore, a j, c<j<d
+		//     cannot exist.
+		// 2)  b==∞ and c>0:
+		//     b*c+1 >= a*(c+1) ⇔ ∞ >= a*(c+1) is trivially true, so the hole h between [a,b]*c and [a,b]*(c+1) cannot
+		//     exist. There can also be no other holes because [a,b]*c = [a*c,∞] ⊇ [a,b]*i = [a*i,∞] for all i>c.
+		// 3)  b<∞:
+		//     b*c+1 >= a*(c+1). If c+x is also not a hole for any x >= 0, then there can be no holes.
+		//     b*(c+x)+1 >= a*(c+x+1) ⇔ b >= a + (a-1)/(c+x). We know that this is true for x=0 and increasing x will
+		//     only make (a-1)/(c+x) smaller, so it is always true. Therefore, there can be no j c<j<d such that b*j+1
+		//     is a hole.
+		//
+		// We've shown that if there is no hole h between the first and second interval, then there can be no other
+		// holes. Therefore it is sufficient to only check for the first hole.
+
+		const a = nested.min;
+		const b = nested.max;
+		const c = node.min;
+		const d = node.max;
+		const condition = b === Infinity && c === 0 ? a <= 1 : c === d || b * c + 1 >= a * (c + 1);
+
+		if (condition) {
 			return {
-				min: prod,
-				max: prod,
-				greedy,
-			};
-		} else if (nested.min <= 1) {
-			// e.g. (?:a+){4} == a{4,} and (?:a*){4} == a* and (?:a{1,2}){3,4} == a{3,8}
-			return {
-				min: nested.min * node.min,
-				max: nested.max * node.max,
-				greedy,
-			};
-		} else if (nested.max === Infinity && node.min > 0) {
-			// e.g. (?:a{5,}){4} == a{20,}
-			return {
-				min: nested.min * node.min,
-				max: nested.max * node.max,
+				min: a * c,
+				max: b * d,
 				greedy,
 			};
 		} else {
