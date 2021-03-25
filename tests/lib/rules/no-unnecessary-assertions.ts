@@ -30,6 +30,18 @@ testRule(__filename, undefined, {
 
 		String(/(["'])(?:\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/),
 		String(/(\w)(?=\1)\w+/),
+
+		// this case is interesting because it has follow a path that goes back into the loop
+		String(/(?:-|\w(?!b))*a/),
+		String(/(?:-|\w(?!b))+a/),
+		String(/(?:-|\w(?!b)){2}a/),
+		// this case is interesting because there are technically exponentially many paths it has to follow. Because the
+		// `\b` is in a `()+` (`(\b)+` == `\b(\b)*`), we don't know wether the \b is the first element or wether it's
+		// part of the star. This means that we have to try out both paths, one where we assume that it's the first
+		// element and one where we assume that it isn't. This gives us 2 options to try. This number grows
+		// exponentially for nested loops. In this case, the 48 nested loops necessitate 2.8e14 starting positions.
+		// There needs to be some optimization to work around this problem.
+		String(/((((((((((((((((((((((((((((((((((((((((((((((((\b)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+)+/),
 	],
 	invalid: [
 		{ code: String(/a\bb/), errors: [{ message: "`\\b` will always reject because it is preceded by a word character and followed by a word character." }] },

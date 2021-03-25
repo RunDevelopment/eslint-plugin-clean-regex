@@ -1531,6 +1531,342 @@ function firstConsumedToLook(first: Readonly<FirstConsumedChar>): FirstLookChar 
 	}
 }
 
+export interface FollowOperations<S> {
+	/**
+	 * Split off a new path from the given one.
+	 *
+	 * The given state should not be modified. If the state is immutable, then `fork` may be implemented as the identify
+	 * function in regard to `state`.
+	 */
+	fork(state: S, direction: MatchingDirection): S;
+	/**
+	 * Joins any number but of paths to create a combined path.
+	 */
+	join(states: S[], direction: MatchingDirection): S;
+	/**
+	 * This function is called when dealing to general lookarounds (it will __not__ be called for predefined assertion -
+	 * `^`, `$`, `\b`, `\B`).
+	 */
+	assert?: (state: S, direction: MatchingDirection, assertion: S, assertionDirection: MatchingDirection) => S;
+
+	enter?: (element: Element, state: S, direction: MatchingDirection) => S;
+	leave?: (element: Element, state: S, direction: MatchingDirection) => S;
+	endPath?: (state: S, direction: MatchingDirection, reason: "pattern" | "assertion") => S;
+
+	/**
+	 * Whether the current path should go into the given element (return `true`) or whether it should be skipped
+	 * (return `false`). If the element is skipped, the given state will not be changed and passed as-is to the `leave`
+	 * function.
+	 *
+	 * You shouldn't modify state in this function. Modify state in the `enter` function instead.
+	 */
+	continueInto?: (element: Element, state: S, direction: MatchingDirection) => boolean;
+	/**
+	 * Whether the current path should continue after the given element (return `true`) or whether all elements that
+	 * follow this element should be skipped (return `false`).
+	 *
+	 * If the current path is a fork path, then only the elements until the fork is joined will be skipped. A stopped
+	 * fork path will be joined with all other forks like normal.
+	 *
+	 * You shouldn't modify state in this function. Modify state in the `leave` function instead.
+	 */
+	continueAfter?: (element: Element, state: S, direction: MatchingDirection) => boolean;
+}
+/**
+ * This function goes to all elements reachable from the given `start`.
+ *
+ * ## Paths
+ *
+ * The function uses _paths_ for this. A path is an [execution path](https://en.wikipedia.org/wiki/Symbolic_execution)
+ * that is described by a sequence of regex elements.
+ *
+ * I.e. there are two paths to go from `a` to `b` in the pattern `/a(\w|dd)b/`. The first path is `a \w b` and the
+ * second path is `a d d b`.
+ *
+ * However, the problem with paths is that there can be exponentially many because of combinatorial explosion (e.g. the
+ * pattern `/(a|b)(a|b)(a|b)(a|b)(a|b)/` has 32 paths). To solve this problem, this function will _join_ paths together
+ * again.
+ *
+ * I.e. In the pattern `/a(\w|dd)b/`, first element of all paths will be `a`. After `a`, the path splits into two. We
+ * call each of the split paths a _fork_. The two forks will be `a ( \w` and `a ( d d`. The `(` is used to indicate that
+ * a fork was made. Since both paths come together after the group ends, they will be _joined_. The joined path of
+ * `a ( \w` and `a ( d d` will be written as `a ( \w | d d )`. The `)` is used to indicate that forks have been joined.
+ * The final path will be `a ( \w | d d ) b`.
+ *
+ * This method of forking and joining works for alternations but it won't work for quantifiers. This is why quantifiers
+ * will be treated as single elements that can be entered. By default, a quantifier `q` will be interpreted as `( q | )`
+ * if its minimum is zero and as `( q )` otherwise.
+ *
+ * ### State
+ *
+ * Paths are thought of as a sequence of elements and they are represented by state (type parameter `S`). All operations
+ * that fork, join, or assert paths will operate on state and not a sequence of elements.
+ *
+ * State allows flow operations to be implemented more efficiently and ensures that only necessary data is passed
+ * around. Flow analysis for paths usually tracks properties and analyses how these properties change, the current
+ * values of these properties is state.
+ *
+ * ## Flow operations
+ *
+ * Flow operations are specific to the type of the state and act upon the state. The define how the state of paths
+ * changes when encountering elements and how paths fork, join, and continue.
+ *
+ * ### Operation sequence
+ *
+ * To follow all paths, two operations are necessary: one operations that enters elements and one that determines the
+ * next element. These operations will be called `Enter` and `Next` respectively. The operation will call the given
+ * flow operations like this:
+ *
+ * ```txt
+ * function Enter(element, state):
+ *     operations.enter
+ *     if operations.continueInto:
+ *         if elementType == GROUP:
+ *             operations.join(
+ *                 alternatives.map(e => Enter(e, operations.fork(state)))
+ *             )
+ *         if elementType == QUANTIFIER:
+ *             if quantifierMin == 0:
+ *                 operations.join([
+ *                     state,
+ *                     Enter(quantifier, operations.fork(state))
+ *                 ])
+ *         if elementType == LOOKAROUND:
+ *             operations.assert(
+ *                 state,
+ *                 operations.join(
+ *                     alternatives.map(e => Enter(e, operations.fork(state)))
+ *                 )
+ *             )
+ *     operations.leave
+ *     Next(element, state)
+ *
+ * function Next(element, state):
+ *     if operations.continueAfter:
+ *         if noNextElement:
+ *             operations.endPath
+ *         else:
+ *             Enter(nextElement, state)
+ * ```
+ *
+ * (This is just simplified pseudo code but the general order of operations will be the same.)
+ *
+ * ## Runtime
+ *
+ * If `n` elements can be reached from the given starting element, then the average runtime will be `O(n)` and the
+ * worst-case runtime will be `O(n^2)`.
+ *
+ * @param start
+ * @param startMode If "enter", then the first element to be entered will be the starting element. If "leave", then the
+ * first element to continue after will be the starting element.
+ * @param initialState
+ * @param operations
+ * @param direction
+ */
+export function followPaths<S>(
+	start: Element,
+	startMode: "enter" | "next",
+	initialState: NonNullable<S>,
+	operations: FollowOperations<NonNullable<S>>,
+	direction?: MatchingDirection
+): NonNullable<S> {
+	function opEnter(element: Element, state: NonNullable<S>, direction: MatchingDirection): NonNullable<S> {
+		state = operations.enter?.(element, state, direction) ?? state;
+
+		const continueInto = operations.continueInto?.(element, state, direction) ?? true;
+		if (continueInto) {
+			switch (element.type) {
+				case "Assertion": {
+					if (element.kind === "lookahead" || element.kind === "lookbehind") {
+						const assertionDirection = assertionKindToMatchingDirection(element.kind);
+						const assertion = operations.join(
+							element.alternatives.map(a =>
+								enterAlternative(a, operations.fork(state, direction), assertionDirection)
+							),
+							assertionDirection
+						);
+						state = operations.endPath?.(state, assertionDirection, "assertion") ?? state;
+						state = operations.assert?.(state, direction, assertion, assertionDirection) ?? state;
+					}
+					break;
+				}
+				case "Group":
+				case "CapturingGroup": {
+					state = operations.join(
+						element.alternatives.map(a =>
+							enterAlternative(a, operations.fork(state, direction), direction)
+						),
+						direction
+					);
+					break;
+				}
+				case "Quantifier": {
+					if (element.max === 0) {
+						// do nothing
+					} else if (element.min === 0) {
+						state = operations.join(
+							[state, opEnter(element.element, operations.fork(state, direction), direction)],
+							direction
+						);
+					} else {
+						state = opEnter(element.element, state, direction);
+					}
+					break;
+				}
+			}
+		}
+
+		state = operations.leave?.(element, state, direction) ?? state;
+		return state;
+	}
+	function enterAlternative(
+		alternative: Alternative,
+		state: NonNullable<S>,
+		direction: MatchingDirection
+	): NonNullable<S> {
+		let i = direction === "ltr" ? 0 : alternative.elements.length - 1;
+		const increment = direction === "ltr" ? +1 : -1;
+		let element: Element | undefined;
+		for (; (element = alternative.elements[i]); i += increment) {
+			state = opEnter(element, state, direction);
+
+			const continueAfter = operations.continueAfter?.(element, state, direction) ?? true;
+			if (!continueAfter) {
+				break;
+			}
+		}
+
+		return state;
+	}
+
+	function opNext(element: Element, state: NonNullable<S>, direction: MatchingDirection): NonNullable<S> {
+		type NextElement = false | Element | "pattern" | "assertion" | [Quantifier, NextElement];
+		function getNextElement(element: Element): NextElement {
+			const parent = element.parent;
+			if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
+				throw new Error("The given element cannot be part of a character class.");
+			}
+
+			const continuePath = operations.continueAfter?.(element, state, direction) ?? true;
+			if (!continuePath) {
+				return false;
+			}
+
+			if (parent.type === "Quantifier") {
+				// This is difficult.
+				// The main problem is that paths coming out of the quantifier might loop back into itself. This means that
+				// we have to consider the path that leaves the quantifier and the path that goes back into the quantifier.
+				if (parent.max <= 1) {
+					// Can't loop, so we only have to consider the path going out of the quantifier.
+					return getNextElement(parent);
+				} else {
+					return [parent, getNextElement(parent)];
+				}
+			} else {
+				const nextIndex = parent.elements.indexOf(element) + (direction === "ltr" ? +1 : -1);
+				const nextElement: Element | undefined = parent.elements[nextIndex];
+
+				if (nextElement) {
+					return nextElement;
+				} else {
+					const parentParent = parent.parent;
+					if (parentParent.type === "Pattern") {
+						return "pattern";
+					} else if (parentParent.type === "Assertion") {
+						return "assertion";
+					} else if (parentParent.type === "CapturingGroup" || parentParent.type === "Group") {
+						return getNextElement(parentParent);
+					}
+					throw assertNever(parentParent);
+				}
+			}
+		}
+
+		// eslint-disable-next-line no-constant-condition
+		while (true) {
+			let after = getNextElement(element);
+			while (Array.isArray(after)) {
+				const [quant, other] = after;
+				state = operations.join(
+					[state, opEnter(quant, operations.fork(state, direction), direction)],
+					direction
+				);
+				after = other;
+			}
+
+			if (after === false) {
+				return state;
+			} else if (after === "assertion" || after === "pattern") {
+				state = operations.endPath?.(state, direction, after) ?? state;
+				return state;
+			} else {
+				state = opEnter(after, state, direction);
+				element = after;
+			}
+		}
+	}
+
+	if (!direction) {
+		direction = matchingDirection(start);
+	}
+	if (startMode === "enter") {
+		initialState = opEnter(start, initialState, direction);
+	}
+	return opNext(start, initialState, direction);
+}
+
+export interface FirstConsumedCharAfter {
+	char: FirstConsumedChar;
+	elements: Element[];
+}
+export function getFirstConsumedCharAfter(
+	afterThis: Element,
+	direction: MatchingDirection,
+	flags: Flags
+): FirstConsumedCharAfter {
+	type State = Readonly<FirstConsumedCharAfter>;
+	const result = followPaths<State>(
+		afterThis,
+		"next",
+		{ char: firstConsumedCharEmptyWord(flags), elements: [] },
+		{
+			fork(state): State {
+				return state;
+			},
+			join(states): State {
+				const elements = new Set<Element>();
+				states.forEach(s => s.elements.forEach(e => elements.add(e)));
+
+				return {
+					char: firstConsumedCharUnion(
+						states.map(s => s.char),
+						flags
+					),
+					elements: [...elements],
+				};
+			},
+
+			enter(element, state, direction): State {
+				const first = getFirstCharConsumedBy(element, direction, flags);
+				return {
+					char: firstConsumedCharConcat([state.char, first], flags),
+					elements: [...state.elements, element],
+				};
+			},
+
+			continueInto(): boolean {
+				return false;
+			},
+			continueAfter(_, state): boolean {
+				return state.char.empty;
+			},
+		},
+		direction
+	);
+
+	return { char: result.char, elements: result.elements };
+}
+
 export interface FirstCharAfter {
 	/**
 	 * The first character after the given element.
@@ -1541,7 +1877,6 @@ export interface FirstCharAfter {
 	 */
 	elements: Element[];
 }
-
 /**
  * Returns the first character after the given element.
  *
@@ -1549,68 +1884,127 @@ export interface FirstCharAfter {
  * direction. You can use this to get the previous character of an element as well.
  */
 export function getFirstCharAfter(afterThis: Element, direction: MatchingDirection, flags: Flags): FirstCharAfter {
-	function advanceElement(element: Element): (Element | "end")[] {
-		const parent = element.parent;
-		if (parent.type === "CharacterClass" || parent.type === "CharacterClassRange") {
-			throw new Error("The given element cannot be part of a character class.");
-		}
+	const result = getFirstConsumedCharAfter(afterThis, direction, flags);
+	return { char: firstConsumedToLook(result.char), elements: [...result.elements] };
+}
 
-		if (parent.type === "Quantifier") {
-			if (parent.max <= 1) {
-				return advanceElement(parent);
-			}
-			return [parent, ...advanceElement(parent)];
-		} else {
-			let altElements = parent.elements;
-			if (direction === "rtl") {
-				altElements = [...altElements];
-				altElements.reverse();
-			}
-
-			const index = altElements.indexOf(element);
-			if (index === altElements.length - 1) {
-				// last element
-				const parentParent = parent.parent;
-				if (parentParent.type === "Pattern") {
-					// there's nothing after that
-					return ["end"];
-				}
-				if (parentParent.type === "Assertion") {
-					// handling this too is waaay too complex, so let's just bail
-					return ["end"];
-				}
-				if (parentParent.type === "CapturingGroup" || parentParent.type === "Group") {
-					return advanceElement(parentParent);
-				}
-				throw assertNever(parentParent);
-			} else {
-				// there are still some elements after this one
-				return [altElements[index + 1]];
-			}
+export interface SingleConsumedChar {
+	char: CharSet;
+	exact: boolean;
+	empty: boolean;
+}
+/**
+ * If the given element can, via some path, consume only a single character, this character will be returned. If the
+ * element always consume zero or more than one character, an empty character set will be returned.
+ *
+ * If the element, via some path, can consume zero characters, it will be returned as `empty: true`.
+ *
+ * @param element
+ * @param ignoreAssertions
+ * @param flags
+ */
+export function getSingleConsumedChar(
+	element: Element | Alternative | Alternative[],
+	ignoreAssertions: boolean,
+	flags: Flags
+): SingleConsumedChar {
+	if (Array.isArray(element)) {
+		let empty = false;
+		const union = CharUnion.emptyFromFlags(flags);
+		for (const a of element) {
+			const single = getSingleConsumedChar(a, ignoreAssertions, flags);
+			empty = empty || single.empty;
+			union.add(single.char, single.exact);
 		}
-	}
-	function firstCharOf(inputElements: Iterable<Element | "end">): { char: FirstConsumedChar; elements: Element[] } {
-		const firsts: FirstConsumedChar[] = [];
-		const elements: Element[] = [];
-		for (const element of inputElements) {
-			if (element === "end") {
-				firsts.push(firstConsumedCharEmptyWord(flags));
-			} else {
-				elements.push(element);
-				let firstChar = getFirstCharConsumedBy(element, direction, flags);
-				if (firstChar.empty) {
-					const after = firstCharOf(advanceElement(element));
-					elements.push(...after.elements);
-					firstChar = firstConsumedCharConcat([firstChar, after.char], flags);
-				}
-				firsts.push(firstChar);
-			}
-		}
-		return { char: firstConsumedCharUnion(firsts, flags), elements };
+		return { char: union.char, exact: union.exact, empty };
 	}
 
-	const first = firstCharOf(advanceElement(afterThis));
-	return { char: firstConsumedToLook(first.char), elements: first.elements };
+	function multipleChars(): SingleConsumedChar {
+		return { char: emptyCharSet(flags), exact: true, empty: false };
+	}
+	function zeroChars(): SingleConsumedChar {
+		return { char: emptyCharSet(flags), exact: true, empty: true };
+	}
+
+	switch (element.type) {
+		case "Alternative": {
+			// e.g. /a?b?c?/ => /[abc]?/, /a?bc?/ => /[b]/, /abc?/ => /[]/
+			let nonEmptyResult: SingleConsumedChar | undefined = undefined;
+			const emptyUnion = CharUnion.emptyFromFlags(flags);
+			for (const e of element.elements) {
+				const single = getSingleConsumedChar(e, ignoreAssertions, flags);
+
+				if (nonEmptyResult === undefined) {
+					if (single.empty) {
+						emptyUnion.add(single.char, single.exact);
+					} else {
+						nonEmptyResult = single;
+					}
+				} else {
+					if (single.empty) {
+						// ignore
+					} else {
+						return multipleChars();
+					}
+				}
+			}
+
+			if (nonEmptyResult) {
+				return nonEmptyResult;
+			} else {
+				return { char: emptyUnion.char, exact: emptyUnion.exact, empty: true };
+			}
+		}
+		case "Assertion": {
+			return { char: emptyCharSet(flags), exact: false, empty: ignoreAssertions };
+		}
+		case "Character":
+		case "CharacterClass":
+		case "CharacterSet": {
+			return { char: toCharSet(element, flags), exact: true, empty: false };
+		}
+		case "CapturingGroup":
+		case "Group": {
+			return getSingleConsumedChar(element.alternatives, ignoreAssertions, flags);
+		}
+		case "Backreference": {
+			if (isEmptyBackreference(element)) {
+				return zeroChars();
+			}
+			const resolvedSingle = getSingleConsumedChar(element.resolved, ignoreAssertions, flags);
+
+			// the resolved character is only exact if it is only a single character.
+			// i.e. /(\w)\1/ here the (\w) will capture exactly any word character, but the \1 can only match
+			// one word character and that is the only (\w) matched.
+			resolvedSingle.exact = resolvedSingle.exact && resolvedSingle.char.size <= 1;
+
+			// there is at least one path through which the backreference will (possibly) be replaced with the
+			// empty string
+			resolvedSingle.empty = resolvedSingle.empty || !backreferenceAlwaysAfterGroup(element);
+
+			return resolvedSingle;
+		}
+		case "Quantifier": {
+			if (element.max === 0) {
+				return zeroChars();
+			}
+
+			const single = getSingleConsumedChar(element.element, ignoreAssertions, flags);
+
+			if (!single.empty) {
+				if (element.min === 0) {
+					single.empty = true;
+				} else if (element.min >= 2) {
+					// we will always consume at least 2 chars, so there is no *single* consumed char
+					return multipleChars();
+				}
+			}
+
+			return single;
+		}
+		default:
+			throw assertNever(element);
+	}
 }
 
 /**
