@@ -1,6 +1,25 @@
 # Changelog
 
 
+## 0.5.1 (2021-03-25)
+
+Lots of minor fixes and improvements.
+
+### Added
+
+- Contributing guide and issue templates
+
+### Changed
+
+- `no-trivially-nested-quantifier`: Improved the condition that decides whether quantifiers are trivially nested. The rule will now be able to detect more cases.
+- Improved many functions that analyse the RegExp AST.
+- Updated to latest refa version.
+
+### Fixed
+
+- Some typos.
+
+
 ## 0.5.0 (2020-10-26)
 
 I ❤️ Typescript + Prettier! <br>
