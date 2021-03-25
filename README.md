@@ -62,25 +62,25 @@ Some highlights of the working and working-together of rules in the _recommended
 Before:
 
 ```js
-/[0-9]/i
-/[^\s]/
-/[a-fA-F0-9]/i
-/[a-zA-Z0-9_-]/
-/[a-z\d\w]/
-/[\S\d]/
-/[\w\p{ASCII}]/u
+- /[0-9]/i
+- /[^\s]/
+- /[a-fA-F0-9]/i
+- /[a-zA-Z0-9_-]/
+- /[a-z\d\w]/
+- /[\S\d]/
+- /[\w\p{ASCII}]/u
 ```
 
 After:
 
 ```js
-/\d/
-/\S/
-/[a-f0-9]/i
-/[\w-]/
-/\w/
-/\S/
-/\p{ASCII}/u
+- /\d/
+- /\S/
+- /[a-f0-9]/i
+- /[\w-]/
+- /\w/
+- /\S/
+- /\p{ASCII}/u
 ```
 
 ### Simplify patterns
@@ -88,32 +88,32 @@ After:
 Before:
 
 ```js
-/(?:\w|\d)+/
-/(?:a|(b)|c|(?:d)|(?:ee)){0,}/
-/(?<!\w)a+(?=$)/mi
-/[\s\S]#[\0-\uFFFF]/ysi
-/\d*\w(?:[a-z_]|\d+)*/im
+- /(?:\w|\d)+/
+- /(?:a|(b)|c|(?:d)|(?:ee)){0,}/
+- /(?<!\w)a+(?=$)/mi
+- /[\s\S]#[\0-\uFFFF]/ysi
+- /\d*\w(?:[a-z_]|\d+)*/im
 ```
 
 After:
 
 ```js
-/\w+/
-/(?:[acd]|(b)|ee)*/
-/\ba+$/im
-/.#./sy
-/\w+/
+- /\w+/
+- /(?:[acd]|(b)|ee)*/
+- /\ba+$/im
+- /.#./sy
+- /\w+/
 ```
 
 ### Detect non-functional code and potential errors
 
 ```js
-/\1(a)/        // `\1` won't work
-/a+b*?/        // `b*?` can be removed
-/(?:\b)?a/     // `(?:\b)?` can be removed
-/[a-z]+|Foo/i  // `Foo` can be removed
-/(?=a?)\w\Ba/  // `(?=a?)` and `\B` always accept and can be removed
-/[*/+-^&|]/    // `+-^` will match everything from \x2B to \x5E including all character A to Z
+- /\1(a)/        // `\1` won't work
+- /a+b*?/        // `b*?` can be removed
+- /(?:\b)?a/     // `(?:\b)?` can be removed
+- /[a-z]+|Foo/i  // `Foo` can be removed
+- /(?=a?)\w\Ba/  // `(?=a?)` and `\B` always accept and can be removed
+- /[*/+-^&|]/    // `+-^` will match everything from \x2B to \x5E including all character A to Z
 ```
 
 
