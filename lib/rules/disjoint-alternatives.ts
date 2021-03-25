@@ -1,4 +1,4 @@
-import { JS, NFA, ReadonlyNFA } from "refa";
+import { JS, NFA, ReadonlyNFA, TooManyNodesError } from "refa";
 import { Alternative, CapturingGroup, Group, LookaroundAssertion, Node, Pattern } from "regexpp/ast";
 import { mention, toRegExpString } from "../format";
 import { CleanRegexRule, createRuleListener, getDocUrl } from "../rules-util";
@@ -22,10 +22,19 @@ export default {
 			 * Converts the given alternative to an NFA. The returned NFA does not accept the empty string.
 			 */
 			function toNfa(alt: Alternative): ReadonlyNFA {
-				const result = parser.parseElement(alt, { lookarounds: "disable" });
-				const nfa = NFA.fromRegex(result.expression, { maxCharacter: result.maxCharacter });
-				nfa.withoutEmptyWord();
-				return nfa;
+				try {
+					const result = parser.parseElement(alt, { backreferences: "disable", assertions: "disable" });
+					const nfa = NFA.fromRegex(result.expression, { maxCharacter: result.maxCharacter });
+					nfa.withoutEmptyWord();
+					return nfa;
+				} catch (e) {
+					// the NFA construction might fail because the NFA is too big
+					if (e instanceof TooManyNodesError) {
+						return NFA.empty({ maxCharacter: flags.unicode ? 0x10ffff : 0xffff });
+					}
+
+					throw e;
+				}
 			}
 
 			function findFirstSuperset(alternatives: Alternative[], subset: ReadonlyNFA): Alternative[] {
