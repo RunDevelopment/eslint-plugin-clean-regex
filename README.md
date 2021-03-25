@@ -5,6 +5,15 @@
 An ESLint plugin for writing better regular expressions.
 
 
+## About
+
+This is an [ESLint](http://eslint.org) plugin to lint JavaScript regular expressions. Its goal is to help both beginners and experts to write better regular expressions by pointing out errors and suggesting improvements.
+
+The plugin offers rules for possible errors, best practices, and coding style in regular expressions.
+
+Right now, this project is still young (and many rules are opinionated). Feel free to open an issue if you think rules are too strict/lax/inflexible. Suggestions and feature requests are welcome as well!
+
+
 ## Getting started
 
 You'll need to install [ESLint](http://eslint.org) and `eslint-plugin-clean-regex`:
