@@ -1,6 +1,7 @@
 # eslint-plugin-clean-regex
 
 [![Actions Status](https://github.com/RunDevelopment/eslint-plugin-clean-regex/workflows/Node.js%20CI/badge.svg)](https://github.com/RunDevelopment/eslint-plugin-clean-regex/actions)
+[![npm](https://img.shields.io/npm/v/eslint-plugin-clean-regex)](https://www.npmjs.com/package/eslint-plugin-clean-regex)
 
 An ESLint plugin for writing better regular expressions.
 
