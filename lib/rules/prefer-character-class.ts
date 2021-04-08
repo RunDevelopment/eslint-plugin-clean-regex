@@ -7,6 +7,7 @@ import {
 	getFirstCharConsumedBy,
 	getParentPrefixAndSuffix,
 	matchingDirection,
+	negateCharacterSetRaw,
 	underAStar,
 } from "../ast-util";
 import {
@@ -20,10 +21,10 @@ import {
 	Pattern,
 } from "regexpp/ast";
 import { CharSet } from "refa";
-import { findIndex, findLastIndex, Simple } from "../util";
+import { findIndex, findLastIndex } from "../util";
 import { toCharSet } from "../char-util";
 
-type CharElementArray = Readonly<Simple<CharacterClassElement>>[];
+type CharElementArray = Readonly<CharacterClassElement>[];
 interface CharacterAlternative {
 	isCharacter: true;
 	alternative: Alternative;
@@ -67,30 +68,7 @@ function toCharacterClassElement(element: Element): CharElementArray | null {
 		// but can if the only element is a character set
 		if (element.elements.length === 1 && element.elements[0].type === "CharacterSet") {
 			const set = element.elements[0];
-			if (set.kind === "property") {
-				const p = set.raw.substr(0, 2);
-				const raw = (set.negate ? p.toLowerCase() : p.toUpperCase()) + set.raw.substr(2);
-				return [
-					{
-						type: "CharacterSet",
-						kind: set.kind,
-						key: set.key,
-						value: set.value,
-						negate: !set.negate,
-						raw,
-					},
-				];
-			} else {
-				const raw = set.negate ? set.raw.toLowerCase() : set.raw.toUpperCase();
-				return [
-					{
-						type: "CharacterSet",
-						kind: set.kind,
-						negate: !set.negate,
-						raw,
-					},
-				];
-			}
+			return [{ ...set, negate: !set.negate, raw: negateCharacterSetRaw(set) }];
 		}
 		return null;
 	} else if (element.type === "Character") {

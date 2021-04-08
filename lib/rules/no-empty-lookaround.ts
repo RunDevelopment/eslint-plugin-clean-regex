@@ -21,7 +21,7 @@ export default {
 
 					// we have to check the alternatives ourselves because negative lookarounds which trivially reject
 					// cannot match the empty string.
-					const empty = isPotentiallyEmpty(node.alternatives, { backreferencesAreNonEmpty: true });
+					const empty = isPotentiallyEmpty(node.alternatives);
 
 					if (empty) {
 						context.report({
