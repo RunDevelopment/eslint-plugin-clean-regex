@@ -6,6 +6,33 @@
 An ESLint plugin for writing better regular expressions.
 
 
+## ⚠️ Deprecation announcement ⚠️
+
+This project will be deprecated soon. 
+
+New users are advised to choose [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp) instead.
+
+Existing users can continue to use `eslint-plugin-clean-regex`. 
+
+### What happened?
+
+`eslint-plugin-clean-regex` and [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp) have joined forces. We decided to work together on one ESLint plugin for JavaScript regexes. Since maintaining two plugins with similar rules takes too much work, I decided to stop working on `eslint-plugin-clean-regex`.
+
+### The now
+
+We are currently adding all features of `eslint-plugin-clean-regex` to `eslint-plugin-regexp`. You can see our [current progress here](https://github.com/ota-meshi/eslint-plugin-regexp/issues/91).
+
+If you find bugs for `eslint-plugin-clean-regex`, you will still be able to file bug reports. However, bugs will only be fixed in `eslint-plugin-regexp`.
+
+### The future
+
+`eslint-plugin-clean-regex` is going to be deprecated once all features have been added to `eslint-plugin-regexp`.
+
+Existing users can expect a migration guide and a migration tool in the future to make the transition to `eslint-plugin-regexp` as easy as possible. 
+
+This announcement will be updated if anything happens.
+
+
 ## About
 
 This is an [ESLint](http://eslint.org) plugin to lint JavaScript regular expressions. Its goal is to help both beginners and experts to write better regular expressions by pointing out errors and suggesting improvements.
