@@ -62,6 +62,7 @@
     "*.ts": "eslint --cache --fix"
   },
   "files": [
-    "dist/**/*.js"
+    "dist/**/*.js",
+    "MIGRATION.md"
   ]
 }
