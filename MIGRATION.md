@@ -78,7 +78,7 @@ Options are migrated as such:
 
 ### `clean-regex/optimized-character-class`
 
-Use [`regexp/no-dupe-characters-character-class.html`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-dupe-characters-character-class.html), [`regexp/no-useless-range`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-range.html), and [`regexp/prefer-range`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-range.html) instead.
+Use [`regexp/no-dupe-characters-character-class`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-dupe-characters-character-class.html), [`regexp/no-useless-range`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/no-useless-range.html), and [`regexp/prefer-range`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-range.html) instead.
 
 All three rules together perform the function of `clean-regex/optimized-character-class`.
 
@@ -96,6 +96,56 @@ The `allowDigitRange` translates to `regexp/prefer-d`'s `insideCharacterClass` o
 Use [`regexp/prefer-plus-quantifier`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-plus-quantifier.html), [`regexp/prefer-question-quantifier`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-question-quantifier.html), and [`regexp/prefer-star-quantifier`](https://ota-meshi.github.io/eslint-plugin-regexp/rules/prefer-star-quantifier.html) instead.
 
 All three rules together perform the function of `clean-regex/prefer-predefined-quantifiers`.
+
+
+## Recommended config
+
+[`eslint-plugin-regexp`]'s recommended config is a lot stricter and includes a lot more rules than `eslint-plugin-clean-regex`'s recommended config. A configuration of [`eslint-plugin-regexp`]'s rules that is (almost) equivalent to `eslint-plugin-clean-regex`'s recommended config can be found here:
+
+```json
+{
+    "plugins": [
+        "regexp"
+    ],
+    "rules": {
+        "regexp/confusing-quantifier": "warn",
+        "regexp/disjoint-alternatives": ["warn", { "report": "all" }],
+        "regexp/match-any": "warn",
+        "regexp/no-dupe-characters-character-class": "warn",
+        "regexp/no-empty-alternative": "warn",
+        "regexp/no-empty-capturing-group": "warn",
+        "regexp/no-empty-lookarounds-assertion": "error",
+        "regexp/no-lazy-ends": "warn",
+        "regexp/no-obscure-range": "error",
+        "regexp/no-optional-assertion": "error",
+        "regexp/no-potentially-useless-backreference": "warn",
+        "regexp/no-trivially-nested-assertion": "warn",
+        "regexp/no-trivially-nested-quantifier": "warn",
+        "regexp/no-unnecessary-group": "warn",
+        "regexp/no-useless-assertions": "error",
+        "regexp/no-useless-backreference": "error",
+        "regexp/no-useless-character-class": "warn",
+        "regexp/no-useless-flag": "warn",
+        "regexp/no-useless-lazy": "warn",
+        "regexp/no-useless-quantifier": "warn",
+        "regexp/no-useless-range": "warn",
+        "regexp/no-useless-two-nums-quantifier": "warn",
+        "regexp/no-zero-quantifier": "error",
+        "regexp/optimal-lookaround-quantifier": "warn",
+        "regexp/optimal-quantifier-concatenation": "warn",
+        "regexp/prefer-character-class": "warn",
+        "regexp/prefer-plus-quantifier": "warn",
+        "regexp/prefer-predefined-assertion": "warn",
+        "regexp/prefer-question-quantifier": "warn",
+        "regexp/prefer-range": "warn",
+        "regexp/prefer-star-quantifier": "warn",
+        "regexp/regexp/prefer-d": "warn",
+        "regexp/regexp/prefer-w": "warn",
+        "regexp/sort-flags": "warn",
+        "regexp/strict": "error"
+    }
+}
+```
 
 
 [`eslint-plugin-regexp`]: https://github.com/ota-meshi/eslint-plugin-regexp
