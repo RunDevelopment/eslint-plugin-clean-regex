@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 0.5.2 (2021-10-11)
+
+The project is now officially deprecated and will not be worked on anymore.
+
+Please use [eslint-plugin-regexp](https://github.com/ota-meshi/eslint-plugin-regexp) instead. You can find a [migration guide here](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/MIGRATION.md).
+
+
 ## 0.5.1 (2021-03-25)
 
 Lots of minor fixes and improvements.
