@@ -6,31 +6,21 @@
 An ESLint plugin for writing better regular expressions.
 
 
-## ⚠️ Deprecation announcement ⚠️
+## ⚠️ Deprecated ⚠️
 
-This project will be deprecated soon. 
+This project is deprecated.
 
-New users are advised to choose [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp) instead.
-
-Existing users can continue to use `eslint-plugin-clean-regex`. 
+Please use [`eslint-plugin-regexp`] instead.
 
 ### What happened?
 
-`eslint-plugin-clean-regex` and [`eslint-plugin-regexp`](https://github.com/ota-meshi/eslint-plugin-regexp) have joined forces. We decided to work together on one ESLint plugin for JavaScript regexes. Since maintaining two plugins with similar rules takes too much work, I decided to stop working on `eslint-plugin-clean-regex`.
+`eslint-plugin-clean-regex` and [`eslint-plugin-regexp`] have joined forces. We decided to work together on one ESLint plugin for JavaScript regexes. Since maintaining two plugins with similar rules takes too much work, I decided to stop working on `eslint-plugin-clean-regex`.
 
-### The now
+As of right now, [`eslint-plugin-regexp`] supports all rules of `eslint-plugin-clean-regex` along improvements to those rules and with many more useful rules.
 
-We are currently adding all features of `eslint-plugin-clean-regex` to `eslint-plugin-regexp`. You can see our [current progress here](https://github.com/ota-meshi/eslint-plugin-regexp/issues/91).
+### Migration
 
-If you find bugs for `eslint-plugin-clean-regex`, you will still be able to file bug reports. However, bugs will only be fixed in `eslint-plugin-regexp`.
-
-### The future
-
-`eslint-plugin-clean-regex` is going to be deprecated once all features have been added to `eslint-plugin-regexp`.
-
-Existing users can expect a migration guide and a migration tool in the future to make the transition to `eslint-plugin-regexp` as easy as possible. 
-
-This announcement will be updated if anything happens.
+See the [migration guide](./MIGRATION.md).
 
 
 ## About
@@ -191,3 +181,5 @@ Fixable rules are denoted with a :wrench:.
 | :wrench: | [simple-constant-quantifier](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/simple-constant-quantifier.md) | Prefer simple constant quantifiers over the range form. |
 | :wrench: | [sort-flags](https://github.com/RunDevelopment/eslint-plugin-clean-regex/blob/master/docs/rules/sort-flags.md) | Requires the regex flags to be sorted. |
 <!-- END RULES -->
+
+[`eslint-plugin-regexp`]: https://github.com/ota-meshi/eslint-plugin-regexp
